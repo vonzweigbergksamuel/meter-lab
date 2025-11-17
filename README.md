@@ -1,26 +1,23 @@
-# Turborepo starter
+# Meter Lab
 
-This Turborepo starter is maintained by the Turborepo core team.
+A Turborepo monorepo containing a SvelteKit web app and Hono backend.
 
-## Using this example
+## What is Meter Lab?
 
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
+Meter Lab is a collection of micro services meant to facilitate testing of IoT devices/dongles.
 
 ## What's inside?
 
 This Turborepo includes the following packages/apps:
 
-### Apps and Packages
+### Apps
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `apps/web`: A [SvelteKit](https://svelte.dev/docs/kit/introduction/) application with Tailwind CSS
+- `apps/backend`: A [Hono](https://hono.dev/) backend API server
+
+### Packages
+
+- `packages/orpc`: Shared package (work in progress)
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
@@ -29,113 +26,81 @@ Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 This Turborepo has some additional tools already setup for you:
 
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- [Biome](https://biomejs.dev/) for code formatting and linting (backend and root)
+- [ESLint](https://eslint.org/) and [Prettier](https://prettier.io) for the web app
+- [pnpm](https://pnpm.io/) as the package manager
+
+## Getting Started
+
+### Install dependencies
+
+```bash
+pnpm install
+```
 
 ### Build
 
-To build all apps and packages, run the following command:
+To build all apps and packages:
 
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+pnpm build
 ```
 
 You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```bash
+pnpm turbo build --filter=web
+pnpm turbo build --filter=backend
 ```
 
 ### Develop
 
-To develop all apps and packages, run the following command:
+To develop all apps and packages:
 
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+```bash
+pnpm dev
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+You can develop a specific package:
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```bash
+pnpm turbo dev --filter=web
+pnpm turbo dev --filter=backend
 ```
 
-### Remote Caching
+### Lint
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+To lint all apps and packages:
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```bash
+pnpm lint
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Format
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+To format code:
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+```bash
+# Format everything (uses Biome, ignores web app)
+pnpm format
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+# Format web app (uses Prettier)
+cd apps/web && pnpm format
 ```
 
-## Useful Links
+## Docker Compose
 
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
-
-### Docker Compose
+To run the entire stack with Docker:
 
 ```bash
 docker compose up -d --build
 ```
+
+This will start:
+- Frontend on port 80
+- Backend on port 3001
+
+## Useful charts
+
+![Services1](/img/services1.png)
+![Services2](/img/services2.png)
