@@ -1,0 +1,10 @@
+.git
+.gitignore
+.env
+.env.local
+.dockerignore
+node_modules
+build
+dist
+.DS_Store
+
