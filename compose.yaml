@@ -1,48 +1,52 @@
 services:
-  frontend:
-    image: nginx:alpine
-    volumes:
-      - ./apps/web/build:/usr/share/nginx/html:ro
-    ports:
-      - 3000:80
+  # frontend:
+  #   image: nginx:alpine
+  #   volumes:
+  #     - ./apps/web/build:/usr/share/nginx/html:ro
+  #   ports:
+  #     - 3000:80
 
   backend:
-    build: ./apps/backend
+    build: 
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
     ports:
       - 3001:3001
-
-  backend-db:
-    image: postgres:latest
-    ports:
-      - 5432:5432
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: meter-lab
-    volumes:
-      - backend-db-data:/var/lib/postgresql/data
+      - PORT=${PORT:-3001}
 
-  auth:
-    build: ./apps/auth
-    ports:
-      - 3002:3002
+  # backend-db:
+  #   image: postgres:latest
+  #   ports:
+  #     - 5432:5432
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_DB: meter-lab
+  #   volumes:
+  #     - backend-db-data:/var/lib/postgresql/data
 
-  auth-db:
-    image: postgres:latest
-    ports:
-      - 5433:5432
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: meter-lab
-    volumes:
-      - auth-db-data:/var/lib/postgresql/data
+  # auth:
+  #   build: ./apps/auth
+  #   ports:
+  #     - 3002:3002
 
-  influxdb:
-    image: influxdb:latest
+  # auth-db:
+  #   image: postgres:latest
+  #   ports:
+  #     - 5433:5432
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_DB: meter-lab
+  #   volumes:
+  #     - auth-db-data:/var/lib/postgresql/data
 
-  grafana:
-    image: grafana/grafana
+  # influxdb:
+  #   image: influxdb:latest
+
+  # grafana:
+  #   image: grafana/grafana
 
 volumes:
   backend-db-data:
