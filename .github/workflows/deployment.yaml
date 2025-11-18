@@ -23,40 +23,36 @@ jobs:
     strategy:
       matrix:
         # To add a new Docker service, add an entry here with:
-        # - name: service-name (used for artifact naming)
+        # - name: service-name (used for image naming)
         # - context: build context path
         # - dockerfile: path to Dockerfile
-        # - tag: Docker image tag
         service:
           - name: frontend
             context: ./apps/web
             dockerfile: ./apps/web/Dockerfile
-            tag: frontend:latest
           - name: backend
             context: .
             dockerfile: ./apps/backend/Dockerfile
-            tag: backend:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build ${{ matrix.service.name }} image
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push ${{ matrix.service.name }} image
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
-          push: false
-          tags: ${{ matrix.service.tag }}
-          outputs: type=docker,dest=/tmp/${{ matrix.service.name }}.tar
+          push: true
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.service.name }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Upload ${{ matrix.service.name }} image
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.service.name }}-image
-          path: /tmp/${{ matrix.service.name }}.tar
-          retention-days: 1
 
   deploy:
     needs: build
@@ -66,24 +62,28 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Download all images
-        uses: actions/download-artifact@v4
-        with:
-          path: /tmp
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Transfer and load images
+      - name: Pull images from GHCR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          find /tmp -name "*.tar" 2>/dev/null -exec scp -o StrictHostKeyChecking=no {} ${{ secrets.SSH_HOST }}:/tmp/ \;
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} << 'EOF'
-            echo "Loading Docker images..."
-            for tar_file in /tmp/*.tar; do
-              docker load -i "$tar_file"
-              rm "$tar_file"
-            done
-            echo "Images loaded successfully!"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
+            echo "Logging in to GitHub Container Registry..."
+            echo "$GITHUB_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            
+            echo "Pulling images..."
+            docker pull ghcr.io/$GITHUB_REPOSITORY/frontend:latest
+            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:latest
+            
+            echo "Tagging images for compose..."
+            docker tag ghcr.io/$GITHUB_REPOSITORY/frontend:latest frontend:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:latest backend:latest
+            
+            echo "Images ready!"
           EOF
       - name: Copy compose file and deploy
         env:
@@ -93,4 +93,5 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} 'mkdir -p /meter-lab'
           scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/meter-lab/compose.yaml
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} 'cd /meter-lab && docker compose down && BACKEND_PORT="$BACKEND_PORT" docker compose up -d'
+          # Dont forget to add the environment variables to the compose file
           echo "Deployment complete!"
