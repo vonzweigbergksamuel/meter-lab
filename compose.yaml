@@ -1,5 +1,7 @@
 services:
+  # If you change the image name, you need to change it in the deployment workflow as well
   frontend:
+    image: frontend:latest
     build:
       context: ./apps/web
       dockerfile: Dockerfile
@@ -9,13 +11,14 @@ services:
       - backend
 
   backend:
+    image: backend:latest
     build: 
       context: .
       dockerfile: ./apps/backend/Dockerfile
     ports:
       - 3001:3001
     environment:
-      - PORT=${PORT:-3001}
+      - PORT=${BACKEND_PORT:-3001}
 
   # backend-db:
   #   image: postgres:latest
