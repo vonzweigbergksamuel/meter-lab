@@ -76,7 +76,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Transfer and load images
         run: |
-          find /tmp -name "*.tar" -exec scp -o StrictHostKeyChecking=no {} ${{ secrets.SSH_HOST }}:/tmp/ \;
+          find /tmp -name "*.tar" 2>/dev/null -exec scp -o StrictHostKeyChecking=no {} ${{ secrets.SSH_HOST }}:/tmp/ \;
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} << 'EOF'
             echo "Loading Docker images..."
             for tar_file in /tmp/*.tar; do
