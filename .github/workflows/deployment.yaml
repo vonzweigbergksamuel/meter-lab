@@ -13,4 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - name: Checkout code
-        uses: echo 'Hello, world!'
+        uses: actions/checkout@v4
+      - name: Print message
+        run: echo 'Hello, world!'
