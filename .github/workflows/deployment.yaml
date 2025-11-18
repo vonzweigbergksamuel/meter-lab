@@ -60,6 +60,7 @@ jobs:
 
   deploy:
     needs: build
+    enviroment: meter-lab
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
@@ -86,9 +87,8 @@ jobs:
           EOF
       - name: Copy compose file and deploy
         env:
-          PORT: ${{ secrets.PORT }}
           # Add more environment variables here as needed
-          BACKEND_PORT: ${{ secrets.BACKEND_PORT }}
+          BACKEND_PORT: ${{ vars.BACKEND_PORT }}
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} << 'EOF'
             mkdir -p /meter-lab
