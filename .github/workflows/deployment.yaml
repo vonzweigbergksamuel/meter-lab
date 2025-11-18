@@ -60,7 +60,7 @@ jobs:
 
   deploy:
     needs: build
-    enviroment: meter-lab
+    environment: meter-lab
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
@@ -90,14 +90,7 @@ jobs:
           # Add more environment variables here as needed
           BACKEND_PORT: ${{ vars.BACKEND_PORT }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} << 'EOF'
-            mkdir -p /meter-lab
-          EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} 'mkdir -p /meter-lab'
           scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/meter-lab/compose.yaml
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
-            cd /meter-lab
-            docker compose down
-            # Add more variables like: PORT="$PORT" DATABASE_URL="$DATABASE_URL" docker compose up -d
-            BACKEND_PORT="$BACKEND_PORT" docker compose up -d
-            echo "Deployment complete!"
-          EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} 'cd /meter-lab && docker compose down && BACKEND_PORT="$BACKEND_PORT" docker compose up -d'
+          echo "Deployment complete!"
