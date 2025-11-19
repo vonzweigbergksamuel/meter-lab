@@ -5,13 +5,9 @@
     "strict": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "types": [
-      "node"
-    ],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
-    "outDir": "./dist",
-    "composite": true
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true
   },
+  "include": ["src/**/*", "../backend/services/api/routers/**/*"],
   "exclude": ["node_modules"]
 }

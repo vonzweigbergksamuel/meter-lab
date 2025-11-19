@@ -32,6 +32,7 @@ export const openApiHandler = new OpenAPIHandler(appRouter, {
 
 export const rpcHandler = new RPCHandler(appRouter, {
 	plugins: [
+		new CORSPlugin(),
 		new LoggingHandlerPlugin({
 			logger,
 			generateId: () => crypto.randomUUID(),
