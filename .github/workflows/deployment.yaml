@@ -78,15 +78,15 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
             echo "Logging in to GitHub Container Registry..."
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            echo "$GHCR_TOKEN" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             
             echo "Pulling images..."
-            docker pull ghcr.io/$GITHUB_REPOSITORY/frontend:latest
-            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:latest
+            sudo docker pull ghcr.io/$GITHUB_REPOSITORY/frontend:latest
+            sudo docker pull ghcr.io/$GITHUB_REPOSITORY/backend:latest
             
             echo "Tagging images for compose..."
-            docker tag ghcr.io/$GITHUB_REPOSITORY/frontend:latest frontend:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:latest backend:latest
+            sudo docker tag ghcr.io/$GITHUB_REPOSITORY/frontend:latest frontend:latest
+            sudo docker tag ghcr.io/$GITHUB_REPOSITORY/backend:latest backend:latest
             
             echo "Images ready!"
           EOF
@@ -95,7 +95,12 @@ jobs:
           # Add more environment variables here as needed
           BACKEND_PORT: ${{ vars.BACKEND_PORT }}
         run: |
-          scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/meter-lab/compose.yaml
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} 'cd /meter-lab && docker compose down && BACKEND_PORT="$BACKEND_PORT" docker compose up -d'
+          scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/tmp/compose.yaml
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
+            sudo mv /tmp/compose.yaml /meter-lab/compose.yaml
+            cd /meter-lab
+            sudo docker compose down
+            BACKEND_PORT="$BACKEND_PORT" sudo -E docker compose up -d
+          EOF
           # Dont forget to add the environment variables to the compose file
           echo "Deployment complete!"
