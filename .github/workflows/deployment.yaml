@@ -20,6 +20,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
     strategy:
       matrix:
         # To add a new Docker service, add an entry here with:
@@ -43,7 +46,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
       - name: Build and push ${{ matrix.service.name }} image
         uses: docker/build-push-action@v5
         with:
@@ -68,12 +71,12 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Pull images from GHCR
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
             echo "Logging in to GitHub Container Registry..."
-            echo "$GITHUB_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             
             echo "Pulling images..."
             docker pull ghcr.io/$GITHUB_REPOSITORY/frontend:latest

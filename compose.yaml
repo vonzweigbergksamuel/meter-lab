@@ -16,9 +16,9 @@ services:
       context: .
       dockerfile: ./apps/backend/Dockerfile
     ports:
-      - 3001:3001
+      - "${BACKEND_PORT:-5080}:${BACKEND_PORT:-5080}"
     environment:
-      - PORT=${BACKEND_PORT:-3001}
+      - PORT=${BACKEND_PORT:-5080}
 
   # backend-db:
   #   image: postgres:latest
