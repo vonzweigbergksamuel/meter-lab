@@ -98,8 +98,8 @@ jobs:
         run: |
           scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/tmp/compose.yaml
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
-            cp /tmp/compose.yaml /meter-lab/compose.yaml
-            cd /meter-lab
+            cp /tmp/compose.yaml ~/meter-lab/compose.yaml
+            cd ~/meter-lab
             docker compose down
             BACKEND_PORT="$BACKEND_PORT" docker compose up -d
           EOF
