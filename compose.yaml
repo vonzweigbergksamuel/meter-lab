@@ -6,7 +6,7 @@ services:
       context: ./apps/web
       dockerfile: Dockerfile
     ports:
-      - 80:80
+      - "${FRONTEND_PORT:-5080}:80"
     depends_on:
       - backend
 
@@ -16,9 +16,9 @@ services:
       context: .
       dockerfile: ./apps/backend/Dockerfile
     ports:
-      - "${BACKEND_PORT:-5080}:${BACKEND_PORT:-5080}"
+      - "${BACKEND_PORT:-5070}:${BACKEND_PORT:-5070}"
     environment:
-      - PORT=${BACKEND_PORT:-5080}
+      - PORT=${BACKEND_PORT:-5070}
 
   # backend-db:
   #   image: postgres:latest
