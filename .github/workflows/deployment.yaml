@@ -64,13 +64,6 @@ jobs:
     environment: meter-lab
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    strategy:
-      matrix:
-        # To add a new Docker service, add an entry here with:
-        # - name: service-name (used for image naming)
-        service:
-          - name: frontend
-          - name: backend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -78,7 +71,7 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Pull and tag ${{ matrix.service.name }} image
+      - name: Pull images from GHCR
         env:
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -87,13 +80,16 @@ jobs:
             echo "Logging in to GitHub Container Registry..."
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             
-            echo "Pulling ${{ matrix.service.name }} image..."
-            docker pull ghcr.io/$GITHUB_REPOSITORY/${{ matrix.service.name }}:latest
+            # DONT FORGET TO ADD THE IMAGES HERE AS WELL AS IN THE TAGGING STEP
+            echo "Pulling images..."
+            docker pull ghcr.io/$GITHUB_REPOSITORY/frontend:latest
+            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:latest
             
-            echo "Tagging ${{ matrix.service.name }} image for compose..."
-            docker tag ghcr.io/$GITHUB_REPOSITORY/${{ matrix.service.name }}:latest ${{ matrix.service.name }}:latest
+            echo "Tagging images for compose..."
+            docker tag ghcr.io/$GITHUB_REPOSITORY/frontend:latest frontend:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:latest backend:latest
             
-            echo "${{ matrix.service.name }} image ready!"
+            echo "Images ready!"
           EOF
       - name: Copy compose file and deploy
         env:
