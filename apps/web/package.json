@@ -39,6 +39,9 @@
 	},
 	"dependencies": {
 		"@meter-lab/orpc": "workspace:*",
-		"@orpc/client": "^1.11.3"
+		"@orpc/client": "^1.11.3",
+		"@orpc/tanstack-query": "^1.11.3",
+		"@tanstack/svelte-query": "^6.0.8",
+		"@tanstack/svelte-query-devtools": "^6.0.0"
 	}
 }

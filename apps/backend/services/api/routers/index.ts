@@ -1,11 +1,16 @@
 import type { RouterClient } from "@orpc/server";
+import * as z from "zod";
 import { publicProcedure } from "../index.js";
 import { resultsRouter } from "./results.js";
 
 export const appRouter = {
-	healthCheck: publicProcedure.route({ method: "GET" }).handler(() => {
-		return "OK";
-	}),
+	healthCheck: publicProcedure
+		.route({ method: "GET" })
+		.output(z.object({ message: z.string(), timestamp: z.number() }))
+		.handler(async () => {
+			await new Promise((resolve) => setTimeout(resolve, 2000));
+			return { message: "OK", timestamp: Date.now() };
+		}),
 	...resultsRouter,
 };
 
