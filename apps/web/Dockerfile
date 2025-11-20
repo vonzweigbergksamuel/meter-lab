@@ -16,6 +16,10 @@ RUN pnpm install --frozen-lockfile --filter web...
 
 WORKDIR /app/apps/web
 
+ARG PUBLIC_BACKEND_URL=http://backend:5070
+ENV PUBLIC_BACKEND_URL=${PUBLIC_BACKEND_URL}
+
+RUN pnpm run prepare
 RUN pnpm run build
 
 # 2) Nginx som servar de buildade filerna
