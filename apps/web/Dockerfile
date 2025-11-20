@@ -6,8 +6,11 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
-COPY packages/orpc ./packages/orpc
-COPY apps/web ./apps/web
+COPY packages/orpc/package.json packages/orpc/tsconfig.json ./packages/orpc/
+COPY packages/orpc/src ./packages/orpc/src
+COPY apps/web/package.json apps/web/tsconfig.json apps/web/svelte.config.js apps/web/vite.config.ts apps/web/app.html apps/web/nginx.conf apps/web/eslint.config.js ./apps/web/
+COPY apps/web/src ./apps/web/src
+COPY apps/web/static ./apps/web/static
 
 WORKDIR /app
 
