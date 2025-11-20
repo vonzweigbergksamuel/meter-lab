@@ -19,5 +19,5 @@ RUN pnpm run build
 
 # 2) Nginx som servar de buildade filerna
 FROM nginx:alpine
-COPY apps/web/nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /app/apps/web/nginx.conf /etc/nginx/nginx.conf
 COPY --from=build /app/apps/web/build /usr/share/nginx/html
