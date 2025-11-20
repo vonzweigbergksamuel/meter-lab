@@ -7,4 +7,10 @@ dist
 .env
 .env.local
 *.log
+apps/web/node_modules
+apps/web/build
+apps/web/dist
+apps/backend/node_modules
+apps/backend/dist
+packages/orpc/node_modules
 
