@@ -33,7 +33,7 @@ jobs:
         # - dockerfile: path to Dockerfile
         service:
           - name: frontend
-            context: ./apps/web
+            context: .
             dockerfile: ./apps/web/Dockerfile
           - name: backend
             context: .
