@@ -11,7 +11,8 @@ services:
       - "${FRONTEND_PORT:-5080}:80"
     depends_on:
       - backend
-
+  restart: always
+  
   backend:
     image: backend:latest
     build: 
@@ -21,6 +22,7 @@ services:
       - "${BACKEND_PORT:-5070}:${BACKEND_PORT:-5070}"
     environment:
       - PORT=${BACKEND_PORT:-5070}
+    restart: always
 
   # backend-db:
   #   image: postgres:latest
