@@ -23,6 +23,6 @@ RUN pnpm install --no-frozen-lockfile
 ARG PORT
 EXPOSE ${PORT}
 
-RUN pnpm run build
+RUN pnpm run build && ls -la dist/
 
 CMD ["pnpm", "run", "start"]

@@ -11,8 +11,8 @@ services:
       - "${FRONTEND_PORT:-5080}:80"
     depends_on:
       - backend
-  restart: always
-  
+    restart: always
+
   backend:
     image: backend:latest
     build: 
