@@ -4,6 +4,8 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 RUN mkdir -p /app && chown -R node:node /app
 
+ENV PATH="/usr/local/bin:$PATH"
+
 WORKDIR /app
 
 COPY --chown=node:node apps/backend/package.json apps/backend/tsconfig.json ./
@@ -16,7 +18,7 @@ COPY --chown=node:node apps/backend/utils ./utils
 
 USER node
 
-RUN pnpm install
+RUN pnpm install --no-frozen-lockfile
 
 ARG PORT
 EXPOSE ${PORT}
