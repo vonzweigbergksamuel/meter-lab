@@ -78,3 +78,11 @@ resource "google_project_iam_member" "serviceusage_ServiceAccountUser" {
   role    = "roles/iam.serviceAccountUser"
   member  = "serviceAccount:${var.email}"
 }
+
+resource "google_project_iam_member" "serviceusage_CloudBuild" {
+  depends_on = [google_project_service.apis]
+
+  project = var.project_id
+  role    = "roles/cloudbuild.connectionAdmin"
+  member  = "serviceAccount:${var.email}"
+}
