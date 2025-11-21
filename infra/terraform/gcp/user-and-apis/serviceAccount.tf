@@ -71,7 +71,7 @@ resource "google_project_iam_member" "serviceusage_serviceUsageAdmin" {
   member  = "serviceAccount:${var.email}"
 }
 
-resource "google_project_iam_member" "serviceusage_serviceUsageAdmin" {
+resource "google_project_iam_member" "serviceusage_ServiceAccountUser" {
   depends_on = [google_project_service.apis]
 
   project = var.project_id
