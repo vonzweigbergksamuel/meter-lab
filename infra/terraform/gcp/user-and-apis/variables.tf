@@ -26,6 +26,7 @@ variable "apis" {
   description = "The APIs to enable"
   type = list(string)
   default = [
+    "serviceusage.googleapis.com",
     "container.googleapis.com",
     "compute.googleapis.com",
     "iam.googleapis.com",
