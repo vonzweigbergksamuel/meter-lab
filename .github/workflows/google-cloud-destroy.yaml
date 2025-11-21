@@ -4,10 +4,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  google-cloud-destroy-user-and-apis:
+  google-cloud-destroy-pipeline:
     runs-on: ubuntu-latest
     environment: google-cloud
-    needs: google-cloud-destroy-pipeline
 
     steps:
       - name: Checkout code
@@ -34,18 +33,19 @@ jobs:
           echo "TF_VAR_email=${{ secrets.SERVICE_ACCOUNT_EMAIL }}" >> $GITHUB_ENV
           echo "GCP_BUCKET_NAME=${{ vars.GCP_BUCKET_NAME }}" >> $GITHUB_ENV
 
-      - name: Terraform init  
+      - name: Terraform init
         run: terraform init -backend-config="bucket=${{ vars.GCP_BUCKET_NAME }}"
-        working-directory: Terraform/user-and-apis
+        working-directory: infra/terraform/gcp/cloudBuild
 
       - name: Terraform destroy
         run: terraform destroy -auto-approve
-        working-directory: Terraform/user-and-apis
+        working-directory: infra/terraform/gcp/cloudBuild
 
   google-cloud-destroy-cluster:
-      runs-on: ubuntu-latest
-      environment: google-cloud
-      steps:
+    runs-on: ubuntu-latest
+    environment: google-cloud
+    needs: google-cloud-destroy-pipeline
+    steps:
         - name: Checkout code
           uses: actions/checkout@v3
 
@@ -72,15 +72,16 @@ jobs:
 
         - name: Terraform init  
           run: terraform init -backend-config="bucket=${{ vars.GCP_BUCKET_NAME }}"
-          working-directory: Terraform/cluster
+          working-directory: infra/terraform/gcp/cluster
 
         - name: Terraform destroy
           run: terraform destroy -auto-approve
-          working-directory: Terraform/cluster
+          working-directory: infra/terraform/gcp/cluster
 
-  google-cloud-destroy-pipeline:
+  google-cloud-destroy-user-and-apis:
     runs-on: ubuntu-latest
     environment: google-cloud
+    needs: google-cloud-destroy-cluster
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -116,8 +117,8 @@ jobs:
           
       - name: Terraform init
         run: terraform init -backend-config="bucket=${{ vars.GCP_BUCKET_NAME }}"
-        working-directory: Terraform/build
+        working-directory: infra/terraform/gcp/user-and-apis
 
       - name: Terraform destroy
         run: terraform destroy -auto-approve
-        working-directory: Terraform/build
+        working-directory: infra/terraform/gcp/user-and-apis

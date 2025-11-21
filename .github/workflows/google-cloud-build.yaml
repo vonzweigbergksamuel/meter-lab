@@ -39,15 +39,15 @@ jobs:
 
       - name: Terraform init
         run: terraform init -backend-config="bucket=${{ vars.GCP_BUCKET_NAME }}"
-        working-directory: Terraform/user-and-apis
+        working-directory: infra/terraform/gcp/user-and-apis
 
       - name: Terraform plan
         run: terraform plan -no-color -out=tfplan
-        working-directory: Terraform/user-and-apis
+        working-directory: infra/terraform/gcp/user-and-apis
 
       - name: Terraform apply
         run: terraform apply -no-color -auto-approve tfplan
-        working-directory: Terraform/user-and-apis
+        working-directory: infra/terraform/gcp/user-and-apis
 
   google-cloud-build-setup-cluster:
     runs-on: ubuntu-latest
@@ -80,15 +80,15 @@ jobs:
 
       - name: Terraform init
         run: terraform init -backend-config="bucket=${{ vars.GCP_BUCKET_NAME }}"
-        working-directory: Terraform/cluster
+        working-directory: infra/terraform/gcp/cluster
 
       - name: Terraform plan
         run: terraform plan -out=tfplan
-        working-directory: Terraform/cluster
+        working-directory: infra/terraform/gcp/cluster
 
       - name: Terraform apply
         run: terraform apply -auto-approve tfplan
-        working-directory: Terraform/cluster
+        working-directory: infra/terraform/gcp/cluster
 
   google-cloud-build-setup-pipeline:
     runs-on: ubuntu-latest
@@ -134,12 +134,12 @@ jobs:
 
       - name: Terraform init
         run: terraform init -backend-config="bucket=${{ vars.GCP_BUCKET_NAME }}"
-        working-directory: Terraform/build
+        working-directory: infra/terraform/gcp/cloudBuild
 
       - name: Terraform plan
         run: terraform plan -no-color -out=tfplan
-        working-directory: Terraform/build
+        working-directory: infra/terraform/gcp/cloudBuild
 
       - name: Terraform apply
         run: terraform apply -no-color -auto-approve tfplan
-        working-directory: Terraform/build
+        working-directory: infra/terraform/gcp/cloudBuild
