@@ -1,21 +1,21 @@
 services:
   # If you change the image name, you need to change it in the deployment workflow as well
-  frontend:
-    image: frontend:latest
+  web:
+    image: web:latest
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
       args:
-        PUBLIC_BACKEND_URL: "http://backend:${BACKEND_PORT:-5070}"
+        PUBLIC_BACKEND_URL: "http://backend:${BACKEND_PORT:-5070}/rpc"
     ports:
-      - "${FRONTEND_PORT:-5080}:80"
+      - "${FRONTEND_PORT:-5080}:3000"
     depends_on:
       - backend
     restart: always
 
   backend:
     image: backend:latest
-    build: 
+    build:
       context: .
       dockerfile: ./apps/backend/Dockerfile
     ports:

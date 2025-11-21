@@ -11,7 +11,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Print message
@@ -32,7 +32,7 @@ jobs:
         # - context: build context path
         # - dockerfile: path to Dockerfile
         service:
-          - name: frontend
+          - name: web
             context: .
             dockerfile: ./apps/web/Dockerfile
           - name: backend
@@ -82,11 +82,11 @@ jobs:
             
             # DONT FORGET TO ADD THE IMAGES HERE AS WELL AS IN THE TAGGING STEP
             echo "Pulling images..."
-            docker pull ghcr.io/$GITHUB_REPOSITORY/frontend:latest
+            docker pull ghcr.io/$GITHUB_REPOSITORY/web:latest
             docker pull ghcr.io/$GITHUB_REPOSITORY/backend:latest
             
             echo "Tagging images for compose..."
-            docker tag ghcr.io/$GITHUB_REPOSITORY/frontend:latest frontend:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/web:latest web:latest
             docker tag ghcr.io/$GITHUB_REPOSITORY/backend:latest backend:latest
             
             echo "Images ready!"
@@ -100,7 +100,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
             cp /tmp/compose.yaml ~/meter-lab/compose.yaml
             cd ~/meter-lab
-            docker compose down
+            docker compose down --remove-orphans
             BACKEND_PORT="$BACKEND_PORT" docker compose up -d
           EOF
           # Dont forget to add the environment variables to the compose file

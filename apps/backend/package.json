@@ -2,9 +2,9 @@
   "name": "backend",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --env-file=.env.local src/server.ts",
+    "dev": "tsx watch --env-file=.env.local app/server.ts",
     "build": "tsc",
-    "start": "node dist/src/server.js",
+    "start": "node dist/app/server.js",
     "lint": "biome lint .",
     "format": "biome format --write ."
   },

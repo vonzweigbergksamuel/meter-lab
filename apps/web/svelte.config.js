@@ -1,4 +1,4 @@
-import adapter from "@sveltejs/adapter-static";
+import adapter from "@sveltejs/adapter-node";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -9,11 +9,7 @@ const config = {
 
 	kit: {
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
-		adapter: adapter({
-			precompress: true,
-			strict: true
-			// Dont set a fallback to avoid serving as a SPA
-		})
+		adapter: adapter({})
 	}
 };
 

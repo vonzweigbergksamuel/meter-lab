@@ -13,4 +13,6 @@ apps/web/dist
 apps/backend/node_modules
 apps/backend/dist
 packages/orpc/node_modules
-
+**/dist
+apps/*/dist
+packages/*/dist
