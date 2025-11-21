@@ -100,7 +100,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
             cp /tmp/compose.yaml ~/meter-lab/compose.yaml
             cd ~/meter-lab
-            docker compose down
+            docker compose down --remove-orphans
             BACKEND_PORT="$BACKEND_PORT" docker compose up -d
           EOF
           # Dont forget to add the environment variables to the compose file
