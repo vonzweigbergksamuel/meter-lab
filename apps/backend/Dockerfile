@@ -46,7 +46,7 @@ USER backend
 
 WORKDIR /app/apps/backend
 
-ARG PORT=3000
+ARG PORT=5070
 EXPOSE ${PORT}
 ENV NODE_ENV=production
 ENV PORT=${PORT}
