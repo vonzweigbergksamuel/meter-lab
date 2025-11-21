@@ -27,13 +27,13 @@ variable "apis" {
   type = list(string)
   default = [
     "serviceusage.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com",
     "container.googleapis.com",
     "compute.googleapis.com",
     "artifactregistry.googleapis.com",
     "secretmanager.googleapis.com",
-    "storage.googleapis.com"
+    "storage.googleapis.com",
+    "cloudbuild.googleapis.com"
     ]
 }
 

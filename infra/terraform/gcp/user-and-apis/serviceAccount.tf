@@ -70,3 +70,11 @@ resource "google_project_iam_member" "serviceusage_serviceUsageAdmin" {
   role    = "roles/serviceusage.serviceUsageAdmin"
   member  = "serviceAccount:${var.email}"
 }
+
+resource "google_project_iam_member" "serviceusage_serviceUsageAdmin" {
+  depends_on = [google_project_service.apis]
+
+  project = var.project_id
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${var.email}"
+}
