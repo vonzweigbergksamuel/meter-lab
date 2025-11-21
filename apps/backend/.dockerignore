@@ -4,3 +4,4 @@
 .env.local
 .dockerignore
 node_modules
+dist

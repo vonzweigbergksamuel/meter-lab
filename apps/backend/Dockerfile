@@ -1,28 +1,55 @@
-FROM node:lts-alpine
+FROM node:lts-alpine AS base
+RUN apk update
+RUN apk add --no-cache libc6-compat
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-RUN mkdir -p /app && chown -R node:node /app
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 ENV PATH="/usr/local/bin:$PATH"
 
 WORKDIR /app
 
-COPY --chown=node:node apps/backend/package.json apps/backend/tsconfig.json ./
-COPY --chown=node:node apps/backend/src ./src
-COPY --chown=node:node apps/backend/env.ts ./
-COPY --chown=node:node apps/backend/core ./core
-COPY --chown=node:node apps/backend/di ./di
-COPY --chown=node:node apps/backend/services ./services
-COPY --chown=node:node apps/backend/utils ./utils
+FROM base AS prepare
+RUN corepack enable && corepack prepare pnpm@latest --activate
+COPY . .
+RUN pnpm add -g turbo@^2
+RUN turbo prune backend --docker
 
-USER node
+FROM base AS dependencies
+ENV CI=true
+COPY --from=prepare /app/out/json/ .
+COPY --from=prepare /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-RUN pnpm install --no-frozen-lockfile
+FROM base AS builder
+ENV CI=true
+COPY --from=prepare /app/out/full/ .
+COPY --from=prepare /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm turbo run build --filter=backend
 
-ARG PORT
+FROM node:lts-alpine AS runner
+WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 backend
+
+COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
+COPY --from=builder /app/apps/backend/package.json ./apps/backend/package.json
+COPY --from=builder /app/apps/backend/env.ts ./apps/backend/env.ts
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/apps/backend/node_modules ./apps/backend/node_modules
+
+RUN chown -R backend:nodejs /app
+USER backend
+
+WORKDIR /app/apps/backend
+
+ARG PORT=3000
 EXPOSE ${PORT}
+ENV NODE_ENV=production
+ENV PORT=${PORT}
+ENV HOST=0.0.0.0
 
-RUN pnpm run build && ls -la dist/
-
-CMD ["pnpm", "run", "start"]
+CMD ["node", "dist/app/server.js"]

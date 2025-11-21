@@ -1,28 +1,56 @@
-# 1) Bygg Svelte-appen
-FROM node:lts-alpine AS build
+FROM node:lts-alpine AS base
+RUN apk update
+RUN apk add --no-cache libc6-compat
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+WORKDIR /app
+
+FROM base AS prepare
 RUN corepack enable && corepack prepare pnpm@latest --activate
+COPY . .
+RUN pnpm add -g turbo@^2
+RUN turbo prune web --docker
 
+FROM base AS dependencies
+ENV CI=true
+COPY --from=prepare /app/out/json/ .
+COPY --from=prepare /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+FROM base AS builder
+ENV CI=true
+
+ARG PUBLIC_BACKEND_URL=http://localhost:5070/rpc
+ENV PUBLIC_BACKEND_URL=${PUBLIC_BACKEND_URL}
+
+COPY --from=prepare /app/out/full/ .
+COPY --from=prepare /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm turbo run build --filter=web
+
+FROM node:lts-alpine AS runner
 WORKDIR /app
 
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
-COPY packages/orpc/package.json packages/orpc/tsconfig.json ./packages/orpc/
-COPY packages/orpc/src ./packages/orpc/src
-COPY apps/web ./apps/web
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 web
 
-WORKDIR /app
+COPY --from=builder /app/apps/web/build ./apps/web/build
+COPY --from=builder /app/apps/web/package.json ./apps/web/package.json
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/apps/web/node_modules ./apps/web/node_modules
 
-RUN pnpm install --frozen-lockfile --filter web...
+RUN chown -R web:nodejs /app
+USER web
 
 WORKDIR /app/apps/web
 
-ARG PUBLIC_BACKEND_URL=http://backend:5070
-ENV PUBLIC_BACKEND_URL=${PUBLIC_BACKEND_URL}
+ARG PORT=3000
+EXPOSE ${PORT}
+ENV NODE_ENV=production
+ENV PORT=${PORT}
+ENV HOST=0.0.0.0
 
-RUN pnpm run prepare
-RUN pnpm run build
-
-# 2) Nginx som servar de buildade filerna
-FROM nginx:alpine
-COPY --from=build /app/apps/web/nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /app/apps/web/build /usr/share/nginx/html
+CMD ["node", "build/index.js"]
