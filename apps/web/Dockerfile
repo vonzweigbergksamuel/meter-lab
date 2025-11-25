@@ -47,7 +47,7 @@ USER web
 
 WORKDIR /app/apps/web
 
-ARG PORT=5080
+ARG PORT=3000
 EXPOSE ${PORT}
 ENV NODE_ENV=production
 ENV PORT=${PORT}
