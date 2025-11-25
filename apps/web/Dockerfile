@@ -26,6 +26,9 @@ ENV CI=true
 ARG PUBLIC_BACKEND_URL
 ENV PUBLIC_BACKEND_URL=${PUBLIC_BACKEND_URL}
 
+# Debug: skriv ut värdet i build-loggen
+RUN echo "BUILD: PUBLIC_BACKEND_URL='${PUBLIC_BACKEND_URL}'"
+
 COPY --from=prepare /app/out/full/ .
 COPY --from=prepare /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 RUN pnpm install --frozen-lockfile
