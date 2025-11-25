@@ -20,7 +20,7 @@ FROM base AS dependencies
 ENV CI=true
 COPY --from=prepare /app/out/json/ .
 COPY --from=prepare /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 ENV CI=true
