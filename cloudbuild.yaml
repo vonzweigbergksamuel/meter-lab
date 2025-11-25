@@ -11,12 +11,10 @@ substitutions:
 steps:
   # Step 1: Build Docker images with SHA-based tagging
   - name: 'gcr.io/cloud-builders/docker'
-    dir: 'apps/backend'
-    args: ['build', '-f', 'Dockerfile', '-t', '${_IMAGE_NAME_BACKEND}', '.']
+    args: ['build', '-f', 'apps/backend/Dockerfile', '-t', '${_IMAGE_NAME_BACKEND}', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    dir: 'apps/web'
-    args: ['build', '-f', 'Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '.']
+    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '.']
 
   # Step 2: Push Docker image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
