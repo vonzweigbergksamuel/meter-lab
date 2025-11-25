@@ -26,6 +26,6 @@ resource "google_compute_subnetwork" "default" {
 
   secondary_ip_range {
     range_name    = "pod-ranges"
-    ip_cidr_range = "192.168.1.0/24"
+    ip_cidr_range = "192.168.4.0/22"
   }
 }
