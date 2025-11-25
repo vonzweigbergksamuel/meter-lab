@@ -20,13 +20,13 @@ FROM base AS dependencies
 ENV CI=true
 COPY --from=prepare /app/out/json/ .
 COPY --from=prepare /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN install --frozen-lockfile
 
 FROM base AS builder
 ENV CI=true
 COPY --from=prepare /app/out/full/ .
 COPY --from=prepare /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 RUN pnpm turbo run build --filter=backend
 
 FROM node:lts-alpine AS runner
