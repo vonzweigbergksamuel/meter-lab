@@ -35,21 +35,30 @@ services:
   #   volumes:
   #     - backend-db-data:/var/lib/postgresql/data
 
-  # auth:
-  #   build: ./apps/auth
-  #   ports:
-  #     - 3002:3002
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+    ports:
+      - "3002:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgres://postgres:postgres@auth-db:5432/auth
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-secret}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+    depends_on:
+      - auth-db
 
-  # auth-db:
-  #   image: postgres:latest
-  #   ports:
-  #     - 5433:5432
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #     POSTGRES_DB: meter-lab
-  #   volumes:
-  #     - auth-db-data:/var/lib/postgresql/data
+  auth-db:
+    image: postgres:latest
+    ports:
+      - "${AUTH_DB_PORT:-5433}:5432"
+    environment:
+      POSTGRES_USER: ${AUTH_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${AUTH_DB_NAME:-auth}
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
 
 volumes:
   backend-db-data:
