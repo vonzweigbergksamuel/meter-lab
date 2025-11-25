@@ -19,7 +19,7 @@ steps:
     args: ['build', '-f', 'apps/backend/Dockerfile', '-t', '${_IMAGE_NAME_BACKEND}', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '.']
+    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://backend:5070/rpc', '.']
 
   # Step 2: Push Docker image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
