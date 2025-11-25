@@ -1,22 +1,25 @@
+# How to add a new service
+# 1. Add the _IMAGE_NAME_SERVICENAME in substitutions
+# 2. Copy the step 1 with the build and push steps with the dockerfile
+# 3. Add the sed futher down and replace the image name in compose.yaml file with the _IMAGE_NAME_XXX you created in substitutions.
+
 options:
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
-  _IMAGE_NAME_BACKEND: "gcr.io/${PROJECT_ID}/BACKEND/gcpdevops-prod:${SHORT_SHA}"
-  _IMAGE_NAME_WEB: "gcr.io/${PROJECT_ID}/WEB/gcpdevops-prod:${SHORT_SHA}"
-  _CLUSTER_NAME: "lnu-jti-production-standard-cluster"
+  _IMAGE_NAME_BACKEND: "gcr.io/${PROJECT_ID}/backend/gcpdevops-prod:${SHORT_SHA}"
+  _IMAGE_NAME_WEB: "gcr.io/${PROJECT_ID}/web/gcpdevops-prod:${SHORT_SHA}"
+  _CLUSTER_NAME: "meter-lab-production-standard-cluster"
   _NAMESPACE: "meter-lab"
   _LOCATION: "europe-north2"
 
 steps:
   # Step 1: Build Docker images with SHA-based tagging
   - name: 'gcr.io/cloud-builders/docker'
-    dir: 'apps/backend'
-    args: ['build', '-f', 'Dockerfile', '-t', '${_IMAGE_NAME_BACKEND}', '.']
+    args: ['build', '-f', 'apps/backend/Dockerfile', '-t', '${_IMAGE_NAME_BACKEND}', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    dir: 'apps/web'
-    args: ['build', '-f', 'Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '.']
+    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.192.219/rpc', '.']
 
   # Step 2: Push Docker image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -82,4 +85,4 @@ steps:
       - |
         gcloud container clusters get-credentials ${_CLUSTER_NAME} --region ${_LOCATION}
         kubectl apply -f gke/generated/ --namespace=${_NAMESPACE}
-        sleep 10
+        sleep 5
