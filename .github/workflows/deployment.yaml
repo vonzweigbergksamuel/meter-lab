@@ -36,8 +36,6 @@ jobs:
           - name: web
             context: .
             dockerfile: ./apps/web/Dockerfile
-            build_args: |
-              PUBLIC_BACKEND_URL=${{ vars.PUBLIC_BACKEND_URL }}
           - name: backend
             context: .
             dockerfile: ./apps/backend/Dockerfile
@@ -63,7 +61,8 @@ jobs:
           tags: ghcr.io/${{ github.repository }}/${{ matrix.service.name }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: ${{ matrix.service.build_args || '' }}
+          build-args: |
+            PUBLIC_BACKEND_URL=${{ vars.PUBLIC_BACKEND_URL }}
 
   deploy:
     needs: build
