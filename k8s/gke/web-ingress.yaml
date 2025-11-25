@@ -7,9 +7,9 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    io.kompose.service: meter-lab
+    io.kompose.service: web
   ports:
   - name: http
     port: 80
-    targetPort: 5080
+    targetPort: 3000
     protocol: TCP
