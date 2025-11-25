@@ -11,7 +11,7 @@
 </script>
 
 <h1>Welcome to Meter Lab</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<button on:click={() => query.refetch()}>Refetch</button>
 
 {#if query.isLoading}
 	<p>Loading...</p>
@@ -21,5 +21,3 @@
 {:else if query.isError}
 	<p>{query.error?.message}</p>
 {/if}
-
-<button on:click={() => query.refetch()}>Refetch</button>

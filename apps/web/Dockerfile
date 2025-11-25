@@ -23,7 +23,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 FROM base AS builder
 ENV CI=true
 
-ARG PUBLIC_BACKEND_URL=http://localhost:5070/rpc
+ARG PUBLIC_BACKEND_URL
 ENV PUBLIC_BACKEND_URL=${PUBLIC_BACKEND_URL}
 
 COPY --from=prepare /app/out/full/ .

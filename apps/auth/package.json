@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "auth",
   "type": "module",
   "scripts": {
     "dev": "tsx watch --env-file=.env app/server.ts",
