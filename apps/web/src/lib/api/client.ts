@@ -4,8 +4,10 @@ import { RPCLink } from "@orpc/client/fetch";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { PUBLIC_BACKEND_URL } from "$env/static/public";
 
+const backendUrl = `${PUBLIC_BACKEND_URL}/rpc`;
+
 const link = new RPCLink({
-	url: PUBLIC_BACKEND_URL,
+	url: backendUrl,
 	headers: () => ({})
 });
 
