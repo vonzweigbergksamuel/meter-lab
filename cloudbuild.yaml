@@ -82,4 +82,4 @@ steps:
       - |
         gcloud container clusters get-credentials ${_CLUSTER_NAME} --region ${_LOCATION}
         kubectl apply -f gke/generated/ --namespace=${_NAMESPACE}
-        sleep 10
+        sleep 5
