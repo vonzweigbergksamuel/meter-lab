@@ -25,6 +25,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+    environment: meter-lab
     strategy:
       matrix:
         # To add a new Docker service, add an entry here with:
