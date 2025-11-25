@@ -19,7 +19,7 @@ steps:
     args: ['build', '-f', 'apps/backend/Dockerfile', '-t', '${_IMAGE_NAME_BACKEND}', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.192.219/rpc', '.']
+    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.192.219', '.']
 
   # Step 2: Push Docker image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -43,8 +43,8 @@ steps:
     args:
       - -c
       - |
-        mkdir -p gke/generated
-        /workspace/kompose convert -f compose.yaml --stdout > gke/generated/komposed.yaml
+        mkdir -p /infra/gke/generated
+        /workspace/kompose convert -f compose.yaml --stdout > infra/gke/generated/komposed.yaml
 
     # Step 3: Replace placeholder `image-name:latest` in `komposed.yaml` with actual image name 
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -53,12 +53,12 @@ steps:
       - "-c"
       - |
         # REPLACE IMAGE NAME IN KOMPOSE.YAML
-        sed -i "s|backend:latest|${_IMAGE_NAME_BACKEND}|g" gke/generated/komposed.yaml
-        sed -i "s|web:latest|${_IMAGE_NAME_WEB}|g" gke/generated/komposed.yaml
+        sed -i "s|backend:latest|${_IMAGE_NAME_BACKEND}|g" infra/gke/generated/komposed.yaml
+        sed -i "s|web:latest|${_IMAGE_NAME_WEB}|g" infra/gke/generated/komposed.yaml
 
-        sed -i '/hostPort/d' gke/generated/komposed.yaml
-        sed -i 's/imagePullPolicy: Never/imagePullPolicy: Always/g' gke/generated/komposed.yaml
-        awk '/port:/ && !/name:/ {gsub(/^[[:space:]]*- port:/, "  - name: port\n    port:"); print; next} {print}' gke/generated/komposed.yaml > gke/generated/komposed.tmp && mv gke/generated/komposed.tmp gke/generated/komposed.yaml
+        sed -i '/hostPort/d' infra/gke/generated/komposed.yaml
+        sed -i 's/imagePullPolicy: Never/imagePullPolicy: Always/g' infra/gke/generated/komposed.yaml
+        awk '/port:/ && !/name:/ {gsub(/^[[:space:]]*- port:/, "  - name: port\n    port:"); print; next} {print}' infra/gke/generated/komposed.yaml > infra/gke/generated/komposed.tmp && mv infra/gke/generated/komposed.tmp infra/gke/generated/komposed.yaml
 
   # Cleanup previous gke-deploy outputs to avoid conflicts
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -75,7 +75,7 @@ steps:
       - --location=${_LOCATION}
       - --cluster=${_CLUSTER_NAME}
       - --namespace=${_NAMESPACE}
-      - --filename=k8s/gke
+      - --filename=infra/k8s/gke
 
   # Apply kompose-generated resources and show diagnostics
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -84,5 +84,5 @@ steps:
       - "-c"
       - |
         gcloud container clusters get-credentials ${_CLUSTER_NAME} --region ${_LOCATION}
-        kubectl apply -f gke/generated/ --namespace=${_NAMESPACE}
+        kubectl apply -f infra/gke/generated/ --namespace=${_NAMESPACE}
         sleep 5

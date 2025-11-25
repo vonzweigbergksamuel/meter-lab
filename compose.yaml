@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./apps/web/Dockerfile
       args:
-        PUBLIC_BACKEND_URL: "${PUBLIC_BACKEND_URL:-http://localhost:${BACKEND_PORT:-5070}/rpc}"
+        PUBLIC_BACKEND_URL: "${PUBLIC_BACKEND_URL:-http://localhost:${BACKEND_PORT:-5070}}"
     ports:
       - "${FRONTEND_PORT:-5080}:3000"
     depends_on:
