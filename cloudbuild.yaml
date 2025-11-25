@@ -1,3 +1,8 @@
+# How to add a new service
+# 1. Add the _IMAGE_NAME_SERVICENAME in substitutions
+# 2. Copy the step 1 with the build and push steps with the dockerfile
+# 3. Add the sed futher down and replace the image name in compose.yaml file with the _IMAGE_NAME_XXX you created in substitutions.
+
 options:
   logging: CLOUD_LOGGING_ONLY
 
