@@ -9,7 +9,10 @@ const config = {
 
 	kit: {
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
-		adapter: adapter({})
+		adapter: adapter({}),
+		alias: {
+			"@/*": "./src/lib/*"
+		}
 	}
 };
 
