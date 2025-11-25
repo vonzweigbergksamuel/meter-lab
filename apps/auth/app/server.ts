@@ -1,11 +1,18 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { logger } from "hono/logger";
 import { env } from "../env.js";
-import { auth } from "../utils/auth.js";
+import type { AuthType } from "../utils/auth.js";
+import auth from "./routes/auth.js";
 
-const app = new Hono();
+const app = new Hono<{
+	Variables: AuthType;
+}>({
+	strict: false,
+});
 
+// CORS middleware
 app.use(
 	"*",
 	cors({
@@ -23,12 +30,21 @@ app.use(
 	}),
 );
 
-app.get("/", (c) => {
-	return c.text("Hello Auth!");
+// Logger middleware
+app.use(logger());
+
+// Define API routes
+const routes = [auth] as const;
+routes.forEach((route) => {
+	app.basePath("/api").route("/", route);
 });
 
-app.all("/api/auth/*", (c) => {
-	return auth.handler(c.req.raw);
+// Health check
+app.get("/", (c) => {
+	return c.json({
+		message: "OK",
+		timestamp: Date.now(),
+	});
 });
 
 serve(
