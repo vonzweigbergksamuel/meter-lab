@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createQuery } from "@tanstack/svelte-query";
-	import { orpc } from "$lib/api/client";
+	import { orpc } from "$lib/api/client.server";
 
 	const query = createQuery(() =>
 		orpc.healthCheck.queryOptions({
