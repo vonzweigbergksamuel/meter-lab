@@ -43,7 +43,7 @@ steps:
     args:
       - -c
       - |
-        mkdir -p /infra/gke/generated
+        mkdir -p infra/gke/generated
         /workspace/kompose convert -f compose.yaml --stdout > infra/gke/generated/komposed.yaml
 
     # Step 3: Replace placeholder `image-name:latest` in `komposed.yaml` with actual image name 
