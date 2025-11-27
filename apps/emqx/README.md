@@ -1,6 +1,11 @@
 # EMQX Publisher
 
-Mock MQTT publisher that simulates device data for testing purposes.
+Mock MQTT publisher that simulates device data for testing purposes. It will use Authentication as default with username/password.
+
+> Note <br>
+> You need to login to the dashboard and create a user. <br>
+> No support to auto create user with docker. <br>
+> However in pipelines we can add a job that fetch to the dashboard and create a user.
 
 Connection string: `mqtt://emqx:1883` or `mqtts://emqx:8883`
 
@@ -68,4 +73,17 @@ To test this run the docker compose and then the test app:
 ```bash
 cd  /apps/emqx
 node ./src/test.js
+```
+
+## Create a user with rest api (NOT TESTED):
+
+```bash
+curl -u admin:admin123 \
+  -X POST http://emqx:18083/api/v5/authentication/built_in_database/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "meter-app",
+    "password": "supersecret"
+  }'
+
 ```

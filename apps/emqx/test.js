@@ -3,11 +3,16 @@ import mqtt from "mqtt";
 /* -------- VARIABLES -------- */
 const BROKER_URL = "mqtt://localhost:1884";
 const TOPIC = "mock-data";
+const USERNAME = "admin";
+const PASSWORD = "admin123";
 
 console.log("Application started!");
 
 // Connect to EMQX
-const client = mqtt.connect(BROKER_URL);
+const client = mqtt.connect(BROKER_URL, {
+	username: USERNAME,
+	password: PASSWORD
+});
 
 client.on("connect", () => {
 	client.subscribe(TOPIC, (error) => {
