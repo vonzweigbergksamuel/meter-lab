@@ -2,6 +2,12 @@
 
 Mock MQTT publisher that simulates device data for testing purposes.
 
+Connection string: `mqtt://emqx:1883` or `mqtts://emqx:8883`
+
+> Note <br>
+> If you dont run it using docker change `emqx` to `localhost`. <br>
+> ``mqtts`` and port ``8883`` is for TLS
+
 ## What it does
 
 - Connects to an EMQX broker
@@ -46,6 +52,14 @@ From the root of the repo:
 ```bash
 docker compose -f docker-mock-compose.yaml up
 ```
+
+## EMQX Dashboard
+
+[http://localhost:18083](http://localhost:18083)
+
+| Username | Password |
+|----------|----------|
+| `admin`  | `admin123` |
 
 ## Test
 

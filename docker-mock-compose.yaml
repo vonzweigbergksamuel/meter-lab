@@ -8,6 +8,10 @@ services:
     - "EMQX_NODE_NAME=emqx@node1.emqx.com"
     - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
     - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.com,emqx@node2.emqx.com]"
+
+    - EMQX_DASHBOARD__DEFAULT_USERNAME="${EMQX_DASHBOARD__DEFAULT_USERNAME:-admin}"
+    - EMQX_DASHBOARD__DEFAULT_PASSWORD="${EMQX_DASHBOARD__DEFAULT_PASSWORD:-admin123}"
+
     healthcheck:
       test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
       interval: 5s
@@ -15,9 +19,7 @@ services:
       retries: 5
     ports:
       - 1884:1883 # Use another port on the outside to prevent miss communication
-      - 8083:8083
-      - 8084:8084
-      - 8883:8883
+      - 8883:8883 # TLS
       - 18083:18083 # Admin panel
 
   emqx-publisher:
