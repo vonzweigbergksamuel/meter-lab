@@ -1,16 +1,15 @@
-import { env } from "../../env";
-import { generateDeviceId } from "../utils/generateDeviceId";
-import { generatePayload } from "../utils/generatePayload";
+import { env } from "../../env.js";
+import { generateDeviceId } from "../utils/generateDeviceId.js";
+import { generatePayload } from "../utils/generatePayload.js";
 
 type Payload = {
-  meter_id: string,
-  value: number,
-  unit: string
-}
-
+	meter_id: number; // We use Date.now()
+	value: number;
+	unit: string;
+};
 
 class PayloadService {
-	#devices;
+	#devices: number[];
 	#numOfDevices;
 
 	constructor() {
@@ -27,17 +26,17 @@ class PayloadService {
 		}
 	}
 
-  getPayload() {
-    const payload: Payload[] = []
+	getPayload() {
+		const payload: Payload[] = [];
 
-    for (const deviceId of this.#devices) {
-      const data = generatePayload(deviceId)
+		for (const deviceId of this.#devices) {
+			const data = generatePayload(deviceId);
 
-      payload.push(data)
-    }
+			payload.push(data);
+		}
 
-    return JSON.stringify(payload)
-  }
+		return JSON.stringify(payload);
+	}
 }
 
 export { PayloadService };

@@ -11,7 +11,7 @@ services:
       - "${FRONTEND_PORT:-5080}:3000"
     depends_on:
       - backend
-    restart: always
+    restart: unless-stopped
     networks:
       - meter-lab
 
@@ -24,7 +24,7 @@ services:
       - "${BACKEND_PORT:-5070}:${BACKEND_PORT:-5070}"
     environment:
       - PORT=${BACKEND_PORT:-5070}
-    restart: always
+    restart: unless-stopped
     networks:
       - meter-lab
 

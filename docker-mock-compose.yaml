@@ -5,7 +5,7 @@ services:
     image: emqx/emqx-enterprise:6.0.1
     container_name: emqx1
     environment:
-    - "EMQX_NODE_NAME=emqx@node1.emqx.com"
+    - "EMQX_NODE_NAME=mock_data_node"
     - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
     - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.com,emqx@node2.emqx.com]"
     healthcheck:
@@ -19,3 +19,16 @@ services:
       - 8084:8084
       - 8883:8883
       - 18083:18083
+
+  emqx-publisher:
+    image: emqx-publisher:latest
+    depends_on:
+      - emqx
+    build:
+      context: .
+      dockerfile: ./apps/emqx/Dockerfile
+    environment:
+      - BROKER_URL=${BROKER_URL:-mqtt://emqx:1883}
+      - TOPIC=${TOPIC:-mock-data}
+      - NUM_DEVICE=${NUM_DEVICE:-4}
+    restart: unless-stopped
