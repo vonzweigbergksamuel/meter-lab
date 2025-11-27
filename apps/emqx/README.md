@@ -1,0 +1,57 @@
+# EMQX Publisher
+
+Mock MQTT publisher that simulates device data for testing purposes.
+
+## What it does
+
+- Connects to an EMQX broker
+- Generates simulated meter readings from multiple virtual devices
+- Publishes data every 10 seconds
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `BROKER_URL` | MQTT broker connection URL | - |
+| `TOPIC` | Topic to publish messages to | - |
+| `NUM_DEVICE` | Number of virtual devices to simulate | - |
+
+## Example payload
+
+- meter_id: The Device ID
+- value: Some value
+- unit: The unit of the value
+
+```json
+[
+  {"meter_id":1764255278504,"value":53,"unit":"W"},
+  {"meter_id":1764255278504,"value":74,"unit":"W"},
+  {"meter_id":1764255278504,"value":77,"unit":"W"},
+  {"meter_id":1764255278504,"value":46,"unit":"W"}
+]
+```
+
+## Scripts
+
+```bash
+pnpm dev      # Run with hot reload
+pnpm build    # Compile TypeScript
+pnpm start    # Run compiled output
+```
+
+## Docker
+
+From the root of the repo:
+
+```bash
+docker compose -f docker-mock-compose.yaml up
+```
+
+## Test
+
+To test this run the docker compose and then the test app:
+
+```bash
+cd  /apps/emqx
+node ./src/test.js
+```
