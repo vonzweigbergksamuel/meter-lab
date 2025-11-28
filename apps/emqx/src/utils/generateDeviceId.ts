@@ -1,3 +1,3 @@
 export function generateDeviceId() {
-	return Date.now();
+	return Math.floor(Math.random() * Date.now());
 }

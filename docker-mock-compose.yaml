@@ -27,8 +27,8 @@ services:
       - 8883:8883 # TLS
       - 18083:18083 # Admin panel
 
-  emqx-publisher:
-    image: emqx-publisher:latest
+  emqx-mock:
+    image: emqx-mock:latest
     depends_on:
       - emqx
     build:
