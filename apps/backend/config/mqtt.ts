@@ -1,5 +1,7 @@
 import mqtt from "mqtt";
 import { env } from "../env.js";
+import type { Device } from "../types/index.js";
+import { setPayload } from "../utils/devices/setPayload.js";
 
 /* -------- VARIABLES -------- */
 const EMQX_URL = env.EMQX_URL;
@@ -8,7 +10,7 @@ const EMQX_USERNAME = env.EMQX_USERNAME;
 const EMQX_PASSWORD = env.EMQX_PASSWORD;
 
 async function connectToMqtt() {
-	console.log('Connecting to broker...')
+	console.log("Connecting to broker...");
 	let client: mqtt.MqttClient;
 	return new Promise<mqtt.MqttClient>((resolve, reject) => {
 		client = mqtt.connect(EMQX_URL, {
@@ -24,14 +26,14 @@ async function connectToMqtt() {
 					reject(err);
 				}
 
-				console.log('Connected to broker')
+				console.log("Connected to broker");
 				resolve(client);
 			});
 		});
 
 		client.on("error", (err) => {
 			client.end();
-			console.log('Connection to broker closed')
+			console.log("Connection to broker closed");
 			reject(err);
 		});
 	});
@@ -41,7 +43,13 @@ function listenForDevice(client: mqtt.MqttClient) {
 	client.on("message", (_topic, message) => {
 		// TODO Fix this
 		// Later send this to a service to write to redis
-		console.log(message.toString());
+		// console.log(message.toString())
+		try {
+			const payload: Device[] = JSON.parse(message.toString());
+			setPayload(payload);
+		} catch (err) {
+			console.error("Failed to parse MQTT message:", err);
+		}
 	});
 }
 
