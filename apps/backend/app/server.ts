@@ -1,14 +1,18 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { connectToMqtt, listenForDevice } from "../config/mqtt.js";
+import { connectToRedis } from "../config/redis.js";
 import { env } from "../env.js";
 import { openApiHandler, rpcHandler } from "../utils/orpc.js";
 
 const app = new Hono();
 
+// Connect to broker
 const client = await connectToMqtt();
-console.log("MQTT Connected");
 listenForDevice(client);
+
+// Connect to redis
+await connectToRedis();
 
 app.get("/", (c) => {
 	return c.text("Hello Hono!");

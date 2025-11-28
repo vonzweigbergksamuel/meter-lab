@@ -8,6 +8,7 @@ const EMQX_USERNAME = env.EMQX_USERNAME;
 const EMQX_PASSWORD = env.EMQX_PASSWORD;
 
 async function connectToMqtt() {
+	console.log('Connecting to broker...')
 	let client: mqtt.MqttClient;
 	return new Promise<mqtt.MqttClient>((resolve, reject) => {
 		client = mqtt.connect(EMQX_URL, {
@@ -23,12 +24,14 @@ async function connectToMqtt() {
 					reject(err);
 				}
 
+				console.log('Connected to broker')
 				resolve(client);
 			});
 		});
 
 		client.on("error", (err) => {
 			client.end();
+			console.log('Connection to broker closed')
 			reject(err);
 		});
 	});
