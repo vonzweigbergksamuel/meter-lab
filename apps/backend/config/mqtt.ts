@@ -1,5 +1,5 @@
 import mqtt from "mqtt";
-import { env } from "../../env.js";
+import { env } from "../env.js";
 
 /* -------- VARIABLES -------- */
 const EMQX_URL = env.EMQX_URL;
@@ -16,15 +16,15 @@ async function connectToMqtt() {
 		});
 
 		client.on("connect", () => {
-      client.subscribe(EMQX_TOPIC, (err) => {
-        if (err) {
-          console.error("Failed to subscribe: ", err)
-          client.end()
-          reject(err)
-        }
+			client.subscribe(EMQX_TOPIC, (err) => {
+				if (err) {
+					console.error("Failed to subscribe: ", err);
+					client.end();
+					reject(err);
+				}
 
-        resolve(client);
-      })
+				resolve(client);
+			});
 		});
 
 		client.on("error", (err) => {
@@ -36,9 +36,9 @@ async function connectToMqtt() {
 
 function listenForDevice(client: mqtt.MqttClient) {
 	client.on("message", (_topic, message) => {
-    // TODO Fix this
+		// TODO Fix this
 		// Later send this to a service to write to redis
-    console.log(message.toString());
+		console.log(message.toString());
 	});
 }
 

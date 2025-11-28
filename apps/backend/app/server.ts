@@ -1,13 +1,13 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
+import { connectToMqtt, listenForDevice } from "../config/mqtt.js";
 import { env } from "../env.js";
-import { connectToMqtt, listenForDevice } from "../utils/devices/mqtt.js";
 import { openApiHandler, rpcHandler } from "../utils/orpc.js";
 
 const app = new Hono();
 
 const client = await connectToMqtt();
-console.log('MQTT Connected')
+console.log("MQTT Connected");
 listenForDevice(client);
 
 app.get("/", (c) => {
