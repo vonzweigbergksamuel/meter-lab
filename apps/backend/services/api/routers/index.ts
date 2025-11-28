@@ -1,6 +1,7 @@
 import type { RouterClient } from "@orpc/server";
 import * as z from "zod";
 import { publicProcedure } from "../index.js";
+import { deviceRouter } from "./device.js";
 import { resultsRouter } from "./results.js";
 
 export const appRouter = {
@@ -12,6 +13,7 @@ export const appRouter = {
 			return { message: "OK", timestamp: Date.now() };
 		}),
 	...resultsRouter,
+	...deviceRouter
 };
 
 export type AppRouter = typeof appRouter;
