@@ -54,7 +54,7 @@ class RedisService {
 	 * @param {string} field - The device ID or field name to delete
 	 * @returns {Promise<number>} Number of fields that were deleted
 	 */
-	async gDel(field: string) {
+	async hDel(field: string) {
 		return await this.#redis.hDel(this.#key, field);
 	}
 }
