@@ -4,6 +4,10 @@ import { z } from "zod";
 export const env = createEnv({
 	server: {
 		PORT: z.coerce.number(),
+		EMQX_URL: z.string(),
+		EMQX_TOPIC: z.string(),
+		EMQX_USERNAME: z.string(),
+		EMQX_PASSWORD: z.string(),
 	},
 
 	/**
