@@ -1,12 +1,13 @@
 import * as z from "zod";
+import { correctDeviceFormat } from "../../../utils/devices/correctDeviceFormat.js";
+import { getRedisService } from "../../redis/redisService.js";
 import { publicProcedure } from "../index.js";
 
 const deviceOutputSChema = z.object({
 	devices: z
 		.object({
 			meter_id: z.string(),
-			value: z.coerce.number(),
-			unit: z.string(),
+			device_status: z.string(),
 		})
 		.array(),
 });
@@ -16,7 +17,9 @@ export const deviceRouter = {
 		.route({ method: "GET" })
 		.input(z.object({ limit: z.number().optional() }))
 		.output(deviceOutputSChema)
-		.handler(() => {
-			return { devices: [{ meter_id: "Testing", value: 55, unit: "W" }] };
+		.handler(async () => {
+			const rs = getRedisService();
+			const data = await rs.hGetAll();
+			return { devices: correctDeviceFormat(data) };
 		}),
 };

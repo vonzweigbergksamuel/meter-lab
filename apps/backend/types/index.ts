@@ -3,3 +3,8 @@ export type Device = {
 	value: number;
 	unit: string;
 };
+
+export type CachedDevices = {
+	meter_id: string;
+	device_status: "available" | "under_test";
+};

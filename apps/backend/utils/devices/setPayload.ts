@@ -1,10 +1,6 @@
 import { getRedisService } from "../../services/redis/redisService.js";
-import type { Device } from "../../types/index.js";
-
-type CachedDevices = {
-	meter_id: string;
-	device_status: "available" | "under_test";
-};
+import type { CachedDevices, Device } from "../../types/index.js";
+import { correctDeviceFormat } from "./correctDeviceFormat.js";
 
 /* -------- VARIABLES -------- */
 let cachedConnectedDevices: CachedDevices[] = [];
@@ -20,7 +16,7 @@ async function isSameDevicesConnected(devices: Device[]) {
 		const cachedIds = new Set(cachedConnectedDevices.map((d) => d.meter_id));
 		const newIds = new Set(devices.map((d) => String(d.meter_id)));
 
-    // Only update when neccessary
+		// Only update when neccessary
 		if (!isSameDevice(cachedIds, newIds)) {
 			await removeDevices(cachedConnectedDevices);
 			await updateCachedDevices(devices);
@@ -41,13 +37,7 @@ async function updateCachedDevices(devices: Device[]) {
 	}
 
 	const redisData = await redisService.hGetAll();
-	// Fix correct format
-	cachedConnectedDevices = Object.entries(redisData).map(([key, value]) => ({
-		meter_id: key.replace("device-", ""),
-		device_status: value as "available" | "under_test",
-	}));
-
-	console.log(cachedConnectedDevices);
+	cachedConnectedDevices = correctDeviceFormat(redisData);
 }
 
 function isSameDevice(cachedIds: Set<string>, newIds: Set<string>) {
