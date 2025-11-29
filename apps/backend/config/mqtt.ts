@@ -41,9 +41,6 @@ async function connectToMqtt() {
 
 function listenForDevice(client: mqtt.MqttClient) {
 	client.on("message", (_topic, message) => {
-		// TODO Fix this
-		// Later send this to a service to write to redis
-		// console.log(message.toString())
 		try {
 			const payload: Device[] = JSON.parse(message.toString());
 			setPayload(payload);

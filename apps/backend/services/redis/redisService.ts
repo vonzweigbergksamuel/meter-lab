@@ -1,6 +1,7 @@
 import type { createClient } from "redis";
 import { getRedis } from "../../config/redis.js";
-import type { Device } from "../../types/index.js";
+
+type Status = "available" | "under_test";
 
 // TODO Update value to deviceType
 let redisService: RedisService;
@@ -25,8 +26,8 @@ class RedisService {
 	 * @param {string} value - The value to store (device state/availability)
 	 * @returns {Promise<number>} Number of fields that were added (0 if updated)
 	 */
-	async hSet(field: string, value: Device) {
-		return await this.#redis.hSet(this.#key, field, JSON.stringify(value));
+	async hSet(field: string, value: Status) {
+		return await this.#redis.hSet(this.#key, field, value);
 	}
 
 	/**

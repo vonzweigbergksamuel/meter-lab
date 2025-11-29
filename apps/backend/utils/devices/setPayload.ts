@@ -1,8 +1,13 @@
 import { getRedisService } from "../../services/redis/redisService.js";
 import type { Device } from "../../types/index.js";
 
+type CachedDevices = {
+	meter_id: string;
+	device_status: "available" | "under_test";
+};
+
 /* -------- VARIABLES -------- */
-let cachedConnectedDevices: Device[] = [];
+let cachedConnectedDevices: CachedDevices[] = [];
 
 async function setPayload(payload: Device[]) {
 	await isSameDevicesConnected(payload);
@@ -10,29 +15,21 @@ async function setPayload(payload: Device[]) {
 
 async function isSameDevicesConnected(devices: Device[]) {
 	if (cachedConnectedDevices.length === 0) {
-		console.log(devices);
 		await updateCachedDevices(devices);
 	} else {
-    const cachedDevices = cachedConnectedDevices.sort()
-    devices.sort();
+		const cachedIds = new Set(cachedConnectedDevices.map((d) => d.meter_id));
+		const newIds = new Set(devices.map((d) => String(d.meter_id)));
 
-    for (let i = 0; i < devices.length; i++) {
-      // Only update devices if they are not the same ones connected
-      if (!isSameDevice(devices[i], cachedDevices[i])) {
-        console.log('FALSE')
-        // Update devices
-        await removeDevices(cachedDevices);
-        await updateCachedDevices(devices);
-        break
-      } else {
-        console.log('Not Updated Devices')
-      }
-    }
-  } 
+    // Only update when neccessary
+		if (!isSameDevice(cachedIds, newIds)) {
+			await removeDevices(cachedConnectedDevices);
+			await updateCachedDevices(devices);
+		}
+	}
 }
 
 async function updateCachedDevices(devices: Device[]) {
-  console.log("Updated Devices");
+	console.log("Updated Devices");
 
 	const redisService = getRedisService();
 
@@ -40,31 +37,36 @@ async function updateCachedDevices(devices: Device[]) {
 	for (const device of devices) {
 		const NAME = `device-${device.meter_id}`;
 
-		redisService.hSet(NAME, device);
+		await redisService.hSet(NAME, "available");
 	}
 
-	// Retrieve all devices from Redis, transform to Device[] for our cache
-	const redisDevicesObj = await redisService.hGetAll();
-	const devicesArr: Device[] = Object.values(redisDevicesObj).map((d: any) =>
-		typeof d === "string" ? JSON.parse(d) : d
+	const redisData = await redisService.hGetAll();
+	// Fix correct format
+	cachedConnectedDevices = Object.entries(redisData).map(([key, value]) => ({
+		meter_id: key.replace("device-", ""),
+		device_status: value as "available" | "under_test",
+	}));
+
+	console.log(cachedConnectedDevices);
+}
+
+function isSameDevice(cachedIds: Set<string>, newIds: Set<string>) {
+	return (
+		cachedIds.size === newIds.size &&
+		[...cachedIds].every((id) => newIds.has(id))
 	);
-	cachedConnectedDevices = devicesArr;
 }
 
-function isSameDevice(device, cachedDevice) {
-  return device.meter_id === cachedDevice.meter_id
-}
-
-function removeDevices(devices: Device[]) {
-  console.log("Removed Devices");
+function removeDevices(devices: CachedDevices[]) {
+	console.log("Removed Devices");
 
 	const redisService = getRedisService();
 
-  for (const device of devices) {
+	for (const device of devices) {
 		const NAME = `device-${device.meter_id}`;
 
-    redisService.hDel(NAME);
-  }
+		redisService.hDel(NAME);
+	}
 }
 
 export { setPayload };
