@@ -10,28 +10,33 @@ async function setPayload(payload: Device[]) {
 }
 
 async function isSameDevicesConnected(devices: Device[]) {
+	const cachedIds = new Set(cachedConnectedDevices.map((d) => d.meter_id));
+
 	if (cachedConnectedDevices.length === 0) {
-		await updateCachedDevices(devices);
+		await updateCachedDevices(devices, cachedIds);
 	} else {
-		const cachedIds = new Set(cachedConnectedDevices.map((d) => d.meter_id));
 		const newIds = new Set(devices.map((d) => String(d.meter_id)));
 
 		// Only update when neccessary
 		if (!isSameDevice(cachedIds, newIds)) {
-			await removeDevices(cachedConnectedDevices);
-			await updateCachedDevices(devices);
+			await removeDevices(newIds);
+			await updateCachedDevices(devices, cachedIds);
 		}
 	}
 }
 
-async function updateCachedDevices(devices: Device[]) {
+async function updateCachedDevices(
+	newDevices: Device[],
+	cachedIds: Set<string>,
+) {
 	const service = getKeyValueService();
 
-	// Place cached devices in redis
-	for (const device of devices) {
-		const NAME = `device-${device.meter_id}`;
-
-		await service.set(NAME, "available");
+	// only update the devices in redis if they dont exist in redis already
+	for (const device of newDevices) {
+		if (!cachedIds.has(device.meter_id)) {
+			const NAME = `device-${device.meter_id}`;
+			await service.set(NAME, "available");
+		}
 	}
 
 	const redisData = await service.getAll();
@@ -45,13 +50,16 @@ function isSameDevice(cachedIds: Set<string>, newIds: Set<string>) {
 	);
 }
 
-function removeDevices(devices: CachedDevices[]) {
+async function removeDevices(newIds: Set<string>) {
 	const service = getKeyValueService();
 
-	for (const device of devices) {
-		const NAME = `device-${device.meter_id}`;
+	// only remove the devices that does not exist in newIds
+	for (const device of cachedConnectedDevices) {
+		if (!newIds.has(device.meter_id)) {
+			const NAME = `device-${device.meter_id}`;
 
-		service.delete(NAME);
+			await service.delete(NAME);
+		}
 	}
 }
 
