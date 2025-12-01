@@ -34,19 +34,16 @@ app.use(
 // Logger middleware
 app.use(logger());
 
-// Auth middleware
-const publicRoutes = ["/", "/auth/*", "/admin/login"];
-app.use("*", async (c, next) => {
+// Auth middleware to protect admin routes
+app.use("/admin/*", async (c, next) => {
 	const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
-	const isPublicRoute = publicRoutes.includes(c.req.path);
-
-	if ((!session || session.user?.role !== "admin") && !isPublicRoute) {
+	if (
+		!session ||
+		session.user?.role !== "admin" ||
+		(session.user?.role === "admin" && c.req.path === "/admin/login")
+	) {
 		return c.redirect("/admin/login");
-	}
-
-	if (session?.user?.role === "admin" && isPublicRoute) {
-		return c.redirect("/admin");
 	}
 
 	await next();
