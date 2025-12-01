@@ -21,12 +21,18 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.192.219', '.']
 
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'apps/auth/Dockerfile', '-t', '${_IMAGE_NAME_AUTH}', '.']
+
   # Step 2: Push Docker image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '${_IMAGE_NAME_BACKEND}']
 
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '${_IMAGE_NAME_WEB}']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_IMAGE_NAME_AUTH}']
 
   # 2) Install Kompose
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -55,6 +61,7 @@ steps:
         # REPLACE IMAGE NAME IN KOMPOSE.YAML
         sed -i "s|backend:latest|${_IMAGE_NAME_BACKEND}|g" infra/gke/generated/komposed.yaml
         sed -i "s|web:latest|${_IMAGE_NAME_WEB}|g" infra/gke/generated/komposed.yaml
+        sed -i "s|auth:latest|${_IMAGE_NAME_AUTH}|g" infra/gke/generated/komposed.yaml
 
         sed -i '/hostPort/d' infra/gke/generated/komposed.yaml
         sed -i 's/imagePullPolicy: Never/imagePullPolicy: Always/g' infra/gke/generated/komposed.yaml
