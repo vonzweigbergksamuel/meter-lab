@@ -3,8 +3,9 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { env } from "../env.js";
-import type { AuthType } from "../utils/auth.js";
-import auth from "./routes/auth.js";
+import { type AuthType, auth } from "../utils/auth.js";
+import admin from "./routes/admin.jsx";
+import authRoutes from "./routes/auth.js";
 
 const app = new Hono<{
 	Variables: AuthType;
@@ -33,11 +34,32 @@ app.use(
 // Logger middleware
 app.use(logger());
 
+// Auth middleware
+const publicRoutes = ["/", "/auth/*", "/admin/login"];
+app.use("*", async (c, next) => {
+	const session = await auth.api.getSession({ headers: c.req.raw.headers });
+
+	const isPublicRoute = publicRoutes.includes(c.req.path);
+
+	if ((!session || session.user?.role !== "admin") && !isPublicRoute) {
+		return c.redirect("/admin/login");
+	}
+
+	if (session?.user?.role === "admin" && isPublicRoute) {
+		return c.redirect("/admin");
+	}
+
+	await next();
+});
+
 // Define API routes
-const routes = [auth] as const;
+const routes = [authRoutes] as const;
 routes.forEach((route) => {
 	app.basePath("/api").route("/", route);
 });
+
+// Mount admin routes
+app.route("/", admin);
 
 // Health check
 app.get("/", (c) => {

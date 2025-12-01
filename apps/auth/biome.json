@@ -1,4 +1,9 @@
 {
     "root": false,
-    "extends": "//"
+    "extends": "//",
+    "files": {
+        "includes": [
+			"**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "!services/db/schema", "!services/db/migrations"
+		]
+    }
 }
