@@ -1,18 +1,25 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { connectToMqtt, listenForDevice } from "../config/mqtt.js";
-import { connectToRedis } from "../config/redis.js";
+import { getKeyValueStoreService, getMqttService } from "../di/helpers.js";
+import { injectDependencies } from "../di/setup.js";
 import { env } from "../env.js";
 import { openApiHandler, rpcHandler } from "../utils/orpc.js";
+import { createWebsocketServer } from "../utils/websocket.js";
 
 const app = new Hono();
 
-// Connect to broker
-const client = await connectToMqtt();
-listenForDevice(client);
+// Create DI container
+injectDependencies();
 
-// Connect to redis
-await connectToRedis();
+// Connect to KeyValueStore instance (Redis)
+await getKeyValueStoreService().connect();
+
+// Connect to Broker instance (EMQX/MQTT)
+await getMqttService().connect()
+getMqttService().listen()
+
+// Create WebSocketServer
+createWebsocketServer();
 
 app.get("/", (c) => {
 	return c.text("Hello Hono!");

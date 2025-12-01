@@ -9,6 +9,7 @@ export const env = createEnv({
 		EMQX_USERNAME: z.string(),
 		EMQX_PASSWORD: z.string(),
 		REDIS_URL: z.string(),
+		WEBSOCKET_PORT: z.coerce.string(),
 	},
 
 	/**
