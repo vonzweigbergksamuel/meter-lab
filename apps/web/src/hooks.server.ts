@@ -1,5 +1,5 @@
 import { authClient } from '@/auth-client';
-// import { redirect } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 
 export const handle = async ({ event, resolve }) => {
 	const pathname = event.url.pathname;
@@ -10,20 +10,20 @@ export const handle = async ({ event, resolve }) => {
 	});
     console.log("isPublicRoute", isPublicRoute);
 
-    const session = await authClient.getSession({
+    const { data: session } = await authClient.getSession({
         fetchOptions: {
             headers: event.request.headers,
         },
     });
     console.log("session", session);
 
-    // if (!session && !isPublicRoute) {
-    //     return redirect(302, "/login");
-    // }
+    if (!session && !isPublicRoute) {
+        return redirect(302, "/login");
+    }
 
-    // if (session && isPublicRoute) {
-    //     return redirect(302, "/");
-    // }
+    if (session && isPublicRoute) {
+        return redirect(302, "/");
+    }
 
     return resolve(event);
 };

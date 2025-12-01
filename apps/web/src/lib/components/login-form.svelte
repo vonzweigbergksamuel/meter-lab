@@ -27,7 +27,8 @@
 		console.log("password", password);
 		const { data, error } = await authClient.signIn.email({
 			email: email,
-			password: password
+			password: password,
+			callbackURL: "/"
 		});
 		if (error) {
 			console.error("error", error);
