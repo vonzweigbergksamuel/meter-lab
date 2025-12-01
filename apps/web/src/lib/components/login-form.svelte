@@ -1,0 +1,55 @@
+<script lang="ts">
+	import { Button } from "$lib/components/ui/button/index.js";
+	import * as Card from "$lib/components/ui/card/index.js";
+	import {
+		Field,
+		FieldDescription,
+		FieldGroup,
+		FieldLabel,
+		FieldSeparator
+	} from "$lib/components/ui/field/index.js";
+	import { Input } from "$lib/components/ui/input/index.js";
+	import { cn } from "$lib/utils.js";
+	import type { HTMLAttributes } from "svelte/elements";
+
+	let { class: className, ...restProps }: HTMLAttributes<HTMLDivElement> = $props();
+
+	const id = $props.id();
+</script>
+
+<div class={cn("flex flex-col gap-6", className)} {...restProps}>
+	<Card.Root>
+		<Card.Header class="text-center text-pretty">
+			<Card.Title class="text-xl">Logga in</Card.Title>
+			<Card.Description
+				>Fyll i din e-postadress nedan för att logga in på ditt konto</Card.Description
+			>
+		</Card.Header>
+		<Card.Content>
+			<form>
+				<FieldGroup>
+					<Field>
+						<FieldLabel for="email-{id}">E-postadress</FieldLabel>
+						<Input id="email-{id}" type="email" placeholder="m@example.com" required />
+					</Field>
+					<Field>
+						<div class="flex items-center">
+							<FieldLabel for="password-{id}">Lösenord</FieldLabel>
+						</div>
+						<Input id="password-{id}" type="password" required />
+					</Field>
+					<Field>
+						<Button type="submit">Logga in</Button>
+						<FieldDescription class="text-center">
+							Har du inget konto? <span class="text-primary">Kontakta en administratör</span>
+						</FieldDescription>
+					</Field>
+				</FieldGroup>
+			</form>
+		</Card.Content>
+	</Card.Root>
+	<FieldDescription class="px-6 text-center">
+		Genom att klicka på logga in, godkänner du våra <a href="##">Användarvillkor</a> och
+		<a href="##">Integritetspolicy</a>.
+	</FieldDescription>
+</div>
