@@ -1,12 +1,12 @@
 <script lang="ts">
+	import { authClient } from "$lib/auth-client";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Card from "$lib/components/ui/card/index.js";
 	import {
 		Field,
 		FieldDescription,
 		FieldGroup,
-		FieldLabel,
-		FieldSeparator
+		FieldLabel
 	} from "$lib/components/ui/field/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { cn } from "$lib/utils.js";
@@ -15,6 +15,27 @@
 	let { class: className, ...restProps }: HTMLAttributes<HTMLDivElement> = $props();
 
 	const id = $props.id();
+
+	const handleSubmit = async (e: Event) => {
+		e.preventDefault();
+		console.log("e", e);
+		const formData = new FormData(e.target as HTMLFormElement);
+		console.log("formData", formData);
+		const email = formData.get("email") as string;
+		const password = formData.get("password") as string;
+		console.log("email", email);
+		console.log("password", password);
+		const { data, error } = await authClient.signIn.email({
+			email: email,
+			password: password
+		});
+		if (error) {
+			console.error("error", error);
+		}
+		if (data) {
+			console.log("data", data);
+		}
+	};
 </script>
 
 <div class={cn("flex flex-col gap-6", className)} {...restProps}>
@@ -26,17 +47,17 @@
 			>
 		</Card.Header>
 		<Card.Content>
-			<form>
+			<form onsubmit={handleSubmit}>
 				<FieldGroup>
 					<Field>
 						<FieldLabel for="email-{id}">E-postadress</FieldLabel>
-						<Input id="email-{id}" type="email" placeholder="m@example.com" required />
+						<Input id="email-{id}" name="email" type="email" placeholder="m@example.com" required />
 					</Field>
 					<Field>
 						<div class="flex items-center">
 							<FieldLabel for="password-{id}">Lösenord</FieldLabel>
 						</div>
-						<Input id="password-{id}" type="password" required />
+						<Input id="password-{id}" name="password" type="password" required />
 					</Field>
 					<Field>
 						<Button type="submit">Logga in</Button>

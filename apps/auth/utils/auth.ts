@@ -1,13 +1,19 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { jwt } from "better-auth/plugins";
+import { admin, jwt } from "better-auth/plugins";
+import { env } from "../env.js";
 import { db } from "../services/db/index.js";
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "pg",
 	}),
-	plugins: [jwt()],
+	plugins: [
+		jwt(),
+		admin({
+			adminUserIds: [env.ADMIN_USER_ID],
+		}),
+	],
 	trustedOrigins: [
 		"http://localhost:5173", // Web
 		"http://localhost:5080", // Web
