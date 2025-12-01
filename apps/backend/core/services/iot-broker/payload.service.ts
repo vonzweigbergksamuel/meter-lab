@@ -1,3 +1,4 @@
+import { sendDataWSS } from "../../../utils/websocket/websocket.js";
 import type { KeyValueStoreService } from "../key-value-store/key-value-store.service.interface.js";
 import type {
 	CachedDevices,
@@ -45,7 +46,8 @@ export class PayloadService implements IPayloadService {
 			}
 		}
 
-		this.#cachedConnectedDevices = await this.#service.getAll(); 
+		this.#cachedConnectedDevices = await this.#service.getAll();
+		sendDataWSS(this.#cachedConnectedDevices);
 	}
 
 	#isSameDevice(cachedIds: Set<string>, newIds: Set<string>) {
