@@ -15,7 +15,6 @@ export class PayloadService implements IPayloadService {
 	}
 
 	async setPayload(payload: Device[]): Promise<void> {
-    console.log(payload)
 		await this.#isSameDevicesConnected(payload);
 	}
 
@@ -41,7 +40,7 @@ export class PayloadService implements IPayloadService {
 		// only update the devices in redis if they dont exist in redis already
 		for (const device of newDevices) {
 			if (!cachedIds.has(device.device_id)) {
-				const NAME = `device-${device.device_id}`;
+				const NAME = device.device_id;
 				await this.#service.set(NAME, "available");
 			}
 		}
@@ -60,7 +59,7 @@ export class PayloadService implements IPayloadService {
 		// only remove the devices that does not exist in newIds
 		for (const device of this.#cachedConnectedDevices) {
 			if (!newIds.has(device.device_id)) {
-				const NAME = `device-${device.device_id}`;
+				const NAME = device.device_id;
 
 				await this.#service.delete(NAME);
 			}

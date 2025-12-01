@@ -4,9 +4,9 @@ import { getKeyValueStoreService, getMqttService } from "../di/helpers.js";
 import { injectDependencies } from "../di/setup.js";
 import { env } from "../env.js";
 import { openApiHandler, rpcHandler } from "../utils/orpc.js";
-import { createWebsocketServer } from "../utils/websocket.js";
 
-const app = new Hono();
+// Create WebSocketServer
+import "../utils/websocket.js";
 
 // Create DI container
 injectDependencies();
@@ -18,8 +18,8 @@ await getKeyValueStoreService().connect();
 await getMqttService().connect()
 getMqttService().listen()
 
-// Create WebSocketServer
-createWebsocketServer();
+// Create HTTP app
+const app = new Hono();
 
 app.get("/", (c) => {
 	return c.text("Hello Hono!");

@@ -1,3 +1,4 @@
+import { DeviceController } from "../api/controllers/device.controller.js";
 import { MqttService } from "../core/services/iot-broker/mqtt.service.js";
 import { PayloadService } from "../core/services/iot-broker/payload.service.js";
 import type { KeyValueStoreService } from "../core/services/key-value-store/key-value-store.service.interface.js";
@@ -7,7 +8,7 @@ import { TOKENS } from "./tokens.js";
 
 export const container = new Container();
 
-export async function injectDependencies() {
+export function injectDependencies() {
 	container.register<KeyValueStoreService>(
 		TOKENS.KeyValueService,
 		() => new RedisService(),
@@ -27,6 +28,12 @@ export async function injectDependencies() {
 		TOKENS.MqttService,
 		() =>
 			new MqttService(container.resolve<PayloadService>(TOKENS.PayloadService)),
+		"singleton",
+	);
+
+	container.register<DeviceController>(
+		TOKENS.DeviceController,
+		() => new DeviceController(),
 		"singleton",
 	);
 }
