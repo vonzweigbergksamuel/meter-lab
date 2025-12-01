@@ -1,4 +1,4 @@
-import { getRedisService } from "../../services/redis/redisService.js";
+import { getKeyValueService } from "../../di/helpers.js";
 import type { CachedDevices, Device } from "../../types/index.js";
 import { correctDeviceFormat } from "./correctDeviceFormat.js";
 
@@ -25,18 +25,16 @@ async function isSameDevicesConnected(devices: Device[]) {
 }
 
 async function updateCachedDevices(devices: Device[]) {
-	console.log("Updated Devices");
-
-	const redisService = getRedisService();
+	const service = getKeyValueService();
 
 	// Place cached devices in redis
 	for (const device of devices) {
 		const NAME = `device-${device.meter_id}`;
 
-		await redisService.hSet(NAME, "available");
+		await service.set(NAME, "available");
 	}
 
-	const redisData = await redisService.hGetAll();
+	const redisData = await service.getAll();
 	cachedConnectedDevices = correctDeviceFormat(redisData);
 }
 
@@ -48,14 +46,12 @@ function isSameDevice(cachedIds: Set<string>, newIds: Set<string>) {
 }
 
 function removeDevices(devices: CachedDevices[]) {
-	console.log("Removed Devices");
-
-	const redisService = getRedisService();
+	const service = getKeyValueService();
 
 	for (const device of devices) {
 		const NAME = `device-${device.meter_id}`;
 
-		redisService.hDel(NAME);
+		service.delete(NAME);
 	}
 }
 

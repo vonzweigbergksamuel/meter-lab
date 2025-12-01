@@ -1,6 +1,6 @@
 import * as z from "zod";
+import { getKeyValueService } from "../../../di/helpers.js";
 import { correctDeviceFormat } from "../../../utils/devices/correctDeviceFormat.js";
-import { getRedisService } from "../../redis/redisService.js";
 import { publicProcedure } from "../index.js";
 
 const deviceOutputSChema = z.object({
@@ -18,8 +18,8 @@ export const deviceRouter = {
 		.input(z.object({ limit: z.number().optional() }))
 		.output(deviceOutputSChema)
 		.handler(async () => {
-			const rs = getRedisService();
-			const data = await rs.hGetAll();
+			const service = getKeyValueService();
+			const data = await service.getAll();
 			return { devices: correctDeviceFormat(data) };
 		}),
 };
