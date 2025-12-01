@@ -36,13 +36,14 @@ app.use(logger());
 
 // Auth middleware to protect admin routes
 app.use("/admin/*", async (c, next) => {
+	// Skip authentication check for the login page itself
+	if (c.req.path === "/admin/login") {
+		return next();
+	}
+
 	const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
-	if (
-		!session ||
-		session.user?.role !== "admin" ||
-		(session.user?.role === "admin" && c.req.path === "/admin/login")
-	) {
+	if (!session || session.user?.role !== "admin") {
 		return c.redirect("/admin/login");
 	}
 
