@@ -11,6 +11,7 @@ services:
       - "${FRONTEND_PORT:-5080}:3000"
     depends_on:
       - backend
+      - auth
     restart: always
     networks:
       - meter-lab
@@ -39,19 +40,19 @@ services:
   #   volumes:
   #     - backend-db-data:/var/lib/postgresql/data
 
-  # auth:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/auth/Dockerfile
-  #   ports:
-  #     - "${AUTH_PORT:-5060}:3000"
-  #   environment:
-  #     PORT: 3000
-  #     DATABASE_URL: postgres://postgres:postgres@auth-db:5432/auth
-  #     BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-secret}
-  #     BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5060}}
-  #   depends_on:
-  #     - auth-db
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+    ports:
+      - "${AUTH_PORT:-5060}:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgres://postgres:postgres@auth-db:5432/auth
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-secret}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5060}}
+    depends_on:
+      - auth-db
 
   auth-db:
     image: postgres:latest

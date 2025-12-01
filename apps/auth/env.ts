@@ -7,7 +7,6 @@ export const env = createEnv({
 		DATABASE_URL: z.string(),
 		BETTER_AUTH_SECRET: z.string(),
 		BETTER_AUTH_URL: z.string(),
-		ADMIN_USER_ID: z.string(),
 	},
 
 	/**
