@@ -47,6 +47,8 @@ export class PayloadService implements IPayloadService {
 		}
 
 		this.#cachedConnectedDevices = await this.#service.getAll();
+
+		// Send updated data to the client
 		sendDataWSS(this.#cachedConnectedDevices);
 	}
 

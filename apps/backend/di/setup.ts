@@ -1,8 +1,11 @@
 import { DeviceController } from "../api/controllers/device.controller.js";
+import type { IIoTBrokerService } from "../core/services/iot-broker/interface/iot-broker.service.interface.js";
+import { MockIoTBrokerService } from "../core/services/iot-broker/iot-broker.mock.service.js";
 import { MqttService } from "../core/services/iot-broker/mqtt.service.js";
 import { PayloadService } from "../core/services/iot-broker/payload.service.js";
 import type { KeyValueStoreService } from "../core/services/key-value-store/key-value-store.service.interface.js";
 import { RedisService } from "../core/services/key-value-store/redis.service.js";
+import { env } from "../env.js";
 import { Container } from "./container.js";
 import { TOKENS } from "./tokens.js";
 
@@ -24,10 +27,16 @@ export function injectDependencies() {
 		"singleton",
 	);
 
-	container.register<MqttService>(
+	container.register<IIoTBrokerService>(
 		TOKENS.MqttService,
 		() =>
-			new MqttService(container.resolve<PayloadService>(TOKENS.PayloadService)),
+			env.NODE_ENV === "testing"
+				? new MockIoTBrokerService(
+						container.resolve<PayloadService>(TOKENS.PayloadService),
+					)
+				: new MqttService(
+						container.resolve<PayloadService>(TOKENS.PayloadService),
+					),
 		"singleton",
 	);
 

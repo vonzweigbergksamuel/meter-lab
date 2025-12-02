@@ -1,6 +1,7 @@
 import { WebSocket } from "ws";
 import { wss } from "./websocketserver.js";
 
+// Send data to all connected clients
 export function sendDataWSS(payload: unknown) {
 	const data = JSON.stringify(payload);
 
