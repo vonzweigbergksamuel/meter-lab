@@ -6,9 +6,13 @@ import { PUBLIC_AUTH_URL } from "$env/static/public";
 // TODO: Implement proper solution for production?
 const isLocalUrl = PUBLIC_AUTH_URL.includes('localhost')
 
+// const devUrl = browser 
+//     ? PUBLIC_AUTH_URL
+//     : PUBLIC_AUTH_URL.replace('localhost', 'host.docker.internal');
+
 const devUrl = browser 
     ? PUBLIC_AUTH_URL
-    : PUBLIC_AUTH_URL.replace('localhost', 'host.docker.internal');
+    : PUBLIC_AUTH_URL.replace('localhost', 'auth');
 
 const authUrl = isLocalUrl ? devUrl : PUBLIC_AUTH_URL;
 
