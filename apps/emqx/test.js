@@ -11,13 +11,13 @@ console.log("Application started!");
 // Connect to EMQX
 const client = mqtt.connect(BROKER_URL, {
 	username: USERNAME,
-	password: PASSWORD
+	password: PASSWORD,
 });
 
 client.on("connect", () => {
 	client.subscribe(TOPIC, (error) => {
 		if (!error) {
-      console.log('Connected')
+			console.log("Connected");
 		}
 	});
 });

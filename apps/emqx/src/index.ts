@@ -5,15 +5,15 @@ import { PayloadService } from "./service/payloadService.js";
 /* -------- VARIABLES -------- */
 const BROKER_URL = env.BROKER_URL;
 const TOPIC = env.TOPIC;
-const USERNAME = env.USERNAME
-const PASSWORD = env.PASSWORD
+const USERNAME = env.USERNAME;
+const PASSWORD = env.PASSWORD;
 
-console.log('Application started!')
+console.log("Application started!");
 
 // Connect to EMQX
 const client = mqtt.connect(BROKER_URL, {
-  username: USERNAME,
-  password: PASSWORD
+	username: USERNAME,
+	password: PASSWORD,
 });
 
 client.on("connect", () => {
