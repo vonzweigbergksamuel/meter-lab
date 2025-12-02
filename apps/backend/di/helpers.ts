@@ -1,7 +1,7 @@
 import type { DeviceController } from "../api/controllers/device.controller.js";
 import type { MqttService } from "../core/services/iot-broker/mqtt.service.js";
 import type { PayloadService } from "../core/services/iot-broker/payload.service.js";
-import type { KeyValueStoreService } from "../core/services/key-value-store/key-value-store.service.interface.js";
+import type { KeyValueStoreService } from "../core/services/key-value-store/interface.js";
 import { container } from "./setup.js";
 import { TOKENS } from "./tokens.js";
 
