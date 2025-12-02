@@ -4,7 +4,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { env } from "../env.js";
 import { type AuthType, auth } from "../utils/auth.js";
-import admin from "./routes/admin.jsx";
+import admin from "./routes/admin.js";
 import authRoutes from "./routes/auth.js";
 
 const app = new Hono<{
@@ -18,10 +18,10 @@ app.use(
 	"*",
 	cors({
 		origin: [
-			"http://localhost:5173",
-			"http://localhost:5080",
-			"http://localhost:3000",
 			"http://localhost:5070",
+			"http://localhost:5080",
+			"http://localhost:5173",
+			"http://localhost:3000",
 		],
 		allowHeaders: ["Content-Type", "Authorization"],
 		allowMethods: ["POST", "GET", "OPTIONS"],
@@ -36,7 +36,6 @@ app.use(logger());
 
 // Auth middleware to protect admin routes
 app.use("/admin/*", async (c, next) => {
-	// Skip authentication check for the login page itself
 	if (c.req.path === "/admin/login") {
 		return next();
 	}

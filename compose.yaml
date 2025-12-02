@@ -7,8 +7,9 @@ services:
       dockerfile: ./apps/web/Dockerfile
       args:
         PUBLIC_BACKEND_URL: "${PUBLIC_BACKEND_URL:-http://localhost:${BACKEND_PORT:-5070}}"
+        PUBLIC_AUTH_URL: "${PUBLIC_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}"
     ports:
-      - "${FRONTEND_PORT:-5080}:3000"
+      - "${WEB_PORT:-5080}:${WEB_PORT:-5080}"
     depends_on:
       - backend
       - auth
@@ -24,7 +25,7 @@ services:
     ports:
       - "${BACKEND_PORT:-5070}:${BACKEND_PORT:-5070}"
     environment:
-      - PORT=${BACKEND_PORT:-5070}
+      PORT: ${BACKEND_PORT:-5070}
     restart: always
     networks:
       - meter-lab
@@ -32,27 +33,31 @@ services:
   # backend-db:
   #   image: postgres:latest
   #   ports:
-  #     - 5432:5432
+  #     - "${BACKEND_DB_PORT:-5432}:5432"
   #   environment:
   #     POSTGRES_USER: postgres
   #     POSTGRES_PASSWORD: postgres
   #     POSTGRES_DB: meter-lab
   #   volumes:
-  #     - backend-db-data:/var/lib/postgresql/data
+  #     - backend-db-data:/var/lib/postgresql
 
   auth:
+    image: auth:latest
     build:
       context: .
       dockerfile: ./apps/auth/Dockerfile
     ports:
-      - "${AUTH_PORT:-5060}:3001"
+      - "${AUTH_PORT:-5090}:${AUTH_PORT:-5090}"
     environment:
-      PORT: 3001
-      DATABASE_URL: postgres://postgres:postgres@auth-db:5433/auth
-      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-secret}
-      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5060}}
+      PORT: ${AUTH_PORT:-5090}
+      DATABASE_URL: postgres://postgres:postgres@auth-db:5432/auth
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
     depends_on:
       - auth-db
+    restart: always
+    networks:
+      - meter-lab
 
   auth-db:
     image: postgres:latest
@@ -64,6 +69,8 @@ services:
       POSTGRES_DB: ${AUTH_DB_NAME:-auth}
     volumes:
       - auth-db-data:/var/lib/postgresql/data
+    networks:
+      - meter-lab
 
 networks:
   meter-lab:

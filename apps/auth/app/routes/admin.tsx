@@ -45,7 +45,7 @@ router.post("/admin/login", async (c) => {
 	const body = await c.req.parseBody<{ email: string; password: string }>();
 
 	try {
-		const result = await auth.api.signInEmail({
+		const loginResponse = await auth.api.signInEmail({
 			body: {
 				email: body.email,
 				password: body.password,
@@ -53,8 +53,9 @@ router.post("/admin/login", async (c) => {
 			asResponse: true,
 		});
 
-		return result;
-	} catch {
+		return loginResponse;
+	} catch (error) {
+		console.error("Login error:", error);
 		return c.html(<LoginForm error="Invalid email or password" />);
 	}
 });
