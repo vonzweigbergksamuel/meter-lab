@@ -1,6 +1,6 @@
 import { env } from "../../env.js";
-import { generateDeviceId } from "../utils/generateDeviceId.js";
-import { generatePayload } from "../utils/generatePayload.js";
+import { generateDeviceId } from "../utils/generate-device-id.js";
+import { generatePayload } from "../utils/generate-payload.js";
 
 type Payload = {
 	meter_id: number; // We use Date.now()

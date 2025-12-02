@@ -1,4 +1,4 @@
-import type { CachedDevices } from "../iot-broker/interface/iot-broker.service.interface.js";
+import type { CachedDevices } from "../iot-broker/iot-broker.service.interface.js";
 
 export interface KeyValueStoreService {
 	connect(): Promise<void>;

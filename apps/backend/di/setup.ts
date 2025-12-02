@@ -1,6 +1,6 @@
 import { DeviceController } from "../api/controllers/device.controller.js";
-import type { IIoTBrokerService } from "../core/services/iot-broker/interface/iot-broker.service.interface.js";
 import { MockIoTBrokerService } from "../core/services/iot-broker/iot-broker.mock.service.js";
+import type { IIoTBrokerService } from "../core/services/iot-broker/iot-broker.service.interface.js";
 import { MqttService } from "../core/services/iot-broker/mqtt.service.js";
 import { PayloadService } from "../core/services/iot-broker/payload.service.js";
 import type { KeyValueStoreService } from "../core/services/key-value-store/key-value-store.service.interface.js";

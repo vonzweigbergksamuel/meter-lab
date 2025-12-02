@@ -5,7 +5,7 @@ import type {
 	IIoTBrokerService,
 	IPayloadService,
 	JemacDevice,
-} from "./interface/iot-broker.service.interface.js";
+} from "./iot-broker.service.interface.js";
 
 export class MqttService implements IIoTBrokerService {
 	#broker!: mqtt.MqttClient;

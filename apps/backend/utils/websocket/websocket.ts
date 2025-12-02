@@ -7,7 +7,7 @@ export function sendDataWSS(payload: unknown) {
 
 	wss.clients.forEach((client: WebSocket) => {
 		if (client.readyState === WebSocket.OPEN) {
-      console.log('Data send to Client! ', data)
+			console.log("Data send to Client! ", data);
 			client.send(data);
 		}
 	});

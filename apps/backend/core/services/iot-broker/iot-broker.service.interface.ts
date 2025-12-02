@@ -14,7 +14,6 @@ export interface IPayloadService {
 }
 
 /* ------- Types ------- */
-
 export type Device = {
 	device_id: string;
 	value: number;

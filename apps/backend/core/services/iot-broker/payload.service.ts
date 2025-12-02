@@ -4,7 +4,7 @@ import type {
 	CachedDevices,
 	Device,
 	IPayloadService,
-} from "./interface/iot-broker.service.interface.js";
+} from "./iot-broker.service.interface.js";
 
 export class PayloadService implements IPayloadService {
 	#cachedConnectedDevices: CachedDevices[];
