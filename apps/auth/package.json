@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env app/server.ts",
     "build": "tsc",
-    "start": "node dist/app/server.js",
+    "start": "node dist/app/server.js --env-file=.env",
+    "seed:admin": "tsx --env-file=.env scripts/seed-admin.ts",
+    "migrate": "tsx --env-file=.env scripts/migrate.ts",
     "lint": "biome lint .",
     "format": "biome format --write ."
   },
