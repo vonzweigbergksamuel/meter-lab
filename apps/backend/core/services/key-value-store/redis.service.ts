@@ -1,7 +1,7 @@
 import { createClient } from "redis";
 import { env } from "../../../env.js";
-import type { CachedDevices } from "../iot-broker/interface.js";
 import type { KeyValueStoreService, Status } from "./interface.js";
+import type { CachedDevices } from "./types.js";
 
 /**
  * Service for managing device state in Redis using hash operations.

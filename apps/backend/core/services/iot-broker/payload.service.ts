@@ -1,6 +1,7 @@
 import { sendDataWSS } from "../../../utils/websocket/websocket.js";
 import type { KeyValueStoreService } from "../key-value-store/interface.js";
-import type { CachedDevices, Device, IPayloadService } from "./interface.js";
+import type { IPayloadService } from "./interface.js";
+import type { CachedDevices, Device } from "./types.js";
 
 export class PayloadService implements IPayloadService {
 	#cachedConnectedDevices: CachedDevices[];
