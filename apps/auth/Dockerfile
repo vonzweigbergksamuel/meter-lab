@@ -12,7 +12,7 @@ WORKDIR /app
 
 FROM base AS prepare
 RUN corepack enable && corepack prepare pnpm@latest --activate
-RUN pnpm add -g turbo@latest
+RUN pnpm add -g turbo@^2
 COPY . .
 RUN turbo prune auth --docker
 
@@ -40,7 +40,7 @@ COPY --from=builder /app .
 RUN chown -R auth:nodejs /app
 USER auth
 
-ARG PORT=5090
+ARG PORT
 EXPOSE ${PORT}
 ENV NODE_ENV=production
 ENV PORT=${PORT}
