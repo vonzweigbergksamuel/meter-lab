@@ -48,7 +48,7 @@ services:
       - "${AUTH_PORT:-5060}:3001"
     environment:
       PORT: 3001
-      DATABASE_URL: postgres://postgres:postgres@auth-db:5432/auth
+      DATABASE_URL: postgres://postgres:postgres@auth-db:5433/auth
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-secret}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5060}}
     depends_on:
