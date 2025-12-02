@@ -91,10 +91,12 @@ jobs:
             echo "Pulling images..."
             docker pull ghcr.io/$GITHUB_REPOSITORY/web:latest
             docker pull ghcr.io/$GITHUB_REPOSITORY/backend:latest
+            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:latest
             
             echo "Tagging images for compose..."
             docker tag ghcr.io/$GITHUB_REPOSITORY/web:latest web:latest
             docker tag ghcr.io/$GITHUB_REPOSITORY/backend:latest backend:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:latest auth:latest
             
             echo "Images ready!"
           EOF
@@ -109,6 +111,11 @@ jobs:
             cd ~/meter-lab
             docker compose down --remove-orphans
             BACKEND_PORT="$BACKEND_PORT" docker compose up -d
+
+            echo "Pruning images after deployment..."
+            docker image prune -a -f
+
+            echo "Deployment complete!"
           EOF
           # Dont forget to add the environment variables to the compose file
           echo "Deployment complete!"
