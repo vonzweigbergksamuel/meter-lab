@@ -39,6 +39,9 @@ jobs:
           - name: backend
             context: .
             dockerfile: ./apps/backend/Dockerfile
+          - name: auth
+            context: .
+            dockerfile: ./apps/auth/Dockerfile
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,8 +53,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
-      - name: Debug PUBLIC_BACKEND_URL
-        run: echo "PUBLIC_BACKEND_URL (vars) = '${{ vars.PUBLIC_BACKEND_URL }}'"
       - name: Build and push ${{ matrix.service.name }} image
         uses: docker/build-push-action@v5
         with:
@@ -63,6 +64,7 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             PUBLIC_BACKEND_URL=${{ vars.PUBLIC_BACKEND_URL }}
+            PUBLIC_AUTH_URL=${{ vars.PUBLIC_AUTH_URL }}
 
   deploy:
     needs: build

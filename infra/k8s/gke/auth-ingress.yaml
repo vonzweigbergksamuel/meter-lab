@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: meter-lab-auth-loadbalancer
+  labels:
+    app: meter-lab
+spec:
+  type: LoadBalancer
+  selector:
+    io.kompose.service: auth
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3001
+    protocol: TCP

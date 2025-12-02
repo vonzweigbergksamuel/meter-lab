@@ -9,6 +9,7 @@ options:
 substitutions:
   _IMAGE_NAME_BACKEND: "gcr.io/${PROJECT_ID}/backend/gcpdevops-prod:${SHORT_SHA}"
   _IMAGE_NAME_WEB: "gcr.io/${PROJECT_ID}/web/gcpdevops-prod:${SHORT_SHA}"
+  _IMAGE_NAME_AUTH: "gcr.io/${PROJECT_ID}/auth/gcpdevops-prod:${SHORT_SHA}"
   _CLUSTER_NAME: "meter-lab-production-standard-cluster"
   _NAMESPACE: "meter-lab"
   _LOCATION: "europe-north2"
@@ -19,7 +20,10 @@ steps:
     args: ['build', '-f', 'apps/backend/Dockerfile', '-t', '${_IMAGE_NAME_BACKEND}', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.192.219', '.']
+    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.192.219', '--build-arg', 'PUBLIC_AUTH_URL=http://34.51.192.219', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'apps/auth/Dockerfile', '-t', '${_IMAGE_NAME_AUTH}', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'apps/auth/Dockerfile', '-t', '${_IMAGE_NAME_AUTH}', '.']

@@ -45,7 +45,7 @@ USER auth
 
 WORKDIR /app/apps/auth
 
-ARG PORT=3000
+ARG PORT=3001
 EXPOSE ${PORT}
 ENV NODE_ENV=production
 ENV PORT=${PORT}
