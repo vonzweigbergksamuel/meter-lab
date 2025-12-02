@@ -36,6 +36,8 @@ services:
       EMQX_PASSWORD: ${EMQX_PASSWORD:-admin123}
       NODE_ENV: ${NODE_ENV:-development}
     restart: always
+    depends_on:
+      - backend-db
     networks:
       - meter-lab
   
@@ -47,16 +49,18 @@ services:
     networks:
       - meter-lab
 
-  # backend-db:
-  #   image: postgres:latest
-  #   ports:
-  #     - "${BACKEND_DB_PORT:-5432}:5432"
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #     POSTGRES_DB: meter-lab
-  #   volumes:
-  #     - backend-db-data:/var/lib/postgresql
+  backend-db:
+    image: postgres:latest
+    ports:
+      - "${BACKEND_DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: ${BACKEND_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${BACKEND_DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${BACKEND_DB_NAME:-meter-lab}
+    volumes:
+      - backend-db-data:/var/lib/postgresql
+    networks:
+      - meter-lab
 
   auth:
     image: auth:latest

@@ -81,12 +81,24 @@ importers:
       '@t3-oss/env-core':
         specifier: ^0.13.8
         version: 0.13.8(typescript@5.9.3)(zod@4.1.12)
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
+      drizzle-orm:
+        specifier: ^0.44.7
+        version: 0.44.7(@types/pg@8.15.6)(kysely@0.28.8)(pg@8.16.3)
       hono:
         specifier: ^4.10.6
         version: 4.10.6
+<<<<<<< HEAD
       mqtt:
         specifier: ^5.14.1
         version: 5.14.1
+=======
+      pg:
+        specifier: ^8.16.3
+        version: 8.16.3
+>>>>>>> bb7fe6e (Add database to backend, add drizzle files & update sample env)
       pino:
         specifier: ^10.1.0
         version: 10.1.0
@@ -103,11 +115,20 @@ importers:
       '@types/node':
         specifier: ^20.11.17
         version: 20.19.25
+<<<<<<< HEAD
       '@types/ws':
         specifier: ^8.18.1
         version: 8.18.1
+=======
+      '@types/pg':
+        specifier: ^8.15.6
+        version: 8.15.6
+      drizzle-kit:
+        specifier: ^0.31.7
+        version: 0.31.7
+>>>>>>> bb7fe6e (Add database to backend, add drizzle files & update sample env)
       tsx:
-        specifier: ^4.7.1
+        specifier: ^4.20.6
         version: 4.20.6
       typescript:
         specifier: ^5.8.3
