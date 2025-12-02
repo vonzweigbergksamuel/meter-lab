@@ -10,6 +10,8 @@ services:
         PUBLIC_AUTH_URL: "${PUBLIC_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}"
     ports:
       - "${WEB_PORT:-5080}:${WEB_PORT:-5080}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - backend
       - auth
@@ -50,6 +52,7 @@ services:
       - "${AUTH_PORT:-5090}:${AUTH_PORT:-5090}"
     environment:
       PORT: ${AUTH_PORT:-5090}
+      HOST: "0.0.0.0"
       DATABASE_URL: postgres://postgres:postgres@auth-db:5432/auth
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}

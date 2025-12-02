@@ -6,57 +6,45 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
+ENV PATH="/usr/local/bin:$PATH"
+
 WORKDIR /app
 
 FROM base AS prepare
 RUN corepack enable && corepack prepare pnpm@latest --activate
-COPY . .
 RUN pnpm add -g turbo@^2
+COPY . .
 RUN turbo prune web --docker
 
-FROM base AS dependencies
-ENV CI=true
+FROM base AS builder
 COPY --from=prepare /app/out/json/ .
-COPY --from=prepare /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 RUN pnpm install --frozen-lockfile
 
-FROM base AS builder
-ENV CI=true
-
+COPY --from=prepare /app/out/full/ .
+RUN pnpm add -g turbo@^2
 ARG PUBLIC_BACKEND_URL
 ARG PUBLIC_AUTH_URL
 ENV PUBLIC_BACKEND_URL=${PUBLIC_BACKEND_URL}
 ENV PUBLIC_AUTH_URL=${PUBLIC_AUTH_URL}
-
-# Debug: skriv ut värdet i build-loggen
-RUN echo "BUILD: PUBLIC_BACKEND_URL='${PUBLIC_BACKEND_URL}'"
-RUN echo "BUILD: PUBLIC_AUTH_URL='${PUBLIC_AUTH_URL}'"
-
-COPY --from=prepare /app/out/full/ .
-COPY --from=prepare /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN pnpm install --frozen-lockfile
-RUN pnpm turbo run build --filter=web
+RUN turbo build
 
 FROM node:lts-alpine AS runner
 WORKDIR /app
 
+RUN apk add --no-cache libc6-compat
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 web
 
-COPY --from=builder /app/apps/web/build ./apps/web/build
-COPY --from=builder /app/apps/web/package.json ./apps/web/package.json
-COPY --from=dependencies /app/node_modules ./node_modules
-COPY --from=dependencies /app/apps/web/node_modules ./apps/web/node_modules
+COPY --from=builder /app .
 
 RUN chown -R web:nodejs /app
 USER web
 
-WORKDIR /app/apps/web
-
-ARG PORT=3000
+ARG PORT=5080
 EXPOSE ${PORT}
 ENV NODE_ENV=production
 ENV PORT=${PORT}
 ENV HOST=0.0.0.0
 
-CMD ["node", "build/index.js"]
+CMD ["node", "apps/web/build/index.js"]
