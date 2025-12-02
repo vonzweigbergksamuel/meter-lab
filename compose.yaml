@@ -30,6 +30,7 @@ services:
       PORT: ${BACKEND_PORT:-5070}
       WEBSOCKET_PORT: ${WEBSOCKET_PORT:-5071}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      DATABASE_URL: postgres://postgres:postgres@backend-db:5432/meter-lab
       EMQX_URL: ${EMQX_URL:-http://host.docker.internal:1883}
       EMQX_TOPIC: ${EMQX_TOPIC:-meter-lab/data}
       EMQX_USERNAME: ${EMQX_USERNAME:-admin}
