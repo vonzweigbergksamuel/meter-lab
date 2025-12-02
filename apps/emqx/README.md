@@ -55,7 +55,7 @@ pnpm start    # Run compiled output
 From the root of the repo:
 
 ```bash
-docker compose -f docker-mock-compose.yaml up
+docker compose -f docker-mock-compose.yaml up - --build
 ```
 
 ## EMQX Dashboard

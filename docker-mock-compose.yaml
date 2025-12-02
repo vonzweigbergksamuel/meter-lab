@@ -27,6 +27,7 @@ services:
       - 8883:8883 # TLS
       - 18083:18083 # Admin panel
 
+
   emqx-mock:
     image: emqx-mock:latest
     depends_on:
@@ -41,3 +42,8 @@ services:
       - USERNAME=${EMQX_USERNAME:-admin}
       - PASSWORD=${EMQX_PASSWORD:-admin123}
     restart: unless-stopped
+    networks:
+      - meter-lab
+  networks:
+    meter-lab:
+      driver: bridge
