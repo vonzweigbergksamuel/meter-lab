@@ -104,6 +104,16 @@ jobs:
         env:
           # Add more environment variables here as needed
           BACKEND_PORT: ${{ vars.BACKEND_PORT }}
+          WEBSOCKET_PORT: ${{ vars.WEBSOCKET_PORT }}
+          REDIS_URL: ${{ vars.REDIS_URL }}
+          EMQX_URL: ${{ vars.EMQX_URL }}
+          EMQX_TOPIC: ${{ vars.EMQX_TOPIC }}
+          EMQX_USERNAME: ${{ vars.EMQX_USERNAME }}
+          EMQX_PASSWORD: ${{ vars.EMQX_PASSWORD }}
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          AUTH_PORT: ${{ vars.AUTH_PORT }}
+          BETTER_AUTH_SECRET: ${{ vars.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL: ${{ vars.BETTER_AUTH_URL }}
         run: |
           scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/tmp/compose.yaml
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF

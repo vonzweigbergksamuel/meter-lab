@@ -13,7 +13,7 @@ export const appRouter = {
 			return { message: "OK", timestamp: Date.now() };
 		}),
 	...resultsRouter,
-	...deviceRouter
+	...deviceRouter,
 };
 
 export type AppRouter = typeof appRouter;

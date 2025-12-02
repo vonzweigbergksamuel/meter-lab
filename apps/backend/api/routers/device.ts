@@ -17,6 +17,6 @@ export const deviceRouter = {
 		.input(z.object({ limit: z.number().optional() }))
 		.output(deviceOutputSChema)
 		.handler(async () => {
-			return getDeviceController(	).getDevices()
+			return getDeviceController().getDevices();
 		}),
 };

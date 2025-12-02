@@ -9,5 +9,5 @@ export function generatePayload(meter_id: number) {
 }
 
 function generateValue() {
-  return Math.floor(Math.random() * 100)
+	return Math.floor(Math.random() * 100);
 }

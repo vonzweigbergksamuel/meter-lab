@@ -2,9 +2,10 @@
   "name": "backend",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --env-file=.env.local app/server.ts",
+    "dev": "tsx watch --env-file=.env app/server.ts",
     "build": "tsc",
     "start": "node dist/app/server.js",
+    "migrate": "tsx --env-file=.env scripts/migrate.ts",
     "lint": "biome lint .",
     "format": "biome format --write ."
   },
@@ -16,8 +17,11 @@
     "@orpc/server": "^1.11.3",
     "@orpc/zod": "^1.11.3",
     "@t3-oss/env-core": "^0.13.8",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.7",
     "hono": "^4.10.6",
     "mqtt": "^5.14.1",
+    "pg": "^8.16.3",
     "pino": "^10.1.0",
     "redis": "^5.10.0",
     "ws": "^8.18.3",
@@ -26,7 +30,9 @@
   "devDependencies": {
     "@types/node": "^20.11.17",
     "@types/ws": "^8.18.1",
-    "tsx": "^4.7.1",
+    "@types/pg": "^8.15.6",
+    "drizzle-kit": "^0.31.7",
+    "tsx": "^4.20.6",
     "typescript": "^5.8.3"
   }
 }

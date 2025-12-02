@@ -2,7 +2,7 @@ import type {
 	Device,
 	IIoTBrokerService,
 	IPayloadService,
-} from "./interface/iot-broker.service.interface.js";
+} from "./interface.js";
 
 export class MockIoTBrokerService implements IIoTBrokerService {
 	#payloadService: IPayloadService;
@@ -18,9 +18,9 @@ export class MockIoTBrokerService implements IIoTBrokerService {
 
 	listen(): void {
 		const mockDevices: Device[] = [
-			{ device_id: "meter-001", value: 45, unit: "W" },
-			{ device_id: "meter-002", value: 23, unit: "W" },
-			{ device_id: "meter-003", value: 12, unit: "W" },
+			{ device_id: "001", value: 45, unit: "W" },
+			{ device_id: "002", value: 23, unit: "W" },
+			{ device_id: "003", value: 12, unit: "W" },
 		];
 
 		this.#interval = setInterval(() => {
