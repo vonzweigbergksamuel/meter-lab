@@ -74,7 +74,7 @@ services:
       POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD:-postgres}
       POSTGRES_DB: ${AUTH_DB_NAME:-auth}
     volumes:
-      - auth-db-data:/var/lib/postgresql/data
+      - auth-db-data:/var/lib/postgresql
     networks:
       - meter-lab
 
