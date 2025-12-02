@@ -1,11 +1,10 @@
 import mqtt from "mqtt";
 import { env } from "../../../env.js";
 import type {
-	Device,
 	IIoTBrokerService,
 	IPayloadService,
-	JemacDevice,
 } from "./interface.js";
+import type { Device, JemacDevice } from "./types.js";
 
 export class MqttService implements IIoTBrokerService {
 	#broker!: mqtt.MqttClient;
