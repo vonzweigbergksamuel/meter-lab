@@ -1,0 +1,50 @@
+services:
+  emqx:
+    image: emqx/emqx-enterprise:6.0.1
+    container_name: emqx1
+    environment:
+    - "EMQX_NODE_NAME=emqx@node1.emqx.com"
+    - "EMQX_CLUSTER__DISCOVERY_STRATEGY=static"
+    - "EMQX_CLUSTER__STATIC__SEEDS=[emqx@node1.emqx.com,emqx@node2.emqx.com]"
+
+    # Auth for admin panel
+    - EMQX_DASHBOARD__DEFAULT_USERNAME="${EMQX_DASHBOARD_DEFAULT_USERNAME:-admin}"
+    - EMQX_DASHBOARD__DEFAULT_PASSWORD="${EMQX_DASHBOARD_DEFAULT_PASSWORD:-admin123}"
+
+    # Authenticator #1 = password + built-in DB
+    - EMQX_AUTHENTICATION__1__ENABLE="${EMQX_AUTHENTICATION:-true}"
+    - EMQX_AUTHENTICATION__1__BACKEND="${EMQX_AUTHENTICATION_BACKEND:-built_in_database}"
+    - EMQX_AUTHENTICATION__1__MECHANISM="${EMQX_AUTHENTICATION_MECHANISM:-password_based}"
+    - EMQX_AUTHENTICATION__1__USER_ID_TYPE="${EMQX_AUTHENTICATION_USER_ID_TYPE:-username}"
+    - EMQX_AUTHENTICATION__1__PASSWORD_HASH_ALGORITHM__NAME="${EMQX_AUTHENTICATION_PASSWORD_HASH_ALGORITHM:-sha}"
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+    ports:
+      - 1884:1883 # Use another port on the outside to prevent miss communication
+      - 8883:8883 # TLS
+      - 18083:18083 # Admin panel
+    networks:
+      - meter-lab
+      
+  emqx-mock:
+    image: emqx-mock:latest
+    depends_on:
+      - emqx
+    build:
+      context: .
+      dockerfile: ./apps/emqx/Dockerfile
+    environment:
+      - BROKER_URL=${BROKER_URL:-mqtt://emqx:1883}
+      - TOPIC=${TOPIC:-mock-data}
+      - NUM_DEVICE=${NUM_DEVICE:-4}
+      - USERNAME=${EMQX_USERNAME:-admin}
+      - PASSWORD=${EMQX_PASSWORD:-admin123}
+    restart: unless-stopped
+    networks:
+      - meter-lab
+  networks:
+    meter-lab:
+      driver: bridge

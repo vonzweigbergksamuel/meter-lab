@@ -14,6 +14,7 @@ This Turborepo includes the following packages/apps:
 
 - `apps/web`: A [SvelteKit](https://svelte.dev/docs/kit/introduction/) application with Tailwind CSS
 - `apps/backend`: A [Hono](https://hono.dev/) backend API server
+- `apps/emqx`: A [TypeScript](https://www.typescriptlang.org/) send mock data to emqx broker
 
 ### Packages
 
@@ -51,6 +52,7 @@ You can build a specific package by using a [filter](https://turborepo.com/docs/
 ```bash
 pnpm turbo build --filter=web
 pnpm turbo build --filter=backend
+pnpm turbo build --filter=emqx
 ```
 
 ### Develop
