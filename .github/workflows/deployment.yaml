@@ -89,14 +89,14 @@ jobs:
             
             # DONT FORGET TO ADD THE IMAGES HERE AS WELL AS IN THE TAGGING STEP
             echo "Pulling images..."
-            docker pull ghcr.io/$GITHUB_REPOSITORY/web:${GITHUB_SHA::7}
-            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${GITHUB_SHA::7}
-            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${GITHUB_SHA::7}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/web:${{ github.sha }}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }}
             
             echo "Tagging images for compose..."
-            docker tag ghcr.io/$GITHUB_REPOSITORY/web:${GITHUB_SHA::7} web:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${GITHUB_SHA::7} backend:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${GITHUB_SHA::7} auth:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/web:${{ github.sha }} web:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }} backend:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }} auth:latest
             
             echo "Images ready!"
           EOF
