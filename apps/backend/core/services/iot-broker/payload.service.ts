@@ -20,6 +20,9 @@ export class PayloadService implements IPayloadService {
 		}	
 
 		this.#cachedConnectedDevices = []
+
+		// Send updated data to the client
+		sendDataWSS(this.#cachedConnectedDevices);
 	}
 
 	async setPayload(payload: Device[]): Promise<void> {
