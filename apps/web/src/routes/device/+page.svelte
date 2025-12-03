@@ -4,8 +4,8 @@
 
 <div class="flex flex-col items-center w-ful">
   <div class="flex flex-row gap-4 justify-start items-center my-5 mx-auto">
-    <DeviceCard deviceId="58940943276521354" status="available" />
-    <DeviceCard deviceId="12345678901234567" status="unavailable" />
-    <DeviceCard deviceId="99999999999999999" status="error" />
+    <DeviceCard device_id="58940943276521354" device_status="available" />
+    <DeviceCard device_id="12345678901234567" device_status="available" />
+    <DeviceCard device_id="78236512782903486" device_status="under_test" />
   </div>
 </div>
