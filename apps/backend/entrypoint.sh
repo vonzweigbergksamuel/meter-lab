@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-cd /app/apps/auth
+cd /app/apps/backend
 
 if [ "$BACKEND_RUN_MIGRATIONS" = "true" ]; then
   echo "Running migrations..."
