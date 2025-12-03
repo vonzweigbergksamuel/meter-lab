@@ -4,7 +4,6 @@ import { PUBLIC_AUTH_URL } from "$env/static/public";
 
 console.log("PUBLIC_AUTH_URL: ", PUBLIC_AUTH_URL);
 
-
 // Temporary solution to handle local development on localhost with docker
 // TODO: Implement proper solution for production?
 const isLocalUrl = PUBLIC_AUTH_URL.includes('localhost')
@@ -14,6 +13,8 @@ const devUrl = browser
     : PUBLIC_AUTH_URL.replace('localhost', 'host.docker.internal');
 
 const authUrl = isLocalUrl ? devUrl : PUBLIC_AUTH_URL;
+
+console.log("authUrl: ", authUrl);
 
 export const authClient = createAuthClient({
     baseURL: authUrl
