@@ -59,7 +59,7 @@ jobs:
           context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.service.name }}:${GITHUB_SHA::7}
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.service.name }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
