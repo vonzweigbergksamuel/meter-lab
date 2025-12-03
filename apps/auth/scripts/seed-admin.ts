@@ -24,9 +24,6 @@ async function seedAdmin() {
 			.where(eq(user.id, result.user.id));
 
 		console.log("Admin user created successfully!");
-		console.log("Email:", result.user.email);
-		console.log("ID:", result.user.id);
-		console.log("Role: admin");
 	} catch (error) {
 		console.error("Error creating admin user:", error);
 	}
