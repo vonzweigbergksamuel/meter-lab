@@ -41,7 +41,7 @@ services:
       - backend-db
     networks:
       - meter-lab
-  
+
   redis:
     image: redis:latest
     container_name: redis

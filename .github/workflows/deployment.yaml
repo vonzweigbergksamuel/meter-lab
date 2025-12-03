@@ -59,7 +59,7 @@ jobs:
           context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.service.name }}:latest
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.service.name }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
@@ -89,14 +89,14 @@ jobs:
             
             # DONT FORGET TO ADD THE IMAGES HERE AS WELL AS IN THE TAGGING STEP
             echo "Pulling images..."
-            docker pull ghcr.io/$GITHUB_REPOSITORY/web:latest
-            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:latest
-            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:latest
+            docker pull ghcr.io/$GITHUB_REPOSITORY/web:${GITHUB_SHA::7}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${GITHUB_SHA::7}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${GITHUB_SHA::7}
             
             echo "Tagging images for compose..."
-            docker tag ghcr.io/$GITHUB_REPOSITORY/web:latest web:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:latest backend:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:latest auth:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/web:${GITHUB_SHA::7} web:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${GITHUB_SHA::7} backend:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${GITHUB_SHA::7} auth:latest
             
             echo "Images ready!"
           EOF
@@ -114,6 +114,9 @@ jobs:
           AUTH_PORT: ${{ vars.AUTH_PORT }}
           BETTER_AUTH_SECRET: ${{ vars.BETTER_AUTH_SECRET }}
           BETTER_AUTH_URL: ${{ vars.BETTER_AUTH_URL }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          ADMIN_NAME: ${{ vars.ADMIN_NAME }}
         run: |
           scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/tmp/compose.yaml
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
@@ -122,10 +125,14 @@ jobs:
             docker compose down --remove-orphans
             BACKEND_PORT="$BACKEND_PORT" DATABASE_URL="$DATABASE_URL" WEBSOCKET_PORT="$WEBSOCKET_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" docker compose up -d
 
-            echo "Pruning images after deployment..."
-            docker image prune -a -f
-
             echo "Deployment complete!"
+
+            ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" docker compose run --rm auth node apps/auth/dist/scripts/seed-admin.js
+
+            echo "Admin seeding complete!"
+
+            echo "Pruning unused images..."
+            docker image prune -a -f
           EOF
           # Dont forget to add the environment variables to the compose file
           echo "Deployment complete!"
