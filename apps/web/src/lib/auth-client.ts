@@ -4,16 +4,21 @@ import { createAuthClient } from "better-auth/svelte";
 
 console.log("PUBLIC_AUTH_URL: ", PUBLIC_AUTH_URL);
 
+// TODO
+// Just in development outside Docker
 const getAuthUrl = () => {
 	if (browser) {
 		return PUBLIC_AUTH_URL;
 	}
 
-	if (PUBLIC_AUTH_URL.includes("localhost")) {
-		return PUBLIC_AUTH_URL.replace("localhost", "host.docker.internal");
-	}
+	// if (PUBLIC_AUTH_URL.includes("localhost")) {
+	// 	return PUBLIC_AUTH_URL.replace("localhost", "host.docker.internal");
+	// }
 
-	return "http://auth:5090";
+	// return "http://auth:5090";
+
+	// Just in development outside Docker
+	return PUBLIC_AUTH_URL
 };
 
 const authUrl = getAuthUrl();
