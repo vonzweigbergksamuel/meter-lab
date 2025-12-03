@@ -125,14 +125,14 @@ jobs:
             docker compose down --remove-orphans
             BACKEND_PORT="$BACKEND_PORT" DATABASE_URL="$DATABASE_URL" WEBSOCKET_PORT="$WEBSOCKET_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" docker compose up -d
 
-            echo "Pruning images after deployment..."
-            docker image prune -a -f
-
             echo "Deployment complete!"
 
             ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" docker compose run --rm auth node apps/auth/dist/scripts/seed-admin.js
 
             echo "Admin seeding complete!"
+
+            echo "Pruning unused images..."
+            docker image prune -a -f
           EOF
           # Dont forget to add the environment variables to the compose file
           echo "Deployment complete!"
