@@ -25,7 +25,7 @@
   let { device_id, device_status }: Props = $props()
 </script>
 
-<Card.Root class="w-full max-w-sm bg-linear-to-br from-slate-50 to-slate-100 border-slate-200 hover:shadow-lg hover:border-slate-300 transition-all duration-300">
+<Card.Root class="w-60 max-w-sm bg-linear-to-br from-slate-50 to-slate-100 border-slate-200 hover:shadow-lg hover:border-slate-300 transition-all duration-300">
   <Card.Content class="">
     <div class="space-y-2">
       <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Device ID</p>
