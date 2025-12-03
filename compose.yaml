@@ -36,6 +36,7 @@ services:
       EMQX_USERNAME: ${EMQX_USERNAME:-admin}
       EMQX_PASSWORD: ${EMQX_PASSWORD:-admin123}
       NODE_ENV: ${NODE_ENV:-development}
+      BACKEND_RUN_MIGRATIONS: ${BACKEND_RUN_MIGRATIONS:-true}
     restart: always
     depends_on:
       - backend-db
@@ -76,6 +77,11 @@ services:
       DATABASE_URL: postgres://postgres:postgres@auth-db:5432/auth
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme123}
+      ADMIN_NAME: ${ADMIN_NAME:-Admin User}
+      AUTH_RUN_MIGRATIONS: ${AUTH_RUN_MIGRATIONS:-true}
+      AUTH_SEED_ADMIN: ${AUTH_SEED_ADMIN:-true}
     depends_on:
       - auth-db
     restart: always
