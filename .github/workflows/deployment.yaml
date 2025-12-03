@@ -114,6 +114,9 @@ jobs:
           AUTH_PORT: ${{ vars.AUTH_PORT }}
           BETTER_AUTH_SECRET: ${{ vars.BETTER_AUTH_SECRET }}
           BETTER_AUTH_URL: ${{ vars.BETTER_AUTH_URL }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          ADMIN_NAME: ${{ vars.ADMIN_NAME }}
         run: |
           scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/tmp/compose.yaml
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
@@ -127,7 +130,7 @@ jobs:
 
             echo "Deployment complete!"
 
-            docker compose run --rm auth node apps/auth/dist/scripts/seed-admin.js
+            ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" docker compose run --rm auth node apps/auth/dist/scripts/seed-admin.js
 
             echo "Admin seeding complete!"
           EOF
