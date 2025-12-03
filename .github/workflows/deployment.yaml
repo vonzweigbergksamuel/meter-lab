@@ -59,7 +59,7 @@ jobs:
           context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.service.name }}:latest
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.service.name }}:${GITHUB_SHA::7}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
@@ -89,14 +89,14 @@ jobs:
             
             # DONT FORGET TO ADD THE IMAGES HERE AS WELL AS IN THE TAGGING STEP
             echo "Pulling images..."
-            docker pull ghcr.io/$GITHUB_REPOSITORY/web:latest
-            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:latest
-            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:latest
+            docker pull ghcr.io/$GITHUB_REPOSITORY/web:${GITHUB_SHA::7}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${GITHUB_SHA::7}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${GITHUB_SHA::7}
             
             echo "Tagging images for compose..."
-            docker tag ghcr.io/$GITHUB_REPOSITORY/web:latest web:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:latest backend:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:latest auth:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/web:${GITHUB_SHA::7} web:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${GITHUB_SHA::7} backend:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${GITHUB_SHA::7} auth:latest
             
             echo "Images ready!"
           EOF
