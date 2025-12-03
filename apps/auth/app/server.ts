@@ -22,6 +22,7 @@ app.use(
 			"http://localhost:5080",
 			"http://localhost:5173",
 			"http://localhost:3000",
+			"http://blade.jemac.se",
 		],
 		allowHeaders: ["Content-Type", "Authorization"],
 		allowMethods: ["POST", "GET", "OPTIONS"],
