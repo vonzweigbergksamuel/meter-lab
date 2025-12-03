@@ -11,13 +11,11 @@ services:
     ports:
       - "${WEB_PORT:-5080}:${WEB_PORT:-5080}"
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "blade.jemac.se:host-gateway"
     depends_on:
       - backend
       - auth
     restart: always
-    networks:
-      - meter-lab
 
   backend:
     image: backend:latest
@@ -41,7 +39,7 @@ services:
       - backend-db
     networks:
       - meter-lab
-  
+
   redis:
     image: redis:latest
     container_name: redis

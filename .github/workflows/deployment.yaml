@@ -126,20 +126,10 @@ jobs:
             docker image prune -a -f
 
             echo "Deployment complete!"
+
+            docker compose run --rm auth node apps/auth/dist/scripts/seed-admin.js
+
+            echo "Admin seeding complete!"
           EOF
           # Dont forget to add the environment variables to the compose file
           echo "Deployment complete!"
-
-  seed-admin:
-    needs: deploy
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Seed admin
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
-            cd ~/meter-lab
-            docker compose run --rm auth node apps/auth/dist/scripts/seed-admin.js
-          EOF
