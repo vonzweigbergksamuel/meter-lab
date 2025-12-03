@@ -12,6 +12,16 @@ export class PayloadService implements IPayloadService {
 		this.#service = service;
 	}
 
+	clearPayload(): void {
+		for (const device of this.#cachedConnectedDevices) {
+			const NAME = device.device_id
+
+			this.#service.delete(NAME)
+		}	
+
+		this.#cachedConnectedDevices = []
+	}
+
 	async setPayload(payload: Device[]): Promise<void> {
 		await this.#isSameDevicesConnected(payload);
 	}
