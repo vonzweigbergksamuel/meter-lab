@@ -27,8 +27,8 @@ export const publisher = new EventPublisher<{
 }>();
 
 export function publish(channel: WS_CHANNELS, data: CachedDevices[]) {
-		publisher.publish(channel as WS_CHANNELS, { devices: data });
-	}
+	publisher.publish(channel as WS_CHANNELS, { devices: data });
+}
 
 export const websocketRouter = {
 	deviceUpdates: os
