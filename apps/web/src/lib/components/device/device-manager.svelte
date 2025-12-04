@@ -54,7 +54,7 @@
 
 <div class="flex flex-col items-center w-ful">
   {#if response.isPending}
-    <div class="flex flex-row gap-4 justify-start items-center my-5 mx-auto">
+    <div class="flex flex-col md:flex-row gap-4 justify-start items-center my-5 mx-auto">
       <DeviceCardSkeleton />
       <DeviceCardSkeleton />
       <DeviceCardSkeleton />
@@ -63,7 +63,7 @@
   {:else if !data.devices || data.devices.length === 0}
     <h1 class="text-5xl font-bold text-gray-500 mt-8">No Devices Connected</h1>
   {:else}
-    <div class="flex flex-row gap-4 justify-start items-center my-5 mx-auto">
+    <div class="flex flex-col md:flex-row gap-4 justify-start items-center my-5 mx-auto">
       {#each data.devices as device (device.device_id)}
         <DeviceCard device_id={device.device_id} device_status={device.device_status} />
       {/each}
