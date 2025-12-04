@@ -1,23 +1,10 @@
 <script lang="ts">
-	import { createQuery } from "@tanstack/svelte-query";
-	import { orpc } from "$lib/api/client";
-
-	const query = createQuery(() =>
-		orpc.healthCheck.queryOptions({
-			input: {},
-			context: { cache: false }
-		})
-	);
+  import DeviceManager from "@/components/device/device-manager.svelte";
+  import HeroText from "@/components/hero-text.svelte";
+	import Container from "@/components/ui/container.svelte";
 </script>
 
-<h1>Welcome to Meter Lab</h1>
-<button on:click={() => query.refetch()}>Refetch</button>
-
-{#if query.isLoading}
-	<p>Loading...</p>
-{:else if query.isSuccess}
-	<p>{query.data?.message}</p>
-	<p>{query.data?.timestamp}</p>
-{:else if query.isError}
-	<p>{query.error?.message}</p>
-{/if}
+<Container className="mt-10 px-8">
+  <HeroText title={"Device"}/>
+  <DeviceManager />
+</Container>
