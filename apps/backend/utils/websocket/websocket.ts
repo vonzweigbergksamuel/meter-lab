@@ -5,7 +5,8 @@ import {
 	type RouterClient,
 } from "@orpc/server";
 import * as z from "zod";
-import type { CachedDevices } from "../../core/services/iot-broker/types.js";
+import { WS_CHANNELS } from "./channels.js";
+import type { CachedDevices } from "./types.js";
 
 const devicesSchema = z.object({
 	devices: z
@@ -17,25 +18,40 @@ const devicesSchema = z.object({
 });
 
 export const publisher = new EventPublisher<{
-	"device-updated": {
+	[WS_CHANNELS.DEVICE_UPDATE]: {
+		devices: CachedDevices[];
+	};
+	[WS_CHANNELS.DEVICE_TEST]: {
 		devices: CachedDevices[];
 	};
 }>();
 
-export function publish(data: CachedDevices[]) {
-	publisher.publish("device-updated", { devices: data });
-}
+export function publish(channel: WS_CHANNELS, data: CachedDevices[]) {
+		publisher.publish(channel as WS_CHANNELS, { devices: data });
+	}
 
 export const websocketRouter = {
-	liveUpdates: os
+	deviceUpdates: os
 		.output(eventIterator(devicesSchema))
-		.handler(async function* ({ input, signal }) {
-			for await (const payload of publisher.subscribe("device-updated", {
-				signal,
-			})) {
+		.handler(async function* ({ signal }) {
+			for await (const payload of publisher.subscribe(
+				WS_CHANNELS.DEVICE_UPDATE,
+				{
+					signal,
+				},
+			)) {
 				yield payload;
 			}
 		}),
+	liveTest: os.output(eventIterator(devicesSchema)).handler(async function* ({
+		signal,
+	}) {
+		for await (const payload of publisher.subscribe(WS_CHANNELS.DEVICE_TEST, {
+			signal,
+		})) {
+			yield payload;
+		}
+	}),
 };
 
 export type SocketRouter = typeof websocketRouter;

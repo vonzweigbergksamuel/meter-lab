@@ -35,7 +35,7 @@
 
     (async () => {
       try {
-        const stream = await wsClient.liveUpdates({ signal: controller.signal });
+        const stream = await wsClient.deviceUpdates(undefined, { signal: controller.signal });
         
         for await (const event of stream) {
           console.log("WebSocket Event:", event);
@@ -65,7 +65,7 @@
   {:else}
     <div class="flex flex-row gap-4 justify-start items-center my-5 mx-auto">
       {#each data.devices as device (device.device_id)}
-        <DeviceCard device_id={device.device_id} device_status={device.device_status as "available" | "under_test"} />
+        <DeviceCard device_id={device.device_id} device_status={device.device_status} />
       {/each}
     </div>
   {/if}

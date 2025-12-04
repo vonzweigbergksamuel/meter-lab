@@ -1,3 +1,4 @@
+import { WS_CHANNELS } from "../../../utils/websocket/channels.js";
 import { publish } from "../../../utils/websocket/websocket.js";
 import type { KeyValueStoreService } from "../key-value-store/interface.js";
 import type { IPayloadService } from "./interface.js";
@@ -22,7 +23,7 @@ export class PayloadService implements IPayloadService {
 		this.#cachedConnectedDevices = [];
 
 		// Send updated data to the client
-		publish(this.#cachedConnectedDevices)
+		publish(WS_CHANNELS.DEVICE_UPDATE, this.#cachedConnectedDevices);
 	}
 
 	async setPayload(payload: Device[]): Promise<void> {
@@ -59,9 +60,9 @@ export class PayloadService implements IPayloadService {
 		this.#cachedConnectedDevices = await this.#service.getAll();
 
 		// Send updated data to the client
-		publish(this.#cachedConnectedDevices);
+		publish(WS_CHANNELS.DEVICE_UPDATE, this.#cachedConnectedDevices);
 
-		console.log("UPDATERAT")
+		console.log("UPDATERAT");
 	}
 
 	#isSameDevice(cachedIds: Set<string>, newIds: Set<string>) {
