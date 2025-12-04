@@ -1,4 +1,4 @@
-import { sendDataWSS } from "../../../utils/websocket/websocket.js";
+import { broadcast } from "../../../utils/websocket.js";
 import type { KeyValueStoreService } from "../key-value-store/interface.js";
 import type { IPayloadService } from "./interface.js";
 import type { CachedDevices, Device } from "./types.js";
@@ -14,15 +14,15 @@ export class PayloadService implements IPayloadService {
 
 	clearPayload(): void {
 		for (const device of this.#cachedConnectedDevices) {
-			const NAME = device.device_id
+			const NAME = device.device_id;
 
-			this.#service.delete(NAME)
-		}	
+			this.#service.delete(NAME);
+		}
 
-		this.#cachedConnectedDevices = []
+		this.#cachedConnectedDevices = [];
 
 		// Send updated data to the client
-		sendDataWSS(this.#cachedConnectedDevices);
+		broadcast(this.#cachedConnectedDevices);
 	}
 
 	async setPayload(payload: Device[]): Promise<void> {
@@ -59,7 +59,7 @@ export class PayloadService implements IPayloadService {
 		this.#cachedConnectedDevices = await this.#service.getAll();
 
 		// Send updated data to the client
-		sendDataWSS(this.#cachedConnectedDevices);
+		broadcast(this.#cachedConnectedDevices);
 	}
 
 	#isSameDevice(cachedIds: Set<string>, newIds: Set<string>) {

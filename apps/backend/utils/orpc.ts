@@ -43,8 +43,9 @@ export const rpcHandler = new RPCHandler(appRouter, {
 	],
 });
 
-export const wsRpcHandler = new WebSocketRPCHandler(appRouter, {
+export const wsHandler = new WebSocketRPCHandler(appRouter, {
 	plugins: [
+		new CORSPlugin(),
 		new LoggingHandlerPlugin({
 			logger,
 			generateId: () => crypto.randomUUID(),
