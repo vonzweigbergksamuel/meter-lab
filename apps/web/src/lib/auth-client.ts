@@ -17,8 +17,7 @@ const getAuthUrl = () => {
 };
 
 const authUrl = getAuthUrl();
-console.log("authUrl", authUrl);
 
 export const authClient = createAuthClient({
-	baseURL: PUBLIC_AUTH_URL
+	baseURL: authUrl
 });
