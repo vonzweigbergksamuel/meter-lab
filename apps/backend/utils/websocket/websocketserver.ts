@@ -1,6 +1,6 @@
 import { WebSocketServer } from "ws";
 import { env } from "../../env.js";
-import { wsRpcHandler } from "../orpc.js";
+import { wsRpcHandler } from "../worpc.js";
 
 /* -------- VARIABLES -------- */
 const WS_PORT = Number(env.WEBSOCKET_PORT);
