@@ -16,10 +16,14 @@ export class PayloadService implements IPayloadService {
 	clearPayload(): void {
 		for (const device of this.#cachedConnectedDevices) {
 			const NAME = device.device_id;
+			const NAME = device.device_id;
 
 			this.#service.delete(NAME);
 		}
+			this.#service.delete(NAME);
+		}
 
+		this.#cachedConnectedDevices = [];
 		this.#cachedConnectedDevices = [];
 
 		// Send updated data to the client
@@ -61,8 +65,6 @@ export class PayloadService implements IPayloadService {
 
 		// Send updated data to the client
 		publish(WS_CHANNELS.DEVICE_UPDATE, this.#cachedConnectedDevices);
-
-		console.log("UPDATERAT");
 	}
 
 	#isSameDevice(cachedIds: Set<string>, newIds: Set<string>) {
