@@ -16,10 +16,7 @@ export class PayloadService implements IPayloadService {
 	clearPayload(): void {
 		for (const device of this.#cachedConnectedDevices) {
 			const NAME = device.device_id;
-			const NAME = device.device_id;
 
-			this.#service.delete(NAME);
-		}
 			this.#service.delete(NAME);
 		}
 

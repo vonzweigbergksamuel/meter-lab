@@ -39,7 +39,6 @@ services:
       EMQX_PASSWORD: ${EMQX_PASSWORD:-admin123}
       NODE_ENV: ${NODE_ENV:-development}
       BACKEND_RUN_MIGRATIONS: ${BACKEND_RUN_MIGRATIONS:-true}
-    restart: always
     restart: unless-stopped
     depends_on:
       - backend-db
