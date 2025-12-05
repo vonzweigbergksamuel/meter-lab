@@ -27,6 +27,7 @@ services:
       dockerfile: ./apps/backend/Dockerfile
     ports:
       - "${BACKEND_PORT:-5070}:${BACKEND_PORT:-5070}"
+      - "${WEBSOCKET_PORT:-5071}:${WEBSOCKET_PORT:-5071}"
     environment:
       PORT: ${BACKEND_PORT:-5070}
       WEBSOCKET_PORT: ${WEBSOCKET_PORT:-5071}
