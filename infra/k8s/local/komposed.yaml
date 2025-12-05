@@ -1,0 +1,401 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: auth
+  name: auth
+spec:
+  ports:
+    - name: "5090"
+      port: 5090
+      targetPort: 5090
+  selector:
+    io.kompose.service: auth
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: auth-db
+  name: auth-db
+spec:
+  ports:
+    - name: "5433"
+      port: 5433
+      targetPort: 5432
+  selector:
+    io.kompose.service: auth-db
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: backend
+  name: backend
+spec:
+  ports:
+    - name: "5070"
+      port: 5070
+      targetPort: 5070
+    - name: "5071"
+      port: 5071
+      targetPort: 5071
+  selector:
+    io.kompose.service: backend
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: backend-db
+  name: backend-db
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    io.kompose.service: backend-db
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: redis
+  name: redis
+spec:
+  ports:
+    - name: "6379"
+      port: 6379
+      targetPort: 6379
+  selector:
+    io.kompose.service: redis
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: web
+  name: web
+spec:
+  ports:
+    - name: "5080"
+      port: 5080
+      targetPort: 5080
+  selector:
+    io.kompose.service: web
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: auth
+  name: auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: auth
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+        kompose.version: 1.37.0 (fb0539e64)
+      labels:
+        io.kompose.service: auth
+    spec:
+      containers:
+        - env:
+            - name: ADMIN_EMAIL
+              value: admin@example.com
+            - name: ADMIN_NAME
+              value: Admin User
+            - name: ADMIN_PASSWORD
+              value: changeme123
+            - name: AUTH_RUN_MIGRATIONS
+              value: "true"
+            - name: AUTH_SEED_ADMIN
+              value: "true"
+            - name: BETTER_AUTH_SECRET
+              value: some-secretsome-secretsome-secretsome-secretsome-secretsome-secret
+            - name: BETTER_AUTH_URL
+              value: http://localhost:5090
+            - name: DATABASE_URL
+              value: postgres://postgres:postgres@auth-db:5432/auth
+            - name: HOST
+              value: 0.0.0.0
+            - name: PORT
+              value: "5090"
+          image: auth:latest
+          name: auth
+          ports:
+            - containerPort: 5090
+              protocol: TCP
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: auth-db
+  name: auth-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: auth-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+        kompose.version: 1.37.0 (fb0539e64)
+      labels:
+        io.kompose.service: auth-db
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: auth
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_USER
+              value: postgres
+          image: postgres:latest
+          name: auth-db
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: auth-db-data
+      restartPolicy: Always
+      volumes:
+        - name: auth-db-data
+          persistentVolumeClaim:
+            claimName: auth-db-data
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    io.kompose.service: auth-db-data
+  name: auth-db-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: backend
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: backend
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+        kompose.version: 1.37.0 (fb0539e64)
+      labels:
+        io.kompose.service: backend
+    spec:
+      containers:
+        - env:
+            - name: BACKEND_RUN_MIGRATIONS
+              value: "true"
+            - name: DATABASE_URL
+              value: postgres://postgres:postgres@backend-db:5432/meter-lab
+            - name: EMQX_PASSWORD
+              value: admin123
+            - name: EMQX_TOPIC
+              value: mock-data
+            - name: EMQX_URL
+              value: mqtt://host.docker.internal:1884
+            - name: EMQX_USERNAME
+              value: admin
+            - name: NODE_ENV
+              value: development
+            - name: PORT
+              value: "5070"
+            - name: REDIS_URL
+              value: redis://redis:6379
+            - name: WEBSOCKET_PORT
+              value: "5071"
+          image: backend:latest
+          name: backend
+          ports:
+            - containerPort: 5070
+              protocol: TCP
+            - containerPort: 5071
+              protocol: TCP
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: backend-db
+  name: backend-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: backend-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+        kompose.version: 1.37.0 (fb0539e64)
+      labels:
+        io.kompose.service: backend-db
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: meter-lab
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_USER
+              value: postgres
+          image: postgres:latest
+          name: backend-db
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: backend-db-data
+      restartPolicy: Always
+      volumes:
+        - name: backend-db-data
+          persistentVolumeClaim:
+            claimName: backend-db-data
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    io.kompose.service: backend-db-data
+  name: backend-db-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: redis
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: redis
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+        kompose.version: 1.37.0 (fb0539e64)
+      labels:
+        io.kompose.service: redis
+    spec:
+      containers:
+        - image: redis:latest
+          name: redis
+          ports:
+            - containerPort: 6379
+              protocol: TCP
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+    kompose.version: 1.37.0 (fb0539e64)
+  labels:
+    io.kompose.service: web
+  name: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: web
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Kompose\kompose.exe convert -f .\compose.yaml -o .\infra\k8s\local\komposed.yaml
+        kompose.version: 1.37.0 (fb0539e64)
+      labels:
+        io.kompose.service: web
+    spec:
+      containers:
+        - image: web:latest
+          name: web
+          ports:
+            - containerPort: 5080
+              protocol: TCP
+      restartPolicy: Always
+
