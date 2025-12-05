@@ -53,7 +53,7 @@ RUN chmod +x /app/apps/auth/entrypoint.sh
 RUN chown -R auth:nodejs /app
 USER auth
 
-ARG PORT
+ARG PORT=5090
 EXPOSE ${PORT}
 ENV NODE_ENV=production
 ENV PORT=${PORT}
