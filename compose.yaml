@@ -7,7 +7,7 @@ services:
       dockerfile: ./apps/web/Dockerfile
       args:
         PUBLIC_BACKEND_URL: "${PUBLIC_BACKEND_URL:-http://localhost:${BACKEND_PORT:-5070}}"
-        PUBLIC_AUTH_URL: "${PUBLIC_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}"
+        PUBLIC_AUTH_URL: "${PUBLIC_AUTH_URL:-http://auth:${AUTH_PORT:-5090}}"
         PUBLIC_WEBSOCKET_URL: "${PUBLIC_WEBSOCKET_URL:-ws://localhost:${WEBSOCKET_PORT:-5071}}"
     ports:
       - "${WEB_PORT:-5080}:${WEB_PORT:-5080}"
