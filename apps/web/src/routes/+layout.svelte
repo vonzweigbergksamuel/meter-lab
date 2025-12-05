@@ -15,16 +15,16 @@
 			}
 		}
 	});
-
+ 
+	// data is the current session of the user
 	let { children, data } = $props();
-	const { session } = data
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{#if session}
+{#if data.session}
 	<Header />
 {/if}
 <QueryClientProvider client={queryClient}>

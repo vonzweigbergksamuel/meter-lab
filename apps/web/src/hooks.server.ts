@@ -1,4 +1,3 @@
-import { authClient } from '@/auth-client';
 import { redirect } from '@sveltejs/kit';
 
 export const handle = async ({ event, resolve }) => {
@@ -8,26 +7,23 @@ export const handle = async ({ event, resolve }) => {
 	const isPublicRoute = publicPaths.some((path) => {
 		return pathname === path || pathname.startsWith(path);
 	});
-    console.log("isPublicRoute", isPublicRoute);
+	console.log("isPublicRoute", isPublicRoute);
 
-	const { data: session, error } = await authClient.getSession({
-		fetchOptions: {
-			headers: event.request.headers,
-		},
-	});
+	console.log("Event: ", event.cookies.get("better-auth.session_token"))
 
-	console.log(error)
+	// Get user session
+	const session = event.cookies.get("better-auth.session_token")
 
-	event.locals.session = session;
-	console.log("isSession: ", session)
+	// set user to session
+	event.locals.session = session
 
-    if (!session && !isPublicRoute) {
-        return redirect(302, "/login");
-    }
+	if (!session && !isPublicRoute) {
+			return redirect(302, "/login");
+	}
 
-    if (session && isPublicRoute) {
-        return redirect(302, "/");
-    }
+	if (session && isPublicRoute) {
+			return redirect(302, "/");
+	}
 
-    return resolve(event);
+	return resolve(event);
 };
