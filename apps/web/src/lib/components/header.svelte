@@ -3,7 +3,8 @@
 	import Container from "./ui/container.svelte";
 
   const NAV_LINKS = [
-    { path: "/device", label: "Device"}
+    { path: "/test-cases", label: "Test Cases"},
+    { path: "/test-runs", label: "Test Runs"}
   ]
 
   if (browser) {

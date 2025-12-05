@@ -8,7 +8,7 @@ services:
       args:
         PUBLIC_BACKEND_URL: "${PUBLIC_BACKEND_URL:-http://localhost:${BACKEND_PORT:-5070}}"
         PUBLIC_AUTH_URL: "${PUBLIC_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}"
-        PUBLIC_WEBSOCKET_URL: "${PUBLIC_WEBSOCKET_URL:-ws://localhost:5071}"
+        PUBLIC_WEBSOCKET_URL: "${PUBLIC_WEBSOCKET_URL:-ws://localhost:${WEBSOCKET_PORT:-5071}}"
     ports:
       - "${WEB_PORT:-5080}:${WEB_PORT:-5080}"
     extra_hosts:
@@ -33,8 +33,8 @@ services:
       WEBSOCKET_PORT: ${WEBSOCKET_PORT:-5071}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       DATABASE_URL: postgres://postgres:postgres@backend-db:5432/meter-lab
-      EMQX_URL: ${EMQX_URL:-http://host.docker.internal:1883}
-      EMQX_TOPIC: ${EMQX_TOPIC:-meter-lab/data}
+      EMQX_URL: ${EMQX_URL:-mqtt://host.docker.internal:1884}
+      EMQX_TOPIC: ${EMQX_TOPIC:-mock-data}
       EMQX_USERNAME: ${EMQX_USERNAME:-admin}
       EMQX_PASSWORD: ${EMQX_PASSWORD:-admin123}
       NODE_ENV: ${NODE_ENV:-development}
