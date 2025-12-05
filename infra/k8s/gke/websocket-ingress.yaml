@@ -6,11 +6,11 @@ metadata:
   labels:
     app: meter-lab
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
-    io.kompose.service: backend
+    io.kompose.service: backend/websocket
   ports:
-  - name: http
+  - name: websocket
     port: 5071
     targetPort: 5071
     protocol: TCP

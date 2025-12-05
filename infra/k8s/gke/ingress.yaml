@@ -11,27 +11,20 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: auth-service
+                name: auth
                 port:
                   number: 5090
           - path: /backend
             pathType: Prefix
             backend:
               service:
-                name: backend-service
+                name: backend
                 port:
                   number: 5070
-          - path: /websocket
-            pathType: Prefix
-            backend:
-              service:
-                name: websocket-service
-                port:
-                  number: 5071
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: web-service
+                name: web
                 port:
                   number: 5080
