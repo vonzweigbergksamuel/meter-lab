@@ -7,22 +7,20 @@ const isLocalUrl = PUBLIC_AUTH_URL.includes("localhost");
 // TODO
 // Just in development outside Docker
 const getAuthUrl = () => {
-	console.log(browser)
 	if (browser) {
 		return PUBLIC_AUTH_URL;
 	}
-
+	
 	if (isLocalUrl) {
-		return PUBLIC_AUTH_URL.replace("localhost", "host.docker.internal");
+		return PUBLIC_AUTH_URL;
 	}
-
+	
 	return "http://auth:5090";
-
-	// Just in development outside Docker
-	// return PUBLIC_AUTH_URL
 };
 
 const authUrl = getAuthUrl();
+
+console.log(authUrl)
 
 export const authClient = createAuthClient({
 	baseURL: authUrl,

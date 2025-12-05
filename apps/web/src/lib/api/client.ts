@@ -15,6 +15,8 @@ const devUrl = browser
 
 const backendUrl = isLocalUrl ? devUrl : PUBLIC_BACKEND_URL;
 
+console.log(backendUrl)
+
 const rpcLink = new RPCLink({
 	url: `${backendUrl}/rpc`,
 	headers: () => ({})
