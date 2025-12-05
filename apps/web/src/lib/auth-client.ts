@@ -18,7 +18,7 @@ const getAuthUrl = () => {
 	return "http://auth:5090";
 
 	// Just in development outside Docker
-	// return PUBLIC_AUTH_URL
+	return PUBLIC_AUTH_URL
 };
 
 const authUrl = getAuthUrl();
