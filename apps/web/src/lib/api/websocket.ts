@@ -5,17 +5,14 @@ import type { SocketRouterClient } from '@meter-lab/orpc';
 import { browser } from '$app/environment';
 
 
-// const websocket = new WebSocket(PUBLIC_WEBSOCKET_URL);
-
-// const link = new RPCLink({ websocket });
-
-// export const wsClient: SocketRouterClient = createORPCClient(link);
-
 let wsClient: SocketRouterClient | undefined
 
 if (browser) {
+  console.log("WS url: ", PUBLIC_WEBSOCKET_URL)
+
   const websocket = new WebSocket(PUBLIC_WEBSOCKET_URL);
 
+  // TODO Remove
   websocket.addEventListener('open', () => {
     console.log('WS OPEN ✅', websocket.readyState); // 1
   });

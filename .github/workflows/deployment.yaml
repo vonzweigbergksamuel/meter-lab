@@ -65,6 +65,7 @@ jobs:
           build-args: |
             PUBLIC_BACKEND_URL=${{ vars.PUBLIC_BACKEND_URL }}
             PUBLIC_AUTH_URL=${{ vars.PUBLIC_AUTH_URL }}
+            PUBLIC_WEBSOCKET_URL=${{ vars.PUBLIC_WEBSOCKET_URL }}
 
   deploy:
     needs: build
