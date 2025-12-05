@@ -24,7 +24,8 @@ app.use(
 			"http://localhost:3000",
 			"http://blade.jemac.se",
 			// Stage
-			"http://34.51.237.11",
+			"http://34.51.237.11", // Auth service
+			"http://34.51.192.219", // Web/Backend service
 		],
 		allowHeaders: ["Content-Type", "Authorization"],
 		allowMethods: ["POST", "GET", "OPTIONS"],
