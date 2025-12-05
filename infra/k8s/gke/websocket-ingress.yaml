@@ -8,7 +8,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    io.kompose.service: backend-websocket
+    io.kompose.service: backend
   ports:
   - name: websocket
     port: 5071
