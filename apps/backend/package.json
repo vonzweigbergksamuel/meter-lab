@@ -5,9 +5,11 @@
     "dev": "tsx watch --env-file=.env app/server.ts",
     "build": "tsc",
     "start": "node dist/app/server.js",
-    "migrate": "tsx --env-file=.env scripts/migrate.ts",
     "lint": "biome lint .",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "db:studio": "drizzle-kit studio",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.6",

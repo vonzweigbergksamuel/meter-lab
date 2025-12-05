@@ -17,15 +17,18 @@ COPY . .
 RUN turbo prune auth --docker
 
 FROM base AS builder
+ENV CI=true
 COPY --from=prepare /app/out/json/ .
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 COPY --from=prepare /app/out/full/ .
 RUN pnpm add -g turbo@^2
 RUN turbo build
 
-# RUN cd apps/auth && node scripts/migrate.js 2>/dev/null || echo "Migration skipped at build time (needs runtime DB credentials)"
-# RUN node scripts/seed-admin.js 2>/dev/null || echo "Seed admin skipped at build time (needs runtime DB credentials)"
+FROM base AS dependencies
+ENV CI=true
+COPY --from=prepare /app/out/json/ .
+RUN pnpm install --prod
 
 FROM node:lts-alpine AS runner
 WORKDIR /app
@@ -35,8 +38,18 @@ RUN apk add --no-cache libc6-compat
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 auth
 
-COPY --from=builder /app .
+# Copy prod-only node_modules
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/apps/auth/node_modules ./apps/auth/node_modules
 
+# Copy compiled dist and other necessary files
+COPY --from=builder /app/apps/auth/dist ./apps/auth/dist
+COPY --from=builder /app/apps/auth/package.json ./apps/auth/package.json
+COPY --from=builder /app/apps/auth/services/db/migrations ./apps/auth/services/db/migrations
+
+COPY apps/auth/entrypoint.sh /app/apps/auth/entrypoint.sh
+
+RUN chmod +x /app/apps/auth/entrypoint.sh
 RUN chown -R auth:nodejs /app
 USER auth
 
@@ -46,4 +59,4 @@ ENV NODE_ENV=production
 ENV PORT=${PORT}
 ENV HOST=0.0.0.0
 
-CMD ["node", "apps/auth/dist/app/server.js"]
+ENTRYPOINT ["/app/apps/auth/entrypoint.sh"]

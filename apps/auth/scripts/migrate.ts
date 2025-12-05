@@ -4,8 +4,6 @@ import * as schema from "../services/db/schema/auth-schema.js";
 
 async function main() {
 	try {
-		console.log("Migrating database...");
-
 		const db = drizzle({
 			connection: {
 				connectionString: process.env.DATABASE_URL,

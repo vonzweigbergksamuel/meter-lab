@@ -18,13 +18,9 @@
 
 	const handleSubmit = async (e: Event) => {
 		e.preventDefault();
-		console.log("e", e);
 		const formData = new FormData(e.target as HTMLFormElement);
-		console.log("formData", formData);
 		const email = formData.get("email") as string;
 		const password = formData.get("password") as string;
-		console.log("email", email);
-		console.log("password", password);
 		const { data, error } = await authClient.signIn.email({
 			email: email,
 			password: password,

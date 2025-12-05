@@ -12,7 +12,7 @@ async function main() {
 		});
 
 		await migrate(db, {
-			migrationsFolder: "./services/db/migrations",
+			migrationsFolder: "./db/migrations",
 		});
 
 		console.log("Migrations completed successfully");
@@ -22,4 +22,4 @@ async function main() {
 	}
 }
 
-main();
+await main();

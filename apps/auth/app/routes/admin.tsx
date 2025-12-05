@@ -50,9 +50,6 @@ router.post("/admin/login", async (c) => {
 			asResponse: true,
 		});
 
-		console.log("loginResponse", loginResponse);
-		console.log("loginResponse headers", loginResponse.headers);
-
 		if (!loginResponse.ok) {
 			return c.html(<LoginForm error="Invalid email or password" />);
 		}

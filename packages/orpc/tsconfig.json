@@ -8,6 +8,6 @@
     "moduleResolution": "NodeNext",
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "../backend/services/api/routers/**/*"],
+  "include": ["src/**/*", "../../apps/backend/api/routers/**/*"],
   "exclude": ["node_modules"]
 }

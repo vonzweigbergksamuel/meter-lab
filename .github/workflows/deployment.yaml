@@ -90,14 +90,14 @@ jobs:
             
             # DONT FORGET TO ADD THE IMAGES HERE AS WELL AS IN THE TAGGING STEP
             echo "Pulling images..."
-            docker pull ghcr.io/$GITHUB_REPOSITORY/web:${GITHUB_SHA::7}
-            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${GITHUB_SHA::7}
-            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${GITHUB_SHA::7}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/web:${{ github.sha }}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }}
             
             echo "Tagging images for compose..."
-            docker tag ghcr.io/$GITHUB_REPOSITORY/web:${GITHUB_SHA::7} web:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${GITHUB_SHA::7} backend:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${GITHUB_SHA::7} auth:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/web:${{ github.sha }} web:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }} backend:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }} auth:latest
             
             echo "Images ready!"
           EOF
@@ -118,22 +118,20 @@ jobs:
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           ADMIN_NAME: ${{ vars.ADMIN_NAME }}
+          # Conditional variables for migrations and admin seeding in entrypoint.sh
+          BACKEND_RUN_MIGRATIONS: ${{ vars.BACKEND_RUN_MIGRATIONS }}
+          AUTH_RUN_MIGRATIONS: ${{ vars.AUTH_RUN_MIGRATIONS }}
+          AUTH_SEED_ADMIN: ${{ vars.AUTH_SEED_ADMIN }}
         run: |
           scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/tmp/compose.yaml
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
             cp /tmp/compose.yaml ~/meter-lab/compose.yaml
             cd ~/meter-lab
             docker compose down --remove-orphans
-            BACKEND_PORT="$BACKEND_PORT" DATABASE_URL="$DATABASE_URL" WEBSOCKET_PORT="$WEBSOCKET_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" docker compose up -d
+            BACKEND_PORT="$BACKEND_PORT" DATABASE_URL="$DATABASE_URL" WEBSOCKET_PORT="$WEBSOCKET_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" BACKEND_RUN_MIGRATIONS="$BACKEND_RUN_MIGRATIONS" AUTH_RUN_MIGRATIONS="$AUTH_RUN_MIGRATIONS" AUTH_SEED_ADMIN="$AUTH_SEED_ADMIN" ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" docker compose up -d
 
             echo "Deployment complete!"
-
-            ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" docker compose run --rm auth node apps/auth/dist/scripts/seed-admin.js
-
-            echo "Admin seeding complete!"
-
             echo "Pruning unused images..."
             docker image prune -a -f
           EOF
-          # Dont forget to add the environment variables to the compose file
           echo "Deployment complete!"

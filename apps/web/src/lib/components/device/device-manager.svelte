@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
   import { onMount } from "svelte";
-	import { orpc } from "$lib/api/client";
+	import { rpc } from "$lib/api/client";
 	import DeviceCard from "./device-card.svelte";
   import DeviceCardSkeleton from "./device-card-skeleton.svelte";
   import { wsClient } from "$lib/api/websocket";
@@ -14,7 +14,7 @@
   let data: { devices: Device[] } = $state({ devices: [] })
 
   const response = createQuery(() => 
-    orpc.device.queryOptions({
+    rpc.device.queryOptions({
       input: {},
       context: { cache: false }
     })
@@ -31,11 +31,9 @@
       return
     };
 
-    const controller = new AbortController();
-
     (async () => {
       try {
-        const stream = await wsClient.deviceUpdates(undefined, { signal: controller.signal });
+        const stream = await wsClient.deviceUpdates();
         
         for await (const event of stream) {
           console.log("WebSocket Event:", event);
@@ -47,8 +45,6 @@
         console.error("WebSocket error:", error);
       }
     })();
-
-    return () => controller.abort();
   });
 </script>
 
