@@ -7,7 +7,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: backend
+    io.kompose.service: backend
   ports:
   - name: backend
     port: 5070
