@@ -12,11 +12,11 @@ substitutions:
   _IMAGE_NAME_AUTH: "gcr.io/${PROJECT_ID}/auth/gcpdevops-prod:${SHORT_SHA}"
   _CLUSTER_NAME: "meter-lab-production-standard-cluster"
   _NAMESPACE: "meter-lab"
-  _LOCATION: "europe-north2":
+  _LOCATION: "europe-north2"
   _BETTER_AUTH_SECRET: "some-secretsome-secretsome-secretsome-secretsome-secretsome-secret"
   _BETTER_AUTH_URL: "http://34.51.221.35"
   _ADMIN_EMAIL: "admin@example.com"
-  _ADMIN_PASSWORD: changeme123
+  _ADMIN_PASSWORD: "changeme123"
   _ADMIN_NAME: "Admin User"
 
 steps:
