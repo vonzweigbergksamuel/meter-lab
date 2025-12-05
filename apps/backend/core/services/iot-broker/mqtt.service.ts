@@ -29,9 +29,6 @@ export class MqttService implements IIoTBrokerService {
 						reject(err);
 					}
 
-					console.log("Connected to broker");
-					resolve();
-
 					this.#broker.on("error", (err) => {
 						console.log("Connection to broker closed");
 						reject(err);
@@ -41,6 +38,9 @@ export class MqttService implements IIoTBrokerService {
 						console.log("Disconnected from broker");
 						this.#service.clearPayload();
 					});
+
+					console.log("Connected to broker");
+					resolve();
 				});
 			});
 		});
