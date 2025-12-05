@@ -22,6 +22,8 @@ app.use(
 			"http://localhost:5080",
 			"http://localhost:5173",
 			"http://localhost:3000",
+			// Stage
+			"http://34.51.237.11",
 		],
 		allowHeaders: ["Content-Type", "Authorization"],
 		allowMethods: ["POST", "GET", "OPTIONS"],
