@@ -1,10 +1,9 @@
 <script lang="ts">
   import DeviceManager from "@/components/device/device-manager.svelte";
   import HeroText from "@/components/hero-text.svelte";
-	import Container from "@/components/ui/container.svelte";
 </script>
 
-<Container className="mt-10 px-8">
+<div class="m-10">
   <HeroText title={"Device"}/>
   <DeviceManager />
-</Container>
+</div>

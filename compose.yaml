@@ -8,6 +8,7 @@ services:
       args:
         PUBLIC_BACKEND_URL: "${PUBLIC_BACKEND_URL:-http://localhost:${BACKEND_PORT:-5070}}"
         PUBLIC_AUTH_URL: "${PUBLIC_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}"
+        PUBLIC_WEBSOCKET_URL: "${PUBLIC_WEBSOCKET_URL:-ws://localhost:5071}"
     ports:
       - "${WEB_PORT:-5080}:${WEB_PORT:-5080}"
     extra_hosts:
@@ -15,7 +16,7 @@ services:
     depends_on:
       - backend
       - auth
-    restart: always
+    restart: unless-stopped
     networks:
       - meter-lab
 
@@ -36,7 +37,7 @@ services:
       EMQX_USERNAME: ${EMQX_USERNAME:-admin}
       EMQX_PASSWORD: ${EMQX_PASSWORD:-admin123}
       NODE_ENV: ${NODE_ENV:-development}
-    restart: always
+    restart: unless-stopped
     depends_on:
       - backend-db
     networks:
@@ -45,6 +46,7 @@ services:
   redis:
     image: redis:latest
     container_name: redis
+    restart: unless-stopped
     ports:
       - "6379:6379"
     networks:
@@ -58,6 +60,7 @@ services:
       POSTGRES_USER: ${BACKEND_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${BACKEND_DB_PASSWORD:-postgres}
       POSTGRES_DB: ${BACKEND_DB_NAME:-meter-lab}
+    restart: unless-stopped
     volumes:
       - backend-db-data:/var/lib/postgresql
     networks:
@@ -74,11 +77,11 @@ services:
       PORT: ${AUTH_PORT:-5090}
       HOST: "0.0.0.0"
       DATABASE_URL: postgres://postgres:postgres@auth-db:5432/auth
-      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secretsome-secretsome-secretsome-secretsome-secretsome-secret}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
     depends_on:
       - auth-db
-    restart: always
+    restart: unless-stopped
     networks:
       - meter-lab
 
@@ -90,6 +93,7 @@ services:
       POSTGRES_USER: ${AUTH_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD:-postgres}
       POSTGRES_DB: ${AUTH_DB_NAME:-auth}
+    restart: unless-stopped
     volumes:
       - auth-db-data:/var/lib/postgresql
     networks:
