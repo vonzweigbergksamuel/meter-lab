@@ -10,6 +10,6 @@ spec:
     app: web
   ports:
   - name: web
-    port: 80
+    port: 5080
     targetPort: 5080
     protocol: TCP
