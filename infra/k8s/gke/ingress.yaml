@@ -2,6 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: meter-lab-ingress
+  namespace: meter-lab
 spec:
   rules:
     - http:
