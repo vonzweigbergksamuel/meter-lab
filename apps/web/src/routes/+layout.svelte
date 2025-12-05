@@ -4,7 +4,6 @@
 	import { SvelteQueryDevtools } from "@tanstack/svelte-query-devtools";
 	import favicon from "$lib/assets/favicon.svg";
 	import Header from "@/components/header.svelte";
-	import Container from "@/components/ui/container.svelte";
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
@@ -17,14 +16,17 @@
 		}
 	});
 
-	let { children } = $props();
+	let { children, data } = $props();
+	const { session } = data
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<Header />
+{#if session}
+	<Header />
+{/if}
 <QueryClientProvider client={queryClient}>
 	<SvelteQueryDevtools />
 	{@render children()}

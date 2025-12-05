@@ -12,7 +12,12 @@ substitutions:
   _IMAGE_NAME_AUTH: "gcr.io/${PROJECT_ID}/auth/gcpdevops-prod:${SHORT_SHA}"
   _CLUSTER_NAME: "meter-lab-production-standard-cluster"
   _NAMESPACE: "meter-lab"
-  _LOCATION: "europe-north2"
+  _LOCATION: "europe-north2":
+  _BETTER_AUTH_SECRET: "some-secretsome-secretsome-secretsome-secretsome-secretsome-secret"
+  _BETTER_AUTH_URL: "http://34.51.221.35"
+  _ADMIN_EMAIL: "admin@example.com"
+  _ADMIN_PASSWORD: changeme123
+  _ADMIN_NAME: "Admin User"
 
 steps:
   # Step 1: Build Docker images with SHA-based tagging
@@ -95,3 +100,55 @@ steps:
         gcloud container clusters get-credentials ${_CLUSTER_NAME} --region ${_LOCATION}
         kubectl apply -f infra/gke/generated/ --namespace=${_NAMESPACE}
         sleep 5
+
+  # Wait for auth-db to be ready
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - "-c"
+      - |
+        gcloud container clusters get-credentials ${_CLUSTER_NAME} --region ${_LOCATION}
+        kubectl wait --for=condition=ready pod -l app=auth-db --namespace=${_NAMESPACE} --timeout=300s || true
+
+  # Run auth database migrations
+  # Note: Ensure BETTER_AUTH_SECRET and BETTER_AUTH_URL are set as Cloud Build substitutions or secrets
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - "-c"
+      - |
+        gcloud container clusters get-credentials ${_CLUSTER_NAME} --region ${_LOCATION}
+        kubectl run auth-migrate-${SHORT_SHA} \
+          --image=${_IMAGE_NAME_AUTH} \
+          --namespace=${_NAMESPACE} \
+          --restart=Never \
+          --env="DATABASE_URL=postgres://postgres:postgres@auth-db:5432/auth" \
+          --env="BETTER_AUTH_SECRET=${_BETTER_AUTH_SECRET}" \
+          --env="BETTER_AUTH_URL=${_BETTER_AUTH_URL}" \
+          --command -- sh -c "cd apps/auth && node dist/scripts/migrate.js"
+        kubectl wait --for=condition=complete pod/auth-migrate-${SHORT_SHA} --namespace=${_NAMESPACE} --timeout=300s || true
+        kubectl logs auth-migrate-${SHORT_SHA} --namespace=${_NAMESPACE} || true
+        kubectl delete pod auth-migrate-${SHORT_SHA} --namespace=${_NAMESPACE} --ignore-not-found=true
+
+  # Seed admin user
+  # Note: Ensure ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME are set as Cloud Build secrets
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - "-c"
+      - |
+        gcloud container clusters get-credentials ${_CLUSTER_NAME} --region ${_LOCATION}
+        kubectl run auth-seed-${SHORT_SHA} \
+          --image=${_IMAGE_NAME_AUTH} \
+          --namespace=${_NAMESPACE} \
+          --restart=Never \
+          --env="DATABASE_URL=postgres://postgres:postgres@auth-db:5432/auth" \
+          --env="BETTER_AUTH_SECRET=${_BETTER_AUTH_SECRET}" \
+          --env="BETTER_AUTH_URL=${_BETTER_AUTH_URL}" \
+          --env="ADMIN_EMAIL=${_ADMIN_EMAIL}" \
+          --env="ADMIN_PASSWORD=${_ADMIN_PASSWORD}" \
+          --env="ADMIN_NAME=${_ADMIN_NAME}" \
+          --command -- sh -c "cd apps/auth && node dist/scripts/seed-admin.js"
+        kubectl wait --for=condition=complete pod/auth-seed-${SHORT_SHA} --namespace=${_NAMESPACE} --timeout=300s || true
+        kubectl logs auth-seed-${SHORT_SHA} --namespace=${_NAMESPACE} || true
+        kubectl delete pod auth-seed-${SHORT_SHA} --namespace=${_NAMESPACE} --ignore-not-found=true

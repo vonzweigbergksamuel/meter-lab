@@ -10,12 +10,13 @@ export const handle = async ({ event, resolve }) => {
 	});
     console.log("isPublicRoute", isPublicRoute);
 
-    const { data: session } = await authClient.getSession({
-        fetchOptions: {
-            headers: event.request.headers,
-        },
-    });
-    console.log("session", session);
+	const { data: session } = await authClient.getSession({
+		fetchOptions: {
+			headers: event.request.headers,
+		},
+	});
+	event.locals.session = session;
+	console.log("isSession: ", session)
 
     if (!session && !isPublicRoute) {
         return redirect(302, "/login");
