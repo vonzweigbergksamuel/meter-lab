@@ -33,7 +33,7 @@ variable "project_name" {
 #############################
 variable "github_app_installation_id" {
   description = "The installation id of the GitHub app"
-  type = string
+  type = number
   default = ""
 }
 
