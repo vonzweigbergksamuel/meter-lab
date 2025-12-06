@@ -25,7 +25,7 @@
       <a href="/" class="text-black text-3xl font-bold">Meter Lab</a>
       <div class="flex flex-row gap-5 justify-center items-center text-black text-lg mr-5">
         {#each NAV_LINKS as link (link.path)}
-          <a class="hover:text-gray-500" href={link.path}>{link.label}</a>
+          <a class="hover:text-gray-500" href={`/dashboard${link.path}`}>{link.label}</a>
         {/each}
         <Signout />
       </div>
@@ -45,7 +45,7 @@
     </div>
     <div id="mobileNav" class="absolute top-full left-0 right-0 bg-white border-t shadow-lg flex flex-col gap-5 text-black text-lg p-5 hidden z-10">
       {#each NAV_LINKS as link (link.path)}
-        <a class="hover:text-gray-500" href={link.path}>{link.label}</a>
+        <a class="hover:text-gray-500" href={`/dashboard${link.path}`}>{link.label}</a>
       {/each}
       <Signout />
     </div>
