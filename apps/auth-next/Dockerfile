@@ -14,7 +14,7 @@ FROM base AS prepare
 RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm add -g turbo@^2
 COPY . .
-RUN turbo prune auth --docker
+RUN turbo prune auth-next --docker
 
 FROM base AS builder
 ENV CI=true
@@ -25,33 +25,23 @@ COPY --from=prepare /app/out/full/ .
 RUN pnpm add -g turbo@^2
 RUN turbo build
 
-FROM base AS dependencies
-ENV CI=true
-COPY --from=prepare /app/out/json/ .
-RUN pnpm install --prod
-
 FROM node:lts-alpine AS runner
 WORKDIR /app
 
 RUN apk add --no-cache libc6-compat
 
 RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 auth
+RUN adduser --system --uid 1001 nextjs
 
-# Copy prod-only node_modules
-COPY --from=dependencies /app/node_modules ./node_modules
-COPY --from=dependencies /app/apps/auth/node_modules ./apps/auth/node_modules
+COPY --from=builder /app/apps/auth-next/.next/standalone ./apps/auth-next/.next/standalone
+COPY --from=builder /app/apps/auth-next/.next/static ./apps/auth-next/.next/static
+COPY --from=builder /app/apps/auth-next/public ./apps/auth-next/public
+COPY --from=builder /app/apps/auth-next/lib/db/migrations ./apps/auth-next/lib/db/migrations
+COPY --from=builder /app/apps/auth-next/entrypoint.sh /app/apps/auth-next/entrypoint.sh
 
-# Copy compiled dist and other necessary files
-COPY --from=builder /app/apps/auth/dist ./apps/auth/dist
-COPY --from=builder /app/apps/auth/package.json ./apps/auth/package.json
-COPY --from=builder /app/apps/auth/lib/db/migrations ./apps/auth/lib/db/migrations
-
-COPY apps/auth/entrypoint.sh /app/apps/auth/entrypoint.sh
-
-RUN chmod +x /app/apps/auth/entrypoint.sh
-RUN chown -R auth:nodejs /app
-USER auth
+RUN chmod +x /app/apps/auth-next/entrypoint.sh
+RUN chown -R nextjs:nodejs /app
+USER nextjs
 
 ARG PORT
 EXPOSE ${PORT}
@@ -59,4 +49,4 @@ ENV NODE_ENV=production
 ENV PORT=${PORT}
 ENV HOST=0.0.0.0
 
-ENTRYPOINT ["/app/apps/auth/entrypoint.sh"]
+ENTRYPOINT ["/app/apps/auth-next/entrypoint.sh"]
