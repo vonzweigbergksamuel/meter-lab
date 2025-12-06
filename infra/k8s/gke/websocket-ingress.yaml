@@ -10,6 +10,6 @@ spec:
     app: websocket
   ports:
   - name: http
-    port: 5071
+    port: 80
     targetPort: 5071
     protocol: TCP
