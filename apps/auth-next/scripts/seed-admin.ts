@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
-import { db } from "@/services/db";
-import { schema } from "@/services/db/schema";
+import { db } from "@/lib/db";
+import { schema } from "@/lib/db/schema";
 
 async function seedAdmin() {
 	try {

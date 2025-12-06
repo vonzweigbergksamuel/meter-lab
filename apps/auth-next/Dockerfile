@@ -45,7 +45,7 @@ COPY --from=dependencies /app/apps/auth/node_modules ./apps/auth/node_modules
 # Copy compiled dist and other necessary files
 COPY --from=builder /app/apps/auth/dist ./apps/auth/dist
 COPY --from=builder /app/apps/auth/package.json ./apps/auth/package.json
-COPY --from=builder /app/apps/auth/services/db/migrations ./apps/auth/services/db/migrations
+COPY --from=builder /app/apps/auth/lib/db/migrations ./apps/auth/lib/db/migrations
 
 COPY apps/auth/entrypoint.sh /app/apps/auth/entrypoint.sh
 

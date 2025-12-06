@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { schema } from "@/services/db/schema";
+import { schema } from "@/lib/db/schema";
 
 async function main() {
 	try {
@@ -12,7 +12,7 @@ async function main() {
 		});
 
 		await migrate(db, {
-			migrationsFolder: "./services/db/migrations",
+			migrationsFolder: "./lib/db/migrations",
 		});
 
 		console.log("Migrations completed successfully");
