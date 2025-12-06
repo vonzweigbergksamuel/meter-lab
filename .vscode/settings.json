@@ -1,5 +1,5 @@
 {
-  "npm.packageManager": "bun",
+  "npm.packageManager": "pnpm",
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "emmet.showExpandedAbbreviation": "never",
@@ -34,5 +34,5 @@
       "pattern": "./apps/web"
     }
   ],
-  "prettier.enable": true
+  // "prettier.enable": true
 }

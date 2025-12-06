@@ -1,7 +1,10 @@
 {
-	"mcpServers": {
-		"svelte": {
-			"url": "https://mcp.svelte.dev/mcp"
-		}
-	}
+  "mcpServers": {
+    "svelte": {
+      "url": "https://mcp.svelte.dev/mcp"
+    },
+    "Better Auth": {
+      "url": "https://mcp.chonkie.ai/better-auth/better-auth-builder/mcp"
+    }
+  }
 }
