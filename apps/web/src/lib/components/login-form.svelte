@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { NODE_ENV } from "$env/static/private";
 	import { authClient } from "$lib/auth-client";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Card from "$lib/components/ui/card/index.js";
@@ -31,6 +32,15 @@
 		}
 		if (data) {
 			console.log("data", data);
+
+			// Only in testing - Staging - Remove
+			// Set data in cookie
+			if (NODE_ENV === "testing") {
+				document.cookie = `better-auth.session_token=${JSON.stringify(data.token)}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
+			}
+			
+			// Navigate to dashboard after successful login
+			window.location.href = "/dashboard";
 		}
 	};
 </script>
