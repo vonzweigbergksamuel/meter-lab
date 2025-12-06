@@ -9,13 +9,12 @@ export const handle = async ({ event, resolve }) => {
 	});
 	console.log("isPublicRoute", isPublicRoute);
 
-	console.log("Event: ", event.cookies.get("better-auth.session_token"))
-
 	// Get user session
 	const session = event.cookies.get("better-auth.session_token")
 
 	// set user to session
 	event.locals.session = session
+	// event.locals.session = sessionTest.data
 
 	if (!session && !isPublicRoute) {
 			return redirect(302, "/login");
