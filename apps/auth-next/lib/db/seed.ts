@@ -1,14 +1,24 @@
-import "dotenv/config";
 import { eq } from "drizzle-orm";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { schema } from "@/lib/db/schema";
+import { auth } from "../auth";
+import { db } from "./";
+import { schema } from "./schema";
 
-async function seedAdmin() {
+async function run() {
 	try {
+		const adminEmail = process.env.ADMIN_EMAIL || "admin@example.com";
+
+		const existingAdmin = await db.query.user.findFirst({
+			where: eq(schema.user.email, adminEmail),
+		});
+
+		if (existingAdmin) {
+			console.log("Admin user already exists, skipping seed...");
+			return;
+		}
+
 		const result = await auth.api.signUpEmail({
 			body: {
-				email: process.env.ADMIN_EMAIL || "admin@example.com",
+				email: adminEmail,
 				password: process.env.ADMIN_PASSWORD || "changeme123",
 				name: process.env.ADMIN_NAME || "Admin User",
 			},
@@ -29,4 +39,4 @@ async function seedAdmin() {
 	}
 }
 
-seedAdmin();
+run();

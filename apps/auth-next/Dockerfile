@@ -33,13 +33,10 @@ RUN apk add --no-cache libc6-compat
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/auth-next/.next/standalone ./apps/auth-next/.next/standalone
+COPY --from=builder /app/apps/auth-next/.next/standalone ./
 COPY --from=builder /app/apps/auth-next/.next/static ./apps/auth-next/.next/static
 COPY --from=builder /app/apps/auth-next/public ./apps/auth-next/public
-COPY --from=builder /app/apps/auth-next/lib/db/migrations ./apps/auth-next/lib/db/migrations
-COPY --from=builder /app/apps/auth-next/entrypoint.sh /app/apps/auth-next/entrypoint.sh
 
-RUN chmod +x /app/apps/auth-next/entrypoint.sh
 RUN chown -R nextjs:nodejs /app
 USER nextjs
 
@@ -49,4 +46,4 @@ ENV NODE_ENV=production
 ENV PORT=${PORT}
 ENV HOST=0.0.0.0
 
-ENTRYPOINT ["/app/apps/auth-next/entrypoint.sh"]
+CMD ["node", "/app/apps/auth-next/server.js"]

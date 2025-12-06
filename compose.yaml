@@ -80,8 +80,6 @@ services:
   #     ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
   #     ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme123}
   #     ADMIN_NAME: ${ADMIN_NAME:-Admin User}
-  #     AUTH_RUN_MIGRATIONS: ${AUTH_RUN_MIGRATIONS:-true}
-  #     AUTH_SEED_ADMIN: ${AUTH_SEED_ADMIN:-true}
   #   depends_on:
   #     - auth-db
   #   restart: always
@@ -98,14 +96,16 @@ services:
     environment:
       PORT: ${AUTH_PORT:-5090}
       HOST: "0.0.0.0"
-      DATABASE_URL: postgres://postgres:postgres@auth-db:5432/auth
+      DATABASE_HOST: ${AUTH_DB_HOST:-auth-db}
+      DATABASE_PORT: ${AUTH_DB_PORT:-5432}
+      DATABASE_USER: ${AUTH_DB_USER:-postgres}
+      DATABASE_PASSWORD: ${AUTH_DB_PASSWORD:-postgres}
+      DATABASE_NAME: ${AUTH_DB_NAME:-auth}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme123}
       ADMIN_NAME: ${ADMIN_NAME:-Admin User}
-      AUTH_RUN_MIGRATIONS: ${AUTH_RUN_MIGRATIONS:-true}
-      AUTH_SEED_ADMIN: ${AUTH_SEED_ADMIN:-true}
     depends_on:
       - auth-db
     restart: always
