@@ -3,8 +3,6 @@
 	import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
 	import { SvelteQueryDevtools } from "@tanstack/svelte-query-devtools";
 	import favicon from "$lib/assets/favicon.svg";
-	import Header from "@/components/header.svelte";
-	import Footer from "@/components/footer.svelte";
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
