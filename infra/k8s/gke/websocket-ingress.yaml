@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: websocket-service
+  name: meter-lab-backend-websocket-loadbalancer
   labels:
     app: meter-lab
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
-    app: websocket
+    io.kompose.service: websocket
   ports:
   - name: http
     port: 80

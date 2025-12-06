@@ -21,7 +21,7 @@ spec:
                   number: 80
 
           - path: /auth(/|$)(.*)
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: meter-lab-auth-service
