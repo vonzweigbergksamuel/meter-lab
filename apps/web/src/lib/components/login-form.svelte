@@ -24,7 +24,7 @@
 		const { data, error } = await authClient.signIn.email({
 			email: email,
 			password: password,
-			callbackURL: "/"
+			callbackURL: "/dashboard"
 		});
 		if (error) {
 			console.error("error", error);

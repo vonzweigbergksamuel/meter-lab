@@ -1,5 +1,5 @@
 <script lang="ts">
-	import "../app.css";
+	import "../../app.css";
 	import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
 	import { SvelteQueryDevtools } from "@tanstack/svelte-query-devtools";
 	import favicon from "$lib/assets/favicon.svg";
@@ -26,10 +26,16 @@
 </svelte:head>
 
 <div class="w-full min-h-screen">
+	<!-- {#if data.session} -->
+		<Header />
+	<!-- {/if} -->
 	<QueryClientProvider client={queryClient}>
 		<SvelteQueryDevtools />
 		{@render children()}
 	</QueryClientProvider>
-
+	
+	<!-- {#if data.session} -->
+		<Footer />
+	<!-- {/if} -->
 </div>
 

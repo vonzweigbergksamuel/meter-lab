@@ -21,7 +21,7 @@ export const handle = async ({ event, resolve }) => {
 	}
 
 	if (session && isPublicRoute) {
-			return redirect(302, "/");
+			return redirect(302, "/dashboard");
 	}
 
 	return resolve(event);
