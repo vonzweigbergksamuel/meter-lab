@@ -9,10 +9,15 @@ export const auth = betterAuth({
 	}),
 	plugins: [jwt(), admin(), openAPI()],
 	trustedOrigins: [
-		"http://localhost:5173", // Web
-		"http://localhost:5080", // Web
-		"http://localhost:3000", // Backend
-		"http://localhost:5070", // Backend
+		/* ----- Web ----- */
+		"http://localhost:5173", // Local
+		"http://34.51.237.11", // Stage
+		"http://blade.jemac.se:5080", // Prod
+
+		/* ----- Backend ----- */
+		"http://localhost:3000", // Local
+		"http://34.51.192.219", // Stage
+		"http://blade.jemac.se:5070", // Prod
 	],
 	emailAndPassword: {
 		enabled: true,
