@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from "$app/environment";
 	import Container from "./ui/container.svelte";
+  import Signout from "./signout.svelte";
 
   const NAV_LINKS = [
     { path: "/test-cases", label: "Test Cases"},
@@ -21,11 +22,12 @@
   <Container>
     <div class="flex flex-row justify-between items-center">
       <!-- Maybe a img with a cool font? -->
-      <a href="/" class="text-black text-3xl">Meter Lab</a>
-      <div class="flex flex-row gap-5 text-black text-xl mr-5">
+      <a href="/" class="text-black text-3xl font-bold">Meter Lab</a>
+      <div class="flex flex-row gap-5 justify-center items-center text-black text-lg mr-5">
         {#each NAV_LINKS as link (link.path)}
           <a class="hover:text-gray-500" href={link.path}>{link.label}</a>
         {/each}
+        <Signout />
       </div>
     </div>
   </Container>
@@ -34,17 +36,18 @@
 <div class="w-full h-full bg-white border shadow-xs md:hidden block relative">
   <Container>
     <div class="flex flex-row justify-between items-center">
-      <a href="/" class="text-black text-3xl">Meter Lab</a>
+      <a href="/" class="text-black text-3xl font-bold">Meter Lab</a>
       <div class="text-black text-xl mr-2">
         <div class="text-black" id="mobile">
           ☰
         </div>
       </div>
     </div>
-    <div id="mobileNav" class="absolute top-full left-0 right-0 bg-white border-t shadow-lg flex flex-col gap-5 text-black text-xl p-5 hidden z-10">
+    <div id="mobileNav" class="absolute top-full left-0 right-0 bg-white border-t shadow-lg flex flex-col gap-5 text-black text-lg p-5 hidden z-10">
       {#each NAV_LINKS as link (link.path)}
         <a class="hover:text-gray-500" href={link.path}>{link.label}</a>
       {/each}
+      <Signout />
     </div>
   </Container>
 </div>
