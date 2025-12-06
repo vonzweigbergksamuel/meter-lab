@@ -9,7 +9,7 @@ export const client = new Pool({
 	user: env.DATABASE_USER,
 	password: env.DATABASE_PASSWORD,
 	database: env.DATABASE_NAME,
-	ssl: env.NODE_ENV === "production",
+	ssl: false,
 });
 
 export const db = drizzle(client, { schema });

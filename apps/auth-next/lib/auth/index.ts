@@ -1,5 +1,7 @@
+import "server-only";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
 import { admin, jwt, openAPI } from "better-auth/plugins";
 import { db } from "@/lib/db";
 
@@ -7,7 +9,7 @@ export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "pg",
 	}),
-	plugins: [jwt(), admin(), openAPI()],
+	plugins: [jwt(), admin(), openAPI(), nextCookies()], // Make sure that nextCookies is the last plugin in the array
 	trustedOrigins: [
 		/* ----- Web ----- */
 		"http://localhost:5173", // Local

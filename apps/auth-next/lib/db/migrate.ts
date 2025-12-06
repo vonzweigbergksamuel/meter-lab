@@ -17,8 +17,6 @@ async function run() {
 		} else {
 			console.error("Migration error:", error);
 		}
-	} finally {
-		await client.end();
 	}
 }
 

@@ -12,7 +12,19 @@ async function run() {
 		});
 
 		if (existingAdmin) {
-			console.log("Admin user already exists, skipping seed...");
+			if (existingAdmin.role === "admin") {
+				console.log(
+					"Admin user already exists with admin role, skipping seed...",
+				);
+				return;
+			}
+
+			await db
+				.update(schema.user)
+				.set({ role: "admin" })
+				.where(eq(schema.user.id, existingAdmin.id));
+
+			console.log("Updated existing user to admin role!");
 			return;
 		}
 
