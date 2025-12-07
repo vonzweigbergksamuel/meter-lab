@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { NODE_ENV } from "$env/static/private";
 	import { authClient } from "$lib/auth-client";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Card from "$lib/components/ui/card/index.js";
@@ -35,7 +34,8 @@
 
 			// Only in testing - Staging - Remove
 			// Set data in cookie
-			if (NODE_ENV === "testing") {
+			const isStaging = window.location.hostname.includes("34.51");
+			if (isStaging) {
 				document.cookie = `better-auth.session_token=${JSON.stringify(data.token)}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
 			}
 			
