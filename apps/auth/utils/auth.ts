@@ -16,8 +16,8 @@ export const auth = betterAuth({
 		"http://localhost:3000", // Backend
 		"http://localhost:5070", // Backend
 		"http://blade.jemac.se", // Production
-		"http://34.51.237.11", // Stage Web
-		"http://34.51.192.219", // Stage Backend
+		"http://34.51.250.54", // Stage Web
+		"http://34.51.247.167", // Stage Backend
 	],
 	emailAndPassword: {
 		enabled: true,
