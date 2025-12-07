@@ -25,7 +25,7 @@ app.use(
 			"http://blade.jemac.se",
 			// Stage
 			"http://34.51.250.54", // Web service
-			"http://34.51.192.219", // Backend service
+			"http://34.51.247.167",
 		],
 		allowHeaders: ["Content-Type", "Authorization"],
 		allowMethods: ["POST", "GET", "OPTIONS"],
