@@ -1,5 +1,4 @@
 import { migrateAuth } from "./migrate-auth.js";
-import { migrateAuthNext } from "./migrate-auth-next.js";
 import { migrateBackend } from "./migrate-backend.js";
 
 async function validateEnvironment() {
@@ -11,24 +10,20 @@ async function validateEnvironment() {
 		errors.push("- BACKEND_DATABASE_URL is missing");
 	}
 
-	if (!process.env.AUTH_NEXT_DATABASE_HOST) {
-		errors.push("- AUTH_NEXT_DATABASE_HOST is missing");
+	if (!process.env.AUTH_DATABASE_HOST) {
+		errors.push("- AUTH_DATABASE_HOST is missing");
 	}
-	if (!process.env.AUTH_NEXT_DATABASE_PORT) {
-		errors.push("- AUTH_NEXT_DATABASE_PORT is missing");
+	if (!process.env.AUTH_DATABASE_PORT) {
+		errors.push("- AUTH_DATABASE_PORT is missing");
 	}
-	if (!process.env.AUTH_NEXT_DATABASE_USER) {
-		errors.push("- AUTH_NEXT_DATABASE_USER is missing");
+	if (!process.env.AUTH_DATABASE_USER) {
+		errors.push("- AUTH_DATABASE_USER is missing");
 	}
-	if (!process.env.AUTH_NEXT_DATABASE_PASSWORD) {
-		errors.push("- AUTH_NEXT_DATABASE_PASSWORD is missing");
+	if (!process.env.AUTH_DATABASE_PASSWORD) {
+		errors.push("- AUTH_DATABASE_PASSWORD is missing");
 	}
-	if (!process.env.AUTH_NEXT_DATABASE_NAME) {
-		errors.push("- AUTH_NEXT_DATABASE_NAME is missing");
-	}
-
-	if (!process.env.AUTH_DATABASE_URL) {
-		errors.push("- AUTH_DATABASE_URL is missing");
+	if (!process.env.AUTH_DATABASE_NAME) {
+		errors.push("- AUTH_DATABASE_NAME is missing");
 	}
 
 	if (errors.length > 0) {
@@ -51,14 +46,13 @@ async function main() {
 		await validateEnvironment();
 
 		await migrateBackend();
-		await migrateAuthNext();
 		await migrateAuth();
 
 		console.log("=".repeat(60));
 		console.log("All migrations completed successfully!");
 		console.log("=".repeat(60));
 	} catch (error) {
-		console.error("\n" + "=".repeat(60));
+		console.error(`\n${"=".repeat(60)}`);
 		console.error("Migration process failed!");
 		console.error("=".repeat(60));
 		console.error(error);

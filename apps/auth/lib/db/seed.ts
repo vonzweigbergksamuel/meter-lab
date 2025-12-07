@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { auth } from "../auth";
-import { db } from "./";
+import { db } from ".";
 import { schema } from "./schema";
 
 async function run() {

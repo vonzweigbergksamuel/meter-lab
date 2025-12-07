@@ -4,7 +4,6 @@
 	"scripts": {
 		"migrate:all": "tsx src/index.ts",
 		"migrate:backend": "tsx src/migrate-backend.ts",
-		"migrate:auth-next": "tsx src/migrate-auth-next.ts",
 		"migrate:auth": "tsx src/migrate-auth.ts"
 	},
 	"dependencies": {

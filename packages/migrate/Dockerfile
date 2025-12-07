@@ -22,7 +22,6 @@ COPY packages/migrate/package.json ./
 COPY packages/migrate/src ./src
 
 COPY apps/backend/db/migrations ./migrations/backend
-COPY apps/auth/services/db/migrations ./migrations/auth
-COPY apps/auth-next/lib/db/migrations ./migrations/auth-next
+COPY apps/auth/lib/db/migrations ./migrations/auth
 
 CMD ["pnpm", "migrate:all"]

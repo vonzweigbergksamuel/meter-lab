@@ -5,7 +5,7 @@ A dedicated Docker service for running database migrations across all services i
 ## Overview
 
 This package provides a centralized migration runner that:
-- Runs migrations for backend, auth, and auth-next services
+- Runs migrations for backend and auth services
 - Validates database connections before running migrations
 - Ensures migrations run once before application services start
 - Prevents race conditions in horizontally scaled deployments
@@ -15,8 +15,7 @@ This package provides a centralized migration runner that:
 ### Individual Migration Scripts
 
 - `migrate-backend.ts` - Migrates backend database (uses `BACKEND_DATABASE_URL`)
-- `migrate-auth-next.ts` - Migrates auth-next database (uses separate credentials)
-- `migrate-auth.ts` - Migrates auth database (uses `AUTH_DATABASE_URL`)
+- `migrate-auth.ts` - Migrates auth database (uses separate credentials)
 
 Each script:
 1. Validates required environment variables
@@ -42,7 +41,6 @@ docker compose run migrate
 
 # Run individual service migrations (if needed)
 docker compose run migrate pnpm migrate:backend
-docker compose run migrate pnpm migrate:auth-next
 docker compose run migrate pnpm migrate:auth
 ```
 
@@ -74,22 +72,18 @@ This ensures migrations complete before apps start.
 ### Backend Database
 - `BACKEND_DATABASE_URL` - Full PostgreSQL connection string
 
-### Auth-Next Database
-- `AUTH_NEXT_DATABASE_HOST` - Database host (e.g., auth-db)
-- `AUTH_NEXT_DATABASE_PORT` - Database port (e.g., 5432)
-- `AUTH_NEXT_DATABASE_USER` - Database user
-- `AUTH_NEXT_DATABASE_PASSWORD` - Database password
-- `AUTH_NEXT_DATABASE_NAME` - Database name
-
 ### Auth Database
-- `AUTH_DATABASE_URL` - Full PostgreSQL connection string
+- `AUTH_DATABASE_HOST` - Database host (e.g., auth-db)
+- `AUTH_DATABASE_PORT` - Database port (e.g., 5432)
+- `AUTH_DATABASE_USER` - Database user
+- `AUTH_DATABASE_PASSWORD` - Database password
+- `AUTH_DATABASE_NAME` - Database name
 
 ## Migration Files
 
 Migration files are copied from their respective services during Docker build:
 - Backend: `apps/backend/db/migrations`
-- Auth: `apps/auth/services/db/migrations`
-- Auth-Next: `apps/auth-next/lib/db/migrations`
+- Auth: `apps/auth/lib/db/migrations`
 
 ## Adding New Services
 
@@ -106,6 +100,5 @@ To add migrations for a new service:
 - Sequential execution (no parallel race conditions)
 - Explicit environment variable validation
 - Separate credentials per service (prevents cross-contamination)
-- Connection pooling for auth-next (using pg.Pool)
-- Simple connection strings for backend and auth services
-
+- Connection pooling for auth (using pg.Pool)
+- Simple connection string for backend service

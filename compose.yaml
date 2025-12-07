@@ -29,7 +29,7 @@ services:
     environment:
       PORT: ${BACKEND_PORT:-5070}
       WEBSOCKET_PORT: ${WEBSOCKET_PORT:-5071}
-      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth-next:5090}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth:5090}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       DATABASE_URL: postgres://postgres:postgres@backend-db:5432/meter-lab
       EMQX_URL: ${EMQX_URL:-http://host.docker.internal:1883}
@@ -66,33 +66,11 @@ services:
     networks:
       - meter-lab
 
-  # auth:
-  #   image: auth:latest
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/auth/Dockerfile
-  #   ports:
-  #     - "${AUTH_PORT:-5090}:${AUTH_PORT:-5090}"
-  #   environment:
-  #     PORT: ${AUTH_PORT:-5090}
-  #     HOST: "0.0.0.0"
-  #     DATABASE_URL: postgres://postgres:postgres@auth-db:5432/auth
-  #     BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
-  #     BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
-  #     ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
-  #     ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme123}
-  #     ADMIN_NAME: ${ADMIN_NAME:-Admin User}
-  #   depends_on:
-  #     - auth-db
-  #   restart: always
-  #   networks:
-  #     - meter-lab
-
-  auth-next:
-    image: auth-next:latest
+  auth:
+    image: auth:latest
     build:
       context: .
-      dockerfile: ./apps/auth-next/Dockerfile
+      dockerfile: ./apps/auth/Dockerfile
     ports:
       - "${AUTH_PORT:-5090}:${AUTH_PORT:-5090}"
     environment:
@@ -135,12 +113,11 @@ services:
       dockerfile: ./packages/migrate/Dockerfile
     environment:
       BACKEND_DATABASE_URL: postgres://${BACKEND_DB_USER:-postgres}:${BACKEND_DB_PASSWORD:-postgres}@backend-db:5432/${BACKEND_DB_NAME:-meter-lab}
-      AUTH_NEXT_DATABASE_HOST: ${AUTH_DB_HOST:-auth-db}
-      AUTH_NEXT_DATABASE_PORT: ${AUTH_DB_PORT:-5432}
-      AUTH_NEXT_DATABASE_USER: ${AUTH_DB_USER:-postgres}
-      AUTH_NEXT_DATABASE_PASSWORD: ${AUTH_DB_PASSWORD:-postgres}
-      AUTH_NEXT_DATABASE_NAME: ${AUTH_DB_NAME:-auth}
-      AUTH_DATABASE_URL: postgres://${AUTH_DB_USER:-postgres}:${AUTH_DB_PASSWORD:-postgres}@auth-db:5432/${AUTH_DB_NAME:-auth}
+      AUTH_DATABASE_HOST: ${AUTH_DB_HOST:-auth-db}
+      AUTH_DATABASE_PORT: ${AUTH_DB_PORT:-5432}
+      AUTH_DATABASE_USER: ${AUTH_DB_USER:-postgres}
+      AUTH_DATABASE_PASSWORD: ${AUTH_DB_PASSWORD:-postgres}
+      AUTH_DATABASE_NAME: ${AUTH_DB_NAME:-auth}
     depends_on:
       - backend-db
       - auth-db

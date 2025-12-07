@@ -1,9 +1,11 @@
 {
-    "root": false,
-    "extends": "//",
-    "files": {
-        "includes": [
-			"**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "!services/db/schema", "!services/db/migrations"
-		]
-    }
+	"root": false,
+	"extends": "//",
+	"linter": {
+		"enabled": true,
+		"domains": {
+			"next": "recommended",
+			"react": "recommended"
+		}
+	}
 }
