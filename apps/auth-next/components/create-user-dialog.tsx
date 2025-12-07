@@ -1,7 +1,9 @@
 "use client";
 
 import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -21,11 +23,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { createUser } from "@/lib/actions/users";
+import { authClient } from "@/lib/auth/auth-client";
 
 export function CreateUserDialog() {
 	const [open, setOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const router = useRouter();
 	const [formData, setFormData] = useState<{
 		name: string;
 		email: string;
@@ -43,9 +46,18 @@ export function CreateUserDialog() {
 		setIsLoading(true);
 
 		try {
-			await createUser(formData);
+			await authClient.admin.createUser({
+				name: formData.name,
+				email: formData.email,
+				password: formData.password,
+				role: formData.role,
+			});
 			setOpen(false);
 			setFormData({ name: "", email: "", password: "", role: "user" });
+			toast.success("User created successfully");
+			router.refresh();
+		} catch (_error) {
+			toast.error("Failed to create user");
 		} finally {
 			setIsLoading(false);
 		}

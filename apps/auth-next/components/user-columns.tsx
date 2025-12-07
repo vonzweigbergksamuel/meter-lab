@@ -1,10 +1,11 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import type { UserWithMeta } from "@/lib/types";
-import { UserActions } from "./user-actions";
+import { UserActions } from "./actions/user-actions";
 
 export const userColumns: ColumnDef<UserWithMeta>[] = [
 	{
@@ -20,7 +21,10 @@ export const userColumns: ColumnDef<UserWithMeta>[] = [
 				.slice(0, 2);
 
 			return (
-				<div className="flex items-center gap-3">
+				<Link
+					href={`/user/${user.id}`}
+					className="flex items-center gap-3 hover:underline"
+				>
 					<Avatar className="h-8 w-8">
 						<AvatarImage src={user.image || undefined} alt={user.name} />
 						<AvatarFallback className="text-xs">{initials}</AvatarFallback>
@@ -29,7 +33,7 @@ export const userColumns: ColumnDef<UserWithMeta>[] = [
 						<span className="font-medium">{user.name}</span>
 						<span className="text-sm text-muted-foreground">{user.email}</span>
 					</div>
-				</div>
+				</Link>
 			);
 		},
 	},
@@ -47,11 +51,14 @@ export const userColumns: ColumnDef<UserWithMeta>[] = [
 	},
 	{
 		accessorKey: "banned",
-		header: "Status",
+		header: () => <span className="hidden md:inline">Status</span>,
 		cell: ({ row }) => {
 			const banned = row.getValue("banned") as boolean | null;
 			return (
-				<Badge variant={banned ? "destructive" : "outline"}>
+				<Badge
+					variant={banned ? "destructive" : "outline"}
+					className="hidden md:inline-flex"
+				>
 					{banned ? "Banned" : "Active"}
 				</Badge>
 			);
@@ -59,12 +66,12 @@ export const userColumns: ColumnDef<UserWithMeta>[] = [
 	},
 	{
 		accessorKey: "createdAt",
-		header: "Created",
+		header: () => <span className="hidden md:inline">Created</span>,
 		cell: ({ row }) => {
 			const date = row.getValue("createdAt") as Date;
 			return (
 				<span
-					className="text-sm text-muted-foreground"
+					className="hidden text-sm text-muted-foreground md:inline"
 					suppressHydrationWarning
 				>
 					{new Date(date).toLocaleDateString()}
