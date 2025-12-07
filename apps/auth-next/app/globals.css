@@ -36,9 +36,6 @@
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.5883 0.1624 46.4143);
   --sidebar-ring: oklch(0.7978 0.1263 55.3442);
-  --font-sans: Poppins;
-  --font-serif: Lora;
-  --font-mono: Source Code Pro;
   --radius: 0.75rem;
   --shadow-x: 6px;
   --shadow-y: 6px;
@@ -96,9 +93,6 @@
   --sidebar-accent-foreground: oklch(0.9848 0 0);
   --sidebar-border: oklch(0.2741 0.0055 286.0329);
   --sidebar-ring: oklch(0.7684 0.1463 54.0528);
-  --font-sans: Poppins;
-  --font-serif: Lora;
-  --font-mono: Source Code Pro;
   --radius: 0.75rem;
   --shadow-x: 8px;
   --shadow-y: 8px;
@@ -155,9 +149,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --font-serif: var(--font-serif);
+  --font-sans: var(--font-inter);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
