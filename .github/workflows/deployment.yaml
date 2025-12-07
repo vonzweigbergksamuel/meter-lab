@@ -42,6 +42,12 @@ jobs:
           - name: auth
             context: .
             dockerfile: ./apps/auth/Dockerfile
+          - name: auth-next
+            context: .
+            dockerfile: ./apps/auth-next/Dockerfile
+          - name: migrate
+            context: .
+            dockerfile: ./packages/migrate/Dockerfile
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -92,11 +98,15 @@ jobs:
             docker pull ghcr.io/$GITHUB_REPOSITORY/web:${{ github.sha }}
             docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }}
             docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/auth-next:${{ github.sha }}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/migrate:${{ github.sha }}
             
             echo "Tagging images for compose..."
             docker tag ghcr.io/$GITHUB_REPOSITORY/web:${{ github.sha }} web:latest
             docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }} backend:latest
             docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }} auth:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/auth-next:${{ github.sha }} auth-next:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/migrate:${{ github.sha }} migrate:latest
             
             echo "Images ready!"
           EOF
@@ -112,6 +122,14 @@ jobs:
           EMQX_PASSWORD: ${{ vars.EMQX_PASSWORD }}
           NODE_ENV: ${{ vars.NODE_ENV }}
           AUTH_PORT: ${{ vars.AUTH_PORT }}
+          AUTH_DB_HOST: ${{ vars.AUTH_DB_HOST }}
+          AUTH_DB_PORT: ${{ vars.AUTH_DB_PORT }}
+          AUTH_DB_USER: ${{ vars.AUTH_DB_USER }}
+          AUTH_DB_PASSWORD: ${{ secrets.AUTH_DB_PASSWORD }}
+          AUTH_DB_NAME: ${{ vars.AUTH_DB_NAME }}
+          BACKEND_DB_USER: ${{ vars.BACKEND_DB_USER }}
+          BACKEND_DB_PASSWORD: ${{ secrets.BACKEND_DB_PASSWORD }}
+          BACKEND_DB_NAME: ${{ vars.BACKEND_DB_NAME }}
           BETTER_AUTH_SECRET: ${{ vars.BETTER_AUTH_SECRET }}
           BETTER_AUTH_URL: ${{ vars.BETTER_AUTH_URL }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
@@ -127,7 +145,7 @@ jobs:
             cp /tmp/compose.yaml ~/meter-lab/compose.yaml
             cd ~/meter-lab
             docker compose down --remove-orphans
-            BACKEND_PORT="$BACKEND_PORT" DATABASE_URL="$DATABASE_URL" WEBSOCKET_PORT="$WEBSOCKET_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" BACKEND_RUN_MIGRATIONS="$BACKEND_RUN_MIGRATIONS" AUTH_RUN_MIGRATIONS="$AUTH_RUN_MIGRATIONS" AUTH_SEED_ADMIN="$AUTH_SEED_ADMIN" ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" docker compose up -d
+            BACKEND_PORT="$BACKEND_PORT" WEBSOCKET_PORT="$WEBSOCKET_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" AUTH_DB_HOST="$AUTH_DB_HOST" AUTH_DB_PORT="$AUTH_DB_PORT" AUTH_DB_USER="$AUTH_DB_USER" AUTH_DB_PASSWORD="$AUTH_DB_PASSWORD" AUTH_DB_NAME="$AUTH_DB_NAME" BACKEND_DB_USER="$BACKEND_DB_USER" BACKEND_DB_PASSWORD="$BACKEND_DB_PASSWORD" BACKEND_DB_NAME="$BACKEND_DB_NAME" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" BACKEND_RUN_MIGRATIONS="$BACKEND_RUN_MIGRATIONS" AUTH_RUN_MIGRATIONS="$AUTH_RUN_MIGRATIONS" AUTH_SEED_ADMIN="$AUTH_SEED_ADMIN" ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" docker compose up -d
 
             echo "Deployment complete!"
             echo "Pruning unused images..."

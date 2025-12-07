@@ -29,6 +29,7 @@ services:
     environment:
       PORT: ${BACKEND_PORT:-5070}
       WEBSOCKET_PORT: ${WEBSOCKET_PORT:-5071}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth-next:5090}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       DATABASE_URL: postgres://postgres:postgres@backend-db:5432/meter-lab
       EMQX_URL: ${EMQX_URL:-http://host.docker.internal:1883}
@@ -36,10 +37,11 @@ services:
       EMQX_USERNAME: ${EMQX_USERNAME:-admin}
       EMQX_PASSWORD: ${EMQX_PASSWORD:-admin123}
       NODE_ENV: ${NODE_ENV:-development}
-      BACKEND_RUN_MIGRATIONS: ${BACKEND_RUN_MIGRATIONS:-true}
+      BACKEND_RUN_MIGRATIONS: ${BACKEND_RUN_MIGRATIONS:-false}
     restart: always
     depends_on:
-      - backend-db
+      migrate:
+        condition: service_completed_successfully
     networks:
       - meter-lab
 
@@ -107,7 +109,8 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-changeme123}
       ADMIN_NAME: ${ADMIN_NAME:-Admin User}
     depends_on:
-      - auth-db
+      migrate:
+        condition: service_completed_successfully
     restart: always
     networks:
       - meter-lab
@@ -122,6 +125,26 @@ services:
       POSTGRES_DB: ${AUTH_DB_NAME:-auth}
     volumes:
       - auth-db-data:/var/lib/postgresql
+    networks:
+      - meter-lab
+
+  migrate:
+    image: migrate:latest
+    build:
+      context: .
+      dockerfile: ./packages/migrate/Dockerfile
+    environment:
+      BACKEND_DATABASE_URL: postgres://${BACKEND_DB_USER:-postgres}:${BACKEND_DB_PASSWORD:-postgres}@backend-db:5432/${BACKEND_DB_NAME:-meter-lab}
+      AUTH_NEXT_DATABASE_HOST: ${AUTH_DB_HOST:-auth-db}
+      AUTH_NEXT_DATABASE_PORT: ${AUTH_DB_PORT:-5432}
+      AUTH_NEXT_DATABASE_USER: ${AUTH_DB_USER:-postgres}
+      AUTH_NEXT_DATABASE_PASSWORD: ${AUTH_DB_PASSWORD:-postgres}
+      AUTH_NEXT_DATABASE_NAME: ${AUTH_DB_NAME:-auth}
+      AUTH_DATABASE_URL: postgres://${AUTH_DB_USER:-postgres}:${AUTH_DB_PASSWORD:-postgres}@auth-db:5432/${AUTH_DB_NAME:-auth}
+    depends_on:
+      - backend-db
+      - auth-db
+    restart: "no"
     networks:
       - meter-lab
 
