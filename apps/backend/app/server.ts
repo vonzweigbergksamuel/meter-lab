@@ -31,7 +31,9 @@ app.get("/", (c) => {
 app.use("/rpc/*", async (c, next) => {
 	const { matched, response } = await rpcHandler.handle(c.req.raw, {
 		prefix: "/rpc",
-		context: {},
+		context: {
+			request: c.req.raw,
+		},
 	});
 
 	if (matched) {
@@ -45,7 +47,9 @@ app.use("/rpc/*", async (c, next) => {
 app.use("/api/*", async (c, next) => {
 	const { matched, response } = await openApiHandler.handle(c.req.raw, {
 		prefix: "/api",
-		context: {},
+		context: {
+			request: c.req.raw,
+		},
 	});
 
 	if (matched) {
@@ -58,7 +62,9 @@ app.use("/api/*", async (c, next) => {
 /* --------- WebSocket Handler --------- */
 wss.on("connection", (ws: WebSocket) => {
 	wsHandler.upgrade(ws, {
-		context: {},
+		context: {
+			request: new Request("ws://localhost"),
+		},
 	});
 });
 

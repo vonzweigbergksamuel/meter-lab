@@ -49,6 +49,7 @@
 		"@orpc/tanstack-query": "^1.11.3",
 		"@tanstack/svelte-query": "^6.0.8",
 		"@tanstack/svelte-query-devtools": "^6.0.0",
-		"better-auth": "^1.4.1"
+		"better-auth": "^1.4.1",
+		"jose": "^6.1.3"
 	}
 }

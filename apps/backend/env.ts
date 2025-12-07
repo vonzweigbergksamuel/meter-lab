@@ -11,6 +11,9 @@ export const env = createEnv({
 		// SERVER
 		PORT: z.coerce.number(),
 
+		// AUTH
+		AUTH_SERVICE_URL: z.string(),
+
 		// DB
 		DATABASE_URL: z.string(),
 

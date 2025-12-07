@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { publicProcedure } from "../index.js";
+import { protectedProcedure } from "../index.js";
 
 const resultsOutputSchema = z.object({
 	tests: z
@@ -10,7 +10,7 @@ const resultsOutputSchema = z.object({
 });
 
 export const resultsRouter = {
-	results: publicProcedure
+	results: protectedProcedure
 		.route({ method: "GET" })
 		.input(z.object({ limit: z.number().optional() }))
 		.output(resultsOutputSchema)

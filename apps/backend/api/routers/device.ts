@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { getDeviceController } from "../../di/helpers.js";
-import { publicProcedure } from "../index.js";
+import { protectedProcedure } from "../index.js";
 
 const deviceOutputSChema = z.object({
 	devices: z
@@ -12,7 +12,7 @@ const deviceOutputSChema = z.object({
 });
 
 export const deviceRouter = {
-	device: publicProcedure
+	device: protectedProcedure
 		.route({ method: "GET" })
 		.input(z.object({ limit: z.number().optional() }))
 		.output(deviceOutputSChema)

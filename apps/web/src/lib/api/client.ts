@@ -7,8 +7,6 @@ import { browser } from "$app/environment";
 import { PUBLIC_BACKEND_URL } from "$env/static/public";
 import { PUBLIC_WEBSOCKET_URL } from "$env/static/public";
 
-// Temporary solution to handle local development on localhost with docker
-// TODO: Implement proper solution for production?
 const isLocalUrl = PUBLIC_BACKEND_URL.includes("localhost");
 
 const devUrl = browser
@@ -17,9 +15,35 @@ const devUrl = browser
 
 const backendUrl = isLocalUrl ? devUrl : PUBLIC_BACKEND_URL;
 
+function getJwtFromCookie(): string | null {
+	if (!browser) return null;
+	const cookies = document.cookie.split(';');
+	for (const cookie of cookies) {
+		const [name, value] = cookie.trim().split('=');
+		if (name === 'jwt-client') {
+			return value;
+		}
+	}
+	return null;
+}
+
+let jwtToken: string | null = null;
+
+export function setClientJwt(token: string | null) {
+	jwtToken = token;
+}
+
 const rpcLink = new RPCLink({
 	url: `${backendUrl}/rpc`,
-	headers: () => ({})
+	headers: () => {
+		const jwt = jwtToken || getJwtFromCookie();
+		if (jwt) {
+			return {
+				'Authorization': `Bearer ${jwt}`
+			};
+		}
+		return {};
+	}
 });
 
 const websocket = new WebSocket(PUBLIC_WEBSOCKET_URL);
