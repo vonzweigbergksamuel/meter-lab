@@ -17,8 +17,10 @@ export async function migrateAuth() {
 
 	console.log("Starting auth database migrations...");
 
+	let pool: Pool | undefined;
+
 	try {
-		const pool = new Pool({
+		pool = new Pool({
 			host,
 			port: Number.parseInt(port, 10),
 			user,
@@ -36,9 +38,23 @@ export async function migrateAuth() {
 		await pool.end();
 
 		console.log("Auth migrations completed successfully\n");
-	} catch (error) {
-		console.error("Auth migration failed:", error);
-		throw error;
+	} catch (error: any) {
+		if (pool) {
+			await pool.end();
+		}
+
+		const isAlreadyExists =
+			error?.code === "42P07" ||
+			error?.cause?.code === "42P07" ||
+			error?.message?.includes("already exists") ||
+			error?.cause?.message?.includes("already exists");
+
+		if (isAlreadyExists) {
+			console.log("Auth migrations already applied (tables exist)\n");
+		} else {
+			console.error("Auth migration failed:", error);
+			throw error;
+		}
 	}
 }
 

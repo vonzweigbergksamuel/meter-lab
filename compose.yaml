@@ -14,7 +14,7 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - backend
-      # - auth
+      - auth
     restart: always
     networks:
       - meter-lab

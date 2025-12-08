@@ -20,9 +20,19 @@ export async function migrateBackend() {
 		});
 
 		console.log("Backend migrations completed successfully\n");
-	} catch (error) {
-		console.error("Backend migration failed:", error);
-		throw error;
+	} catch (error: any) {
+		const isAlreadyExists =
+			error?.code === "42P07" ||
+			error?.cause?.code === "42P07" ||
+			error?.message?.includes("already exists") ||
+			error?.cause?.message?.includes("already exists");
+
+		if (isAlreadyExists) {
+			console.log("Backend migrations already applied (tables exist)\n");
+		} else {
+			console.error("Backend migration failed:", error);
+			throw error;
+		}
 	}
 }
 

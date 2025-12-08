@@ -13,11 +13,13 @@ export const auth = betterAuth({
 	trustedOrigins: [
 		/* ----- Web ----- */
 		"http://localhost:5173", // Local
+		"http://localhost:5080", // Local docker
 		"http://34.51.237.11", // Stage
 		"http://blade.jemac.se:5080", // Prod
 
 		/* ----- Backend ----- */
 		"http://localhost:3000", // Local
+		"http://localhost:5070", // Local docker
 		"http://34.51.192.219", // Stage
 		"http://blade.jemac.se:5070", // Prod
 	],

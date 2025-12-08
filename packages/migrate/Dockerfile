@@ -5,21 +5,19 @@ RUN corepack enable
 
 FROM base AS builder
 WORKDIR /app
+RUN pnpm add -g turbo@^2
+COPY . .
+RUN turbo prune migrate --docker
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/migrate/package.json ./packages/migrate/
-
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --filter migrate
-
-COPY packages/migrate ./packages/migrate
-
-FROM base AS migrations
+FROM base AS installer
 WORKDIR /app
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/packages/migrate/node_modules ./node_modules
-COPY packages/migrate/package.json ./
-COPY packages/migrate/src ./src
+COPY --from=builder /app/out/json/ .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+COPY --from=builder /app/out/full/ .
+
+WORKDIR /app/packages/migrate
 
 COPY apps/backend/db/migrations ./migrations/backend
 COPY apps/auth/lib/db/migrations ./migrations/auth
