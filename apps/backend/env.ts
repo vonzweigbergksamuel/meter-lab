@@ -15,7 +15,11 @@ export const env = createEnv({
 		AUTH_SERVICE_URL: z.string(),
 
 		// DB
-		DATABASE_URL: z.string(),
+		DATABASE_HOST: z.string(),
+		DATABASE_PORT: z.coerce.number(),
+		DATABASE_USER: z.string(),
+		DATABASE_PASSWORD: z.string(),
+		DATABASE_NAME: z.string(),
 
 		// EMQX
 		EMQX_URL: z.string(),

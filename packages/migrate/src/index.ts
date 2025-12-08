@@ -6,10 +6,24 @@ async function validateEnvironment() {
 
 	const errors: string[] = [];
 
-	if (!process.env.BACKEND_DATABASE_URL) {
-		errors.push("- BACKEND_DATABASE_URL is missing");
+	/* ---- BACKEND DATABASE ---- */
+	if (!process.env.BACKEND_DATABASE_HOST) {
+		errors.push("- BACKEND_DATABASE_HOST is missing");
+	}
+	if (!process.env.BACKEND_DATABASE_PORT) {
+		errors.push("- BACKEND_DATABASE_PORT is missing");
+	}
+	if (!process.env.BACKEND_DATABASE_USER) {
+		errors.push("- BACKEND_DATABASE_USER is missing");
+	}
+	if (!process.env.BACKEND_DATABASE_PASSWORD) {
+		errors.push("- BACKEND_DATABASE_PASSWORD is missing");
+	}
+	if (!process.env.BACKEND_DATABASE_NAME) {
+		errors.push("- BACKEND_DATABASE_NAME is missing");
 	}
 
+	/* ---- AUTH DATABASE ---- */
 	if (!process.env.AUTH_DATABASE_HOST) {
 		errors.push("- AUTH_DATABASE_HOST is missing");
 	}
