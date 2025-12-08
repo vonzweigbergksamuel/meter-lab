@@ -23,10 +23,29 @@ steps:
     args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.247.167', '--build-arg', 'PUBLIC_AUTH_URL=http://34.51.168.51', '--build-arg', 'PUBLIC_WEBSOCKET_URL=ws://34.51.198.185', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'apps/auth/Dockerfile', '-t', '${_IMAGE_NAME_AUTH}', '.']
-
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'apps/auth/Dockerfile', '-t', '${_IMAGE_NAME_AUTH}', '.']
+    args:
+      - 'build'
+      - '-f'
+      - 'apps/auth/Dockerfile'
+      - '-t'
+      - '${_IMAGE_NAME_AUTH}'
+      - '--build-arg'
+      - 'PORT=5090'
+      - '--build-arg'
+      - 'DATABASE_HOST=auth-db'
+      - '--build-arg'
+      - 'DATABASE_PORT=5432'
+      - '--build-arg'
+      - 'DATABASE_USER=postgres'
+      - '--build-arg'
+      - 'DATABASE_PASSWORD=postgres'
+      - '--build-arg'
+      - 'DATABASE_NAME=auth'
+      - '--build-arg'
+      - 'BETTER_AUTH_SECRET=build-time-secret-replace-at-runtime'
+      - '--build-arg'
+      - 'BETTER_AUTH_URL=http://34.51.168.51'
+      - '.'
 
   # Step 2: Push Docker image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
