@@ -36,7 +36,7 @@
 			// Set data in cookie
 			const isStaging = window.location.hostname.includes("34.51");
 			if (isStaging) {
-				document.cookie = `better-auth.session_token=${JSON.stringify(data.token)}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
+				document.cookie = `better-auth.session_token=${data.token}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
 			}
 			
 			// Navigate to dashboard after successful login
