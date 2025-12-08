@@ -59,6 +59,9 @@ export const handle = async ({ event, resolve }) => {
 				},
 			});
 
+			console.log(tokenData, tokenError)
+			console.log(event.request.headers)
+
 			if (tokenError) {
 				console.error('Failed to get JWT token:', tokenError);
 				return redirect(302, "/sign-in");
