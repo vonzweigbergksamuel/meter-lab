@@ -16,6 +16,10 @@ export const allowedOrigins = new Set([
 	"http://localhost:5070", // Local docker
 	"http://34.51.247.167", // Stage
 	"http://blade.jemac.se:5070", // Prod
+
+	/* ----- Auth ----- */
+	"http://localhost:5090", // Local
+	"http://blade.jemac.se:5090", // Prod
 ]);
 
 export const auth = betterAuth({

@@ -47,11 +47,8 @@ COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
 COPY --from=builder /app/apps/backend/package.json ./apps/backend/package.json
 COPY --from=builder /app/apps/backend/db/migrations ./apps/backend/db/migrations
 
-COPY apps/backend/entrypoint.sh /app/apps/backend/entrypoint.sh
-
 RUN ls -la /app/apps/backend
 
-RUN chmod +x /app/apps/backend/entrypoint.sh
 RUN chown -R backend:nodejs /app
 USER backend
 
@@ -61,4 +58,5 @@ ENV NODE_ENV=production
 ENV PORT=${PORT}
 ENV HOST=0.0.0.0
 
-ENTRYPOINT ["/app/apps/backend/entrypoint.sh"]
+WORKDIR /app/apps/backend
+CMD ["node", "dist/app/server.js"]

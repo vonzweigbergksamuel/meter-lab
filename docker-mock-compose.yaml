@@ -43,8 +43,3 @@ services:
       - USERNAME=${EMQX_USERNAME:-admin}
       - PASSWORD=${EMQX_PASSWORD:-admin123}
     restart: unless-stopped
-    networks:
-      - meter-lab
-  networks:
-    meter-lab:
-      driver: bridge
