@@ -102,7 +102,7 @@ services:
   auth-db:
     image: postgres:latest
     ports:
-      - "${AUTH_DB_PORT:-5433}:5432"
+      - "${AUTH_DB_PUBLIC_PORT:-5433}:5432"
     environment:
       POSTGRES_USER: ${AUTH_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD:-postgres}
