@@ -18,23 +18,29 @@
 
 	const handleSubmit = async (e: Event) => {
 		e.preventDefault();
-		console.log("e", e);
 		const formData = new FormData(e.target as HTMLFormElement);
-		console.log("formData", formData);
 		const email = formData.get("email") as string;
 		const password = formData.get("password") as string;
-		console.log("email", email);
-		console.log("password", password);
 		const { data, error } = await authClient.signIn.email({
 			email: email,
 			password: password,
-			callbackURL: "/"
+			callbackURL: "/dashboard"
 		});
 		if (error) {
 			console.error("error", error);
 		}
 		if (data) {
 			console.log("data", data);
+
+			// Only in testing - Staging - Remove
+			// Set data in cookie
+			const isStaging = window.location.hostname.includes("34.51");
+			if (isStaging) {
+				document.cookie = `better-auth.session_token=${JSON.stringify(data.token)}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
+			}
+			
+			// Navigate to dashboard after successful login
+			window.location.href = "/dashboard";
 		}
 	};
 </script>

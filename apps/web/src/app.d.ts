@@ -17,6 +17,7 @@ declare global {
 				ipAddress: string | null;
 				userAgent: string | null;
 			} | null;
+			jwt?: string;
 		}
 		// interface PageData {}
 		// interface PageState {}

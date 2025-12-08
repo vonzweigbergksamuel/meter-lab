@@ -20,7 +20,7 @@ steps:
     args: ['build', '-f', 'apps/backend/Dockerfile', '-t', '${_IMAGE_NAME_BACKEND}', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.192.219', '--build-arg', 'PUBLIC_AUTH_URL=http://34.51.221.35', '.']
+    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.247.167', '--build-arg', 'PUBLIC_AUTH_URL=http://34.51.168.51', '--build-arg', 'PUBLIC_WEBSOCKET_URL=ws://34.51.198.185', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'apps/auth/Dockerfile', '-t', '${_IMAGE_NAME_AUTH}', '.']
@@ -67,8 +67,11 @@ steps:
         sed -i "s|web:latest|${_IMAGE_NAME_WEB}|g" infra/gke/generated/komposed.yaml
         sed -i "s|auth:latest|${_IMAGE_NAME_AUTH}|g" infra/gke/generated/komposed.yaml
 
+        sed -i 's|value: development|value: testing|g' infra/gke/generated/komposed.yaml
         sed -i '/hostPort/d' infra/gke/generated/komposed.yaml
         sed -i 's/imagePullPolicy: Never/imagePullPolicy: Always/g' infra/gke/generated/komposed.yaml
+        sed -i 's|port: 5433|port: 5432|g' infra/gke/generated/komposed.yaml
+        sed -i 's|name: "5433"|name: "5432"|g' infra/gke/generated/komposed.yaml
         awk '/port:/ && !/name:/ {gsub(/^[[:space:]]*- port:/, "  - name: port\n    port:"); print; next} {print}' infra/gke/generated/komposed.yaml > infra/gke/generated/komposed.tmp && mv infra/gke/generated/komposed.tmp infra/gke/generated/komposed.yaml
 
   # Cleanup previous gke-deploy outputs to avoid conflicts

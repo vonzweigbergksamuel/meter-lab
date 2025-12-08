@@ -17,12 +17,18 @@ COPY . .
 RUN turbo prune backend --docker
 
 FROM base AS builder
+ENV CI=true
 COPY --from=prepare /app/out/json/ .
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 COPY --from=prepare /app/out/full/ .
 RUN pnpm add -g turbo@^2
 RUN turbo build
+
+FROM base AS dependencies
+ENV CI=true
+COPY --from=prepare /app/out/json/ .
+RUN pnpm install --prod
 
 FROM node:lts-alpine AS runner
 WORKDIR /app
@@ -32,8 +38,20 @@ RUN apk add --no-cache libc6-compat
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 backend
 
-COPY --from=builder /app .
+# Copy prod-only node_modules
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/apps/backend/node_modules ./apps/backend/node_modules
 
+# Copy compiled dist and other necessary files
+COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
+COPY --from=builder /app/apps/backend/package.json ./apps/backend/package.json
+COPY --from=builder /app/apps/backend/db/migrations ./apps/backend/db/migrations
+
+COPY apps/backend/entrypoint.sh /app/apps/backend/entrypoint.sh
+
+RUN ls -la /app/apps/backend
+
+RUN chmod +x /app/apps/backend/entrypoint.sh
 RUN chown -R backend:nodejs /app
 USER backend
 
@@ -43,4 +61,4 @@ ENV NODE_ENV=production
 ENV PORT=${PORT}
 ENV HOST=0.0.0.0
 
-CMD ["node", "apps/backend/dist/app/server.js"]
+ENTRYPOINT ["/app/apps/backend/entrypoint.sh"]

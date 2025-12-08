@@ -17,15 +17,13 @@ COPY . .
 RUN turbo prune auth --docker
 
 FROM base AS builder
+ENV CI=true
 COPY --from=prepare /app/out/json/ .
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 COPY --from=prepare /app/out/full/ .
 RUN pnpm add -g turbo@^2
 RUN turbo build
-
-# RUN cd apps/auth && node scripts/migrate.js 2>/dev/null || echo "Migration skipped at build time (needs runtime DB credentials)"
-# RUN node scripts/seed-admin.js 2>/dev/null || echo "Seed admin skipped at build time (needs runtime DB credentials)"
 
 FROM node:lts-alpine AS runner
 WORKDIR /app
@@ -35,7 +33,9 @@ RUN apk add --no-cache libc6-compat
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 auth
 
-COPY --from=builder /app .
+COPY --from=builder /app/apps/auth/.next/standalone ./
+COPY --from=builder /app/apps/auth/.next/static ./apps/auth/.next/static
+COPY --from=builder /app/apps/auth/public ./apps/auth/public
 
 RUN chown -R auth:nodejs /app
 USER auth
@@ -46,4 +46,4 @@ ENV NODE_ENV=production
 ENV PORT=${PORT}
 ENV HOST=0.0.0.0
 
-CMD ["node", "apps/auth/dist/app/server.js"]
+CMD ["node", "/app/apps/auth/server.js"]

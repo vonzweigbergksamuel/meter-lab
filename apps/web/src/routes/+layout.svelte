@@ -14,15 +14,20 @@
 			}
 		}
 	});
-
-	let { children } = $props();
+ 
+	// data is the current session of the user
+	let { children, data } = $props();
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<QueryClientProvider client={queryClient}>
-	<SvelteQueryDevtools />
-	{@render children()}
-</QueryClientProvider>
+<div class="w-full min-h-screen">
+	<QueryClientProvider client={queryClient}>
+		<SvelteQueryDevtools />
+		{@render children()}
+	</QueryClientProvider>
+
+</div>
+

@@ -3,7 +3,31 @@ import { z } from "zod";
 
 export const env = createEnv({
 	server: {
+		// NODE
+		NODE_ENV: z
+			.enum(["development", "production", "testing"])
+			.default("development"),
+
+		// SERVER
 		PORT: z.coerce.number(),
+
+		// AUTH
+		AUTH_SERVICE_URL: z.string(),
+
+		// DB
+		DATABASE_URL: z.string(),
+
+		// EMQX
+		EMQX_URL: z.string(),
+		EMQX_TOPIC: z.string(),
+		EMQX_USERNAME: z.string(),
+		EMQX_PASSWORD: z.string(),
+
+		// REDIS
+		REDIS_URL: z.string(),
+
+		// WS
+		WEBSOCKET_PORT: z.coerce.number(),
 	},
 
 	/**

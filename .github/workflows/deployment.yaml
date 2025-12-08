@@ -42,6 +42,9 @@ jobs:
           - name: auth
             context: .
             dockerfile: ./apps/auth/Dockerfile
+          - name: migrate
+            context: .
+            dockerfile: ./packages/migrate/Dockerfile
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -59,12 +62,13 @@ jobs:
           context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.service.name }}:latest
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.service.name }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
             PUBLIC_BACKEND_URL=${{ vars.PUBLIC_BACKEND_URL }}
             PUBLIC_AUTH_URL=${{ vars.PUBLIC_AUTH_URL }}
+            PUBLIC_WEBSOCKET_URL=${{ vars.PUBLIC_WEBSOCKET_URL }}
 
   deploy:
     needs: build
@@ -89,14 +93,16 @@ jobs:
             
             # DONT FORGET TO ADD THE IMAGES HERE AS WELL AS IN THE TAGGING STEP
             echo "Pulling images..."
-            docker pull ghcr.io/$GITHUB_REPOSITORY/web:latest
-            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:latest
-            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:latest
+            docker pull ghcr.io/$GITHUB_REPOSITORY/web:${{ github.sha }}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }}
+            docker pull ghcr.io/$GITHUB_REPOSITORY/migrate:${{ github.sha }}
             
             echo "Tagging images for compose..."
-            docker tag ghcr.io/$GITHUB_REPOSITORY/web:latest web:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:latest backend:latest
-            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:latest auth:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/web:${{ github.sha }} web:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }} backend:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }} auth:latest
+            docker tag ghcr.io/$GITHUB_REPOSITORY/migrate:${{ github.sha }} migrate:latest
             
             echo "Images ready!"
           EOF
@@ -104,18 +110,39 @@ jobs:
         env:
           # Add more environment variables here as needed
           BACKEND_PORT: ${{ vars.BACKEND_PORT }}
+          WEBSOCKET_PORT: ${{ vars.WEBSOCKET_PORT }}
+          REDIS_URL: ${{ vars.REDIS_URL }}
+          EMQX_URL: ${{ vars.EMQX_URL }}
+          EMQX_TOPIC: ${{ vars.EMQX_TOPIC }}
+          EMQX_USERNAME: ${{ vars.EMQX_USERNAME }}
+          EMQX_PASSWORD: ${{ vars.EMQX_PASSWORD }}
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          AUTH_PORT: ${{ vars.AUTH_PORT }}
+          AUTH_DB_HOST: ${{ vars.AUTH_DB_HOST }}
+          AUTH_DB_PORT: ${{ vars.AUTH_DB_PORT }}
+          AUTH_DB_USER: ${{ vars.AUTH_DB_USER }}
+          AUTH_DB_PASSWORD: ${{ secrets.AUTH_DB_PASSWORD }}
+          AUTH_DB_NAME: ${{ vars.AUTH_DB_NAME }}
+          BACKEND_DB_USER: ${{ vars.BACKEND_DB_USER }}
+          BACKEND_DB_PASSWORD: ${{ secrets.BACKEND_DB_PASSWORD }}
+          BACKEND_DB_NAME: ${{ vars.BACKEND_DB_NAME }}
+          BETTER_AUTH_SECRET: ${{ vars.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL: ${{ vars.BETTER_AUTH_URL }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          ADMIN_NAME: ${{ vars.ADMIN_NAME }}
+          # Conditional variables for migrations in entrypoint.sh
+          BACKEND_RUN_MIGRATIONS: ${{ vars.BACKEND_RUN_MIGRATIONS }}
         run: |
           scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/tmp/compose.yaml
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
             cp /tmp/compose.yaml ~/meter-lab/compose.yaml
             cd ~/meter-lab
             docker compose down --remove-orphans
-            BACKEND_PORT="$BACKEND_PORT" docker compose up -d
-
-            echo "Pruning images after deployment..."
-            docker image prune -a -f
+            BACKEND_PORT="$BACKEND_PORT" WEBSOCKET_PORT="$WEBSOCKET_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" AUTH_DB_HOST="$AUTH_DB_HOST" AUTH_DB_PORT="$AUTH_DB_PORT" AUTH_DB_USER="$AUTH_DB_USER" AUTH_DB_PASSWORD="$AUTH_DB_PASSWORD" AUTH_DB_NAME="$AUTH_DB_NAME" BACKEND_DB_USER="$BACKEND_DB_USER" BACKEND_DB_PASSWORD="$BACKEND_DB_PASSWORD" BACKEND_DB_NAME="$BACKEND_DB_NAME" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" BACKEND_RUN_MIGRATIONS="$BACKEND_RUN_MIGRATIONS" ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" docker compose up -d
 
             echo "Deployment complete!"
+            echo "Pruning unused images..."
+            docker image prune -a -f
           EOF
-          # Dont forget to add the environment variables to the compose file
           echo "Deployment complete!"

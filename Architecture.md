@@ -1,6 +1,6 @@
 # Architecture
 
-![Architecture](./readme/architecture.png)
+![Architecture](./img/architecture.png)
 
 Our task is to create every microservice that are inside of the doted box. Grafana, InfluxDB and Test Runner are already implemented.
 
