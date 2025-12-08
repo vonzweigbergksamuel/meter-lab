@@ -6,16 +6,16 @@ import { db } from "@/lib/db";
 
 export const allowedOrigins = new Set([
 	/* ----- Web ----- */
-	"http://localhost:5173",
-	"http://localhost:5080",
-	"http://34.51.237.11",
-	"http://blade.jemac.se:5080",
+	"http://localhost:5173", // Local
+	"http://localhost:5080", // Local docker
+	"http://34.51.250.54", // Stage
+	"http://blade.jemac.se:5080", // Prod
 
 	/* ----- Backend ----- */
-	"http://localhost:3000",
-	"http://localhost:5070",
-	"http://34.51.192.219",
-	"http://blade.jemac.se:5070",
+	"http://localhost:3000", // Local
+	"http://localhost:5070", // Local docker
+	"http://34.51.247.167", // Stage
+	"http://blade.jemac.se:5070", // Prod
 ]);
 
 export const auth = betterAuth({
