@@ -4,6 +4,7 @@ import { createAuthClient } from "better-auth/svelte";
 import { jwtClient } from "better-auth/client/plugins";
 
 const isLocalUrl = PUBLIC_AUTH_URL.includes("localhost");
+const isStagingUrl = PUBLIC_AUTH_URL.includes("34.51");
 
 // TODO
 // Just in development outside Docker
@@ -12,7 +13,7 @@ const getAuthUrl = () => {
 		return PUBLIC_AUTH_URL;
 	}
 	
-	if (isLocalUrl) {
+	if (isLocalUrl || isStagingUrl) {
 		return PUBLIC_AUTH_URL;
 	}
 	
