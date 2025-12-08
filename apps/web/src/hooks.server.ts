@@ -21,7 +21,8 @@ export const handle = async ({ event, resolve }) => {
 	});
 
 	// Only in staging
-	const isStaging = event.url.url.includes("34.51")
+	// const isStaging = event.url.origin.includes("localhost")
+	const isStaging = event.url.origin.includes("34.51")
 	if (isStaging) {
 		session = event.cookies.get("better-auth.session_token")
 	}
