@@ -4,7 +4,6 @@ import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
 import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { CORSPlugin } from "@orpc/server/plugins";
-import { RPCHandler as WebSocketRPCHandler } from "@orpc/server/ws";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import pino from "pino";
 import { appRouter } from "../api/routers/index.js";
@@ -39,21 +38,6 @@ export const rpcHandler = new RPCHandler(appRouter, {
 			generateId: () => crypto.randomUUID(),
 			// logRequestResponse: true,
 			// logRequestAbort: true
-		}),
-	],
-});
-
-export const wsHandler = new WebSocketRPCHandler(appRouter, {
-	plugins: [
-		new CORSPlugin(),
-		new LoggingHandlerPlugin({
-			logger,
-			generateId: () => crypto.randomUUID(),
-		}),
-	],
-	interceptors: [
-		onError((error) => {
-			console.error(error);
 		}),
 	],
 });

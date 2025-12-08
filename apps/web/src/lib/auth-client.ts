@@ -5,21 +5,28 @@ import { jwtClient } from "better-auth/client/plugins";
 
 const isLocalUrl = PUBLIC_AUTH_URL.includes("localhost");
 
+// TODO
+// Just in development outside Docker
 const getAuthUrl = () => {
 	if (browser) {
 		return PUBLIC_AUTH_URL;
 	}
-
+	
 	if (isLocalUrl) {
-		return PUBLIC_AUTH_URL.replace("localhost", "host.docker.internal");
+		return PUBLIC_AUTH_URL;
 	}
-
+	
 	return "http://auth:5090";
 };
 
 const authUrl = getAuthUrl();
 
+console.log(authUrl)
+
 export const authClient = createAuthClient({
 	baseURL: authUrl,
-	plugins: [jwtClient()]
+	plugins: [jwtClient()],
+	fetchOptions: {
+		credentials: "include",
+	},
 });

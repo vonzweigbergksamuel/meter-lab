@@ -1,11 +1,9 @@
 import type { AppRouterClient } from "@meter-lab/orpc";
 import { createORPCClient } from "@orpc/client";
-import { RPCLink as WSLink } from "@orpc/client/websocket";
 import { RPCLink } from "@orpc/client/fetch";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { browser } from "$app/environment";
 import { PUBLIC_BACKEND_URL } from "$env/static/public";
-import { PUBLIC_WEBSOCKET_URL } from "$env/static/public";
 
 const isLocalUrl = PUBLIC_BACKEND_URL.includes("localhost");
 
@@ -33,6 +31,8 @@ export function setClientJwt(token: string | null) {
 	jwtToken = token;
 }
 
+console.log(backendUrl)
+
 const rpcLink = new RPCLink({
 	url: `${backendUrl}/rpc`,
 	headers: () => {
@@ -46,10 +46,6 @@ const rpcLink = new RPCLink({
 	}
 });
 
-const websocket = new WebSocket(PUBLIC_WEBSOCKET_URL);
-const wsLink = new WSLink({ websocket });
-
 const rpcClient: AppRouterClient = createORPCClient(rpcLink);
-const wsClient: AppRouterClient = createORPCClient(wsLink);
 export const rpc = createTanstackQueryUtils(rpcClient);
-export const ws = createTanstackQueryUtils(wsClient);
+export { rpcClient };

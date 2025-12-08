@@ -24,13 +24,23 @@
 		const { data, error } = await authClient.signIn.email({
 			email: email,
 			password: password,
-			callbackURL: "/"
+			callbackURL: "/dashboard"
 		});
 		if (error) {
 			console.error("error", error);
 		}
 		if (data) {
 			console.log("data", data);
+
+			// Only in testing - Staging - Remove
+			// Set data in cookie
+			const isStaging = window.location.hostname.includes("34.51");
+			if (isStaging) {
+				document.cookie = `better-auth.session_token=${JSON.stringify(data.token)}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
+			}
+			
+			// Navigate to dashboard after successful login
+			window.location.href = "/dashboard";
 		}
 	};
 </script>

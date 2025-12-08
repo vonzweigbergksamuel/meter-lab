@@ -49,6 +49,8 @@ COPY --from=builder /app/apps/backend/db/migrations ./apps/backend/db/migrations
 
 COPY apps/backend/entrypoint.sh /app/apps/backend/entrypoint.sh
 
+RUN ls -la /app/apps/backend
+
 RUN chmod +x /app/apps/backend/entrypoint.sh
 RUN chown -R backend:nodejs /app
 USER backend
