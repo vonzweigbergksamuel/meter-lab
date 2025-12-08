@@ -8,9 +8,6 @@ export const env = createEnv({
 			.enum(["development", "production", "testing"])
 			.default("development"),
 
-		// SERVER
-		PORT: z.coerce.number(),
-
 		// DB
 		DATABASE_HOST: z.string(),
 		DATABASE_PORT: z.coerce.number(),
