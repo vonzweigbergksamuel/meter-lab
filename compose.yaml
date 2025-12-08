@@ -31,6 +31,7 @@ services:
     environment:
       PORT: ${BACKEND_PORT:-5070}
       WEBSOCKET_PORT: ${WEBSOCKET_PORT:-5071}
+      BACKEND_RUN_MIGRATIONS: ${BACKEND_RUN_MIGRATIONS:-false}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth:5090}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       DATABASE_HOST: ${BACKEND_DB_HOST:-backend-db}
