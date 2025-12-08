@@ -1,4 +1,4 @@
-import { os } from "@orpc/server";
+import { ORPCError, os } from "@orpc/server";
 import { type JWTPayload, verifyJWT } from "../utils/jwt-verify.js";
 
 export interface BaseContext {
@@ -16,6 +16,7 @@ const authMiddleware = publicProcedure.middleware(async ({ context, next }) => {
 
 	try {
 		const user = await verifyJWT(authHeader);
+		console.warn("user", user);
 		return next({
 			context: {
 				...context,
@@ -23,7 +24,9 @@ const authMiddleware = publicProcedure.middleware(async ({ context, next }) => {
 			},
 		});
 	} catch (error) {
-		throw new Error(error instanceof Error ? error.message : "Unauthorized");
+		throw new ORPCError("UNAUTHORIZED", {
+			message: error instanceof Error ? error.message : "Unauthorized",
+		});
 	}
 });
 

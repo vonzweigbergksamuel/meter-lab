@@ -61,15 +61,15 @@ export const handle = async ({ event, resolve }) => {
 				jwt = tokenData.token;
 				event.cookies.set('jwt', jwt, {
 					httpOnly: true,
-					secure: true,
-					sameSite: 'strict',
+					secure: false,
+					sameSite: 'lax',
 					path: '/',
 					maxAge: 60 * 15
 				});
 				event.cookies.set('jwt-client', jwt, {
 					httpOnly: false,
-					secure: true,
-					sameSite: 'strict',
+					secure: false,
+					sameSite: 'lax',
 					path: '/',
 					maxAge: 60 * 15
 				});

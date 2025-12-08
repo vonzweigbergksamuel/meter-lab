@@ -2,7 +2,7 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 import { env } from "../env.js";
 
 const JWKS = createRemoteJWKSet(
-	new URL(`${env.AUTH_SERVICE_URL}/api/auth/jwks`)
+	new URL(`${env.AUTH_SERVICE_URL}/api/auth/jwks`),
 );
 
 export interface JWTPayload {
@@ -14,7 +14,7 @@ export interface JWTPayload {
 }
 
 export async function verifyJWT(
-	authHeader: string | null
+	authHeader: string | null,
 ): Promise<JWTPayload> {
 	if (!authHeader) {
 		throw new Error("Missing Authorization header");
@@ -26,6 +26,8 @@ export async function verifyJWT(
 	}
 
 	const token = parts[1];
+
+	console.warn("JWKS", JWKS);
 
 	try {
 		const { payload } = await jwtVerify(token, JWKS, {
@@ -41,4 +43,3 @@ export async function verifyJWT(
 		throw new Error("JWT verification failed");
 	}
 }
-

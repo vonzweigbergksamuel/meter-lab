@@ -38,10 +38,12 @@ const rpcLink = new RPCLink({
 	headers: () => {
 		const jwt = jwtToken || getJwtFromCookie();
 		if (jwt) {
+			console.log('Sending JWT with request:', jwt.substring(0, 20) + '...');
 			return {
 				'Authorization': `Bearer ${jwt}`
 			};
 		}
+		console.warn('No JWT found in cookie or token');
 		return {};
 	}
 });

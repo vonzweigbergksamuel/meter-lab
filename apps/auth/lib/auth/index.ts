@@ -24,15 +24,22 @@ export const auth = betterAuth({
 	}),
 	advanced: {
 		defaultCookieAttributes: {
-			// secure: env.NODE_ENV !== "development",
-			// httpOnly: env.NODE_ENV !== "development",
 			secure: false,
 			httpOnly: false,
-			sameSite: "none",
-			partitioned: true,
+			sameSite: "lax",
 		},
 	},
-	plugins: [jwt(), admin(), openAPI(), nextCookies()], // Make sure that nextCookies is the last plugin in the array
+	plugins: [
+		jwt({
+			jwt: {
+				issuer: "http://auth:5090",
+				audience: "http://auth:5090",
+			},
+		}),
+		admin(),
+		openAPI(),
+		nextCookies(),
+	],
 	trustedOrigins: [...allowedOrigins],
 	emailAndPassword: {
 		enabled: true,
