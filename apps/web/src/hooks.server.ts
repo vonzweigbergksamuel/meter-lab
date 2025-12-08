@@ -53,14 +53,44 @@ export const handle = async ({ event, resolve }) => {
 
 	if (needsRefresh) {
 		try {
-			const { data: tokenData, error: tokenError } = await authClient.token({
-				fetchOptions: {
-					headers: event.request.headers,
-				},
-			});
-
-			console.log(tokenData, tokenError)
-			console.log(event.request.headers)
+			let tokenData;
+			let tokenError;
+			
+			if (isStaging) {
+				// In staging, manually fetch to ensure cookie is forwarded correctly
+				const cookieHeader = event.request.headers.get('cookie') || '';
+				const { PUBLIC_AUTH_URL } = await import('$env/static/public');
+				
+				console.log('Fetching token from:', PUBLIC_AUTH_URL);
+				console.log('Cookie header:', cookieHeader);
+				
+				const response = await fetch(`${PUBLIC_AUTH_URL}/api/auth/token`, {
+					method: 'GET',
+					headers: {
+						'Cookie': cookieHeader,
+					},
+					credentials: 'include',
+				});
+				
+				console.log('Token response status:', response.status);
+				
+				if (response.ok) {
+					const result = await response.json();
+					tokenData = { token: result.token };
+				} else {
+					const text = await response.text();
+					console.log('Token response error:', text);
+					tokenError = { status: response.status, statusText: response.statusText };
+				}
+			} else {
+				const result = await authClient.token({
+					fetchOptions: {
+						headers: event.request.headers,
+					},
+				});
+				tokenData = result.data;
+				tokenError = result.error;
+			}
 
 			if (tokenError) {
 				console.error('Failed to get JWT token:', tokenError);
