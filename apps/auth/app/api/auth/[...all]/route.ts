@@ -1,20 +1,6 @@
 import { toNextJsHandler } from "better-auth/next-js";
 import type { NextRequest } from "next/server";
-import { auth } from "@/lib/auth";
-
-export const allowedOrigins = new Set([
-	/* ----- Web ----- */
-	"http://localhost:5173",
-	"http://localhost:5080",
-	"http://34.51.237.11",
-	"http://blade.jemac.se:5080",
-
-	/* ----- Backend ----- */
-	"http://localhost:3000",
-	"http://localhost:5070",
-	"http://34.51.192.219",
-	"http://blade.jemac.se:5070",
-]);
+import { allowedOrigins, auth } from "@/lib/auth";
 
 type Handler =
 	| ReturnType<typeof toNextJsHandler>["GET"]

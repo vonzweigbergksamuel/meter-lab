@@ -2,8 +2,21 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, jwt, openAPI } from "better-auth/plugins";
-import { allowedOrigins } from "@/app/api/auth/[...all]/route";
 import { db } from "@/lib/db";
+
+export const allowedOrigins = new Set([
+	/* ----- Web ----- */
+	"http://localhost:5173",
+	"http://localhost:5080",
+	"http://34.51.237.11",
+	"http://blade.jemac.se:5080",
+
+	/* ----- Backend ----- */
+	"http://localhost:3000",
+	"http://localhost:5070",
+	"http://34.51.192.219",
+	"http://blade.jemac.se:5070",
+]);
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
