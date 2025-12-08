@@ -1,28 +1,26 @@
-import "server-only";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, jwt, openAPI } from "better-auth/plugins";
+import { allowedOrigins } from "@/app/api/auth/[...all]/route";
 import { db } from "@/lib/db";
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "pg",
 	}),
+	advanced: {
+		defaultCookieAttributes: {
+			// secure: env.NODE_ENV !== "development",
+			// httpOnly: env.NODE_ENV !== "development",
+			secure: false,
+			httpOnly: false,
+			sameSite: "none",
+			partitioned: true,
+		},
+	},
 	plugins: [jwt(), admin(), openAPI(), nextCookies()], // Make sure that nextCookies is the last plugin in the array
-	trustedOrigins: [
-		/* ----- Web ----- */
-		"http://localhost:5173", // Local
-		"http://localhost:5080", // Local docker
-		"http://34.51.237.11", // Stage
-		"http://blade.jemac.se:5080", // Prod
-
-		/* ----- Backend ----- */
-		"http://localhost:3000", // Local
-		"http://localhost:5070", // Local docker
-		"http://34.51.192.219", // Stage
-		"http://blade.jemac.se:5070", // Prod
-	],
+	trustedOrigins: [...allowedOrigins],
 	emailAndPassword: {
 		enabled: true,
 	},
