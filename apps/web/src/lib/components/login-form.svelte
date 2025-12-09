@@ -24,7 +24,7 @@
 		const { data, error } = await authClient.signIn.email({
 			email: email,
 			password: password,
-			callbackURL: "/dashboard"
+			callbackURL: "/devices"
 		});
 		if (error) {
 			console.error("error", error);
@@ -40,7 +40,7 @@
 			}
 
 			// Navigate to dashboard after successful login
-			window.location.href = "/dashboard";
+			window.location.href = "/devices";
 		}
 	};
 </script>
