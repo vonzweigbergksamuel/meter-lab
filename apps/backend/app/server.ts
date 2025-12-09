@@ -24,8 +24,14 @@ app.get("/", (c) => {
 	return c.text("Hello Hono!");
 });
 
+let BASE_PATH = '';
+const isStage = env.AUTH_SERVICE_URL.includes("IP");
+if (isStage) {
+	BASE_PATH = "/backend";
+}
+
 /* --------- RPC Handler --------- */
-app.use("/rpc/*", async (c, next) => {
+app.use(`${BASE_PATH}/rpc/*`, async (c, next) => {
 	const { matched, response } = await rpcHandler.handle(c.req.raw, {
 		prefix: "/rpc",
 		context: {
@@ -41,7 +47,7 @@ app.use("/rpc/*", async (c, next) => {
 });
 
 /* --------- OpenAPI Handler --------- */
-app.use("/api/*", async (c, next) => {
+app.use(`${BASE_PATH}/api/*`, async (c, next) => {
 	const { matched, response } = await openApiHandler.handle(c.req.raw, {
 		prefix: "/api",
 		context: {
