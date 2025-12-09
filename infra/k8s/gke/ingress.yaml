@@ -16,7 +16,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: meter-lab-web-service
+                name: web
                 port:
                   number: 5080
 
@@ -24,7 +24,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: meter-lab-auth-service
+                name: auth
                 port:
                   number: 5090
 
@@ -32,7 +32,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: meter-lab-backend-service
+                name: backend
                 port:
                   number: 5070
 
