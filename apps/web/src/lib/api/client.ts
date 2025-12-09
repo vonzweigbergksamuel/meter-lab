@@ -15,10 +15,10 @@ const backendUrl = isLocalUrl ? devUrl : PUBLIC_BACKEND_URL;
 
 function getJwtFromCookie(): string | null {
 	if (!browser) return null;
-	const cookies = document.cookie.split(';');
+	const cookies = document.cookie.split(";");
 	for (const cookie of cookies) {
-		const [name, value] = cookie.trim().split('=');
-		if (name === 'jwt-client') {
+		const [name, value] = cookie.trim().split("=");
+		if (name === "jwt-client") {
 			return value;
 		}
 	}
@@ -31,19 +31,19 @@ export function setClientJwt(token: string | null) {
 	jwtToken = token;
 }
 
-console.log(backendUrl)
+console.log(backendUrl);
 
 const rpcLink = new RPCLink({
 	url: `${backendUrl}/rpc`,
 	headers: () => {
 		const jwt = jwtToken || getJwtFromCookie();
 		if (jwt) {
-			console.log('Sending JWT with request:', jwt.substring(0, 20) + '...');
+			console.log("Sending JWT with request:", jwt.substring(0, 20) + "...");
 			return {
-				'Authorization': `Bearer ${jwt}`
+				Authorization: `Bearer ${jwt}`
 			};
 		}
-		console.warn('No JWT found in cookie or token');
+		console.warn("No JWT found in cookie or token");
 		return {};
 	}
 });

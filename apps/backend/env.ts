@@ -29,9 +29,6 @@ export const env = createEnv({
 
 		// REDIS
 		REDIS_URL: z.string(),
-
-		// WS
-		WEBSOCKET_PORT: z.coerce.number(),
 	},
 
 	/**

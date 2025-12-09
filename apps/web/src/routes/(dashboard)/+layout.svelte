@@ -1,10 +1,10 @@
 <script lang="ts">
 	import "../../app.css";
+	import Footer from "@/components/footer.svelte";
+	import Header from "@/components/header.svelte";
 	import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
 	import { SvelteQueryDevtools } from "@tanstack/svelte-query-devtools";
 	import favicon from "$lib/assets/favicon.svg";
-	import Header from "@/components/header.svelte";
-	import Footer from "@/components/footer.svelte";
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
@@ -16,26 +16,25 @@
 			}
 		}
 	});
- 
+
 	// data is the current session of the user
-	let { children, data } = $props();
+	let { children } = $props();
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="w-full min-h-screen">
+<div class="min-h-screen w-full">
 	<!-- {#if data.session} -->
-		<Header />
+	<Header />
 	<!-- {/if} -->
 	<QueryClientProvider client={queryClient}>
 		<SvelteQueryDevtools />
 		{@render children()}
 	</QueryClientProvider>
-	
+
 	<!-- {#if data.session} -->
-		<Footer />
+	<Footer />
 	<!-- {/if} -->
 </div>
-
