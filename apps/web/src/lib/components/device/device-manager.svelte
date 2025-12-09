@@ -66,21 +66,17 @@
   });
 </script>
 
-<div class="w-ful flex flex-col items-center">
+<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 py-10">
 	{#if response.isPending}
-		<div class="mx-auto my-5 flex flex-col items-center justify-start gap-4 md:flex-row">
-			<DeviceCardSkeleton />
-			<DeviceCardSkeleton />
-			<DeviceCardSkeleton />
-			<DeviceCardSkeleton />
-		</div>
+		<DeviceCardSkeleton />
+		<DeviceCardSkeleton />
+		<DeviceCardSkeleton />
+		<DeviceCardSkeleton />
 	{:else if !data.devices || data.devices.length === 0}
-		<h1 class="mt-8 text-5xl font-bold text-gray-500">No Devices Connected</h1>
+		<h1 class="col-span-6 text-center text-5xl font-bold text-gray-500">No Devices Connected</h1>
 	{:else}
-		<div class="mx-auto my-5 flex flex-col items-center justify-start gap-4 md:flex-row">
-			{#each data.devices as device (device.device_id)}
-				<DeviceCard device_id={device.device_id} device_status={device.device_status} />
-			{/each}
-		</div>
+		{#each data.devices as device (device.device_id)}
+			<DeviceCard device_id={device.device_id} device_status={device.device_status} />
+		{/each}
 	{/if}
 </div>
