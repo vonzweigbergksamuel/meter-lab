@@ -8,7 +8,6 @@ services:
       args:
         PUBLIC_BACKEND_URL: "${PUBLIC_BACKEND_URL:-http://localhost:${BACKEND_PORT:-5070}}"
         PUBLIC_AUTH_URL: "${PUBLIC_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}"
-        PUBLIC_WEBSOCKET_URL: "${PUBLIC_WEBSOCKET_URL:-ws://localhost:${WEBSOCKET_PORT:-5070}}"
     ports:
       - "${WEB_PORT:-5080}:${WEB_PORT:-5080}"
     extra_hosts:
@@ -27,10 +26,8 @@ services:
       dockerfile: ./apps/backend/Dockerfile
     ports:
       - "${BACKEND_PORT:-5070}:${BACKEND_PORT:-5070}"
-      - "${WEBSOCKET_PORT:-5071}:${WEBSOCKET_PORT:-5071}"
     environment:
       PORT: ${BACKEND_PORT:-5070}
-      WEBSOCKET_PORT: ${WEBSOCKET_PORT:-5070}
       BACKEND_RUN_MIGRATIONS: ${BACKEND_RUN_MIGRATIONS:-false}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth:5090}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
