@@ -12,13 +12,13 @@ spec:
   rules:
     - http:
         paths:
-          - path: /
-            pathType: Prefix
+          - path: /frontend(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: meter-lab-web-service
                 port:
-                  number: 80
+                  number: 5080
 
           - path: /auth(/|$)(.*)
             pathType: ImplementationSpecific
@@ -26,4 +26,13 @@ spec:
               service:
                 name: meter-lab-auth-service
                 port:
-                  number: 80
+                  number: 5090
+
+          - path: /backend(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: meter-lab-backend-service
+                port:
+                  number: 5070
+
