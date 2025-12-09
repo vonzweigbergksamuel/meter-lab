@@ -8,6 +8,7 @@ services:
       args:
         PUBLIC_BACKEND_URL: "${PUBLIC_BACKEND_URL:-http://localhost:${BACKEND_PORT:-5070}}"
         PUBLIC_AUTH_URL: "${PUBLIC_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}"
+        ENVIROMENT: ${ENVIROMENT:-prod}
     ports:
       - "${WEB_PORT:-5080}:${WEB_PORT:-5080}"
     extra_hosts:
@@ -93,6 +94,7 @@ services:
         DATABASE_NAME: ${AUTH_DB_NAME:-auth}
         BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
         BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
+        ENVIROMENT: ${ENVIROMENT:-prod}
     ports:
       - "${AUTH_PORT:-5090}:${AUTH_PORT:-5090}"
     environment:

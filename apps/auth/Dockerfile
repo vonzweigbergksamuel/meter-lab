@@ -24,6 +24,7 @@ ARG DATABASE_PASSWORD
 ARG DATABASE_NAME
 ARG BETTER_AUTH_SECRET
 ARG BETTER_AUTH_URL
+ARG ENVIROMENT
 
 WORKDIR /app
 ENV CI=true
@@ -40,6 +41,7 @@ RUN echo "DATABASE_PASSWORD=${DATABASE_PASSWORD}" >> apps/auth/.env
 RUN echo "DATABASE_NAME=${DATABASE_NAME}" >> apps/auth/.env
 RUN echo "BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}" >> apps/auth/.env
 RUN echo "BETTER_AUTH_URL=${BETTER_AUTH_URL}" >> apps/auth/.env
+RUN echo "ENVIROMENT=${ENVIROMENT}" >> apps/auth/.env
 RUN pnpm add -g turbo@^2
 RUN turbo build
 
