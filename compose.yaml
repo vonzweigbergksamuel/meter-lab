@@ -93,6 +93,7 @@ services:
         DATABASE_NAME: ${AUTH_DB_NAME:-auth}
         BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
         BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
+        ENVIROMENT: ${ENVIROMENT:-prod}
     ports:
       - "${AUTH_PORT:-5090}:${AUTH_PORT:-5090}"
     environment:

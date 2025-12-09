@@ -4,35 +4,33 @@ metadata:
   name: stage-ingress
   namespace: meter-lab
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    kubernetes.io/ingress.class: "gce"
 spec:
-  ingressClassName: nginx
+  ingressClassName: gce
   rules:
     - http:
         paths:
-          - path: /frontend(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /frontend
+            pathType: Prefix
             backend:
               service:
-                name: meter-lab-web-service
+                name: web
                 port:
                   number: 5080
 
-          - path: /auth(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /auth
+            pathType: Prefix
             backend:
               service:
-                name: meter-lab-auth-service
+                name: auth
                 port:
                   number: 5090
 
-          - path: /backend(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /backend
+            pathType: Prefix
             backend:
               service:
-                name: meter-lab-backend-service
+                name: backend
                 port:
                   number: 5070
 
