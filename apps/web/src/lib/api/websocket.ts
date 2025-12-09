@@ -7,9 +7,9 @@ import { PUBLIC_BACKEND_URL } from "$env/static/public";
 let wsClient: SocketRouterClient | undefined;
 
 if (browser) {
-	console.log("WS url: ", PUBLIC_BACKEND_URL);
+	const WS_URL = PUBLIC_BACKEND_URL.replace("http", "ws")
 
-	const WS_URL = PUBLIC_BACKEND_URL.replace('http', "ws")
+	console.log("WS url: ", WS_URL);
 
 	const websocket = new WebSocket(WS_URL);
 

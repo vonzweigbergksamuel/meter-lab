@@ -4,9 +4,9 @@ metadata:
   name: stage-ingress
   namespace: meter-lab
   annotations:
-    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.class: "nginx"
 spec:
-  ingressClassName: gce
+  ingressClassName: nginx
   rules:
     - http:
         paths:
