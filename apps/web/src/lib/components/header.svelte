@@ -3,10 +3,10 @@
 	import SignOut from "./sign-out.svelte";
 	import Container from "./ui/container.svelte";
 
-  const NAV_LINKS = [
-    { path: "/devices", label: "Devices"},
-    { path: "/tests", label: "Tests"}
-  ]
+	const NAV_LINKS = [
+		{ path: "/devices", label: "Devices" },
+		{ path: "/tests", label: "Tests" }
+	];
 
 	if (browser) {
 		const mobileNavToggle = document.querySelector("#mobile") as HTMLElement | null;

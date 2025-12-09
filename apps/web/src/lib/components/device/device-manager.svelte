@@ -31,39 +31,41 @@
 			return;
 		}
 
-    (async () => {
-      try {
-        const stream = await wsClient.deviceUpdates();
-        
-        for await (const event of stream) {
-          console.log("WebSocket Event:", event);
-          if (event?.devices && Array.isArray(event.devices)) {
-            const newDevices = event.devices as Device[];
-            const newDeviceIds = new Set(newDevices.map(d => d.device_id));
-            
-            // Remove devices that are no longer in the list
-            data.devices = data.devices.filter(d => newDeviceIds.has(d.device_id));
-            
-            // Add or update devices
-            for (const newDevice of newDevices) {
-              const existingIndex = data.devices.findIndex(d => d.device_id === newDevice.device_id);
-              if (existingIndex >= 0) {
-                // Update existing device if status changed
-                if (data.devices[existingIndex].device_status !== newDevice.device_status) {
-                  data.devices[existingIndex] = newDevice;
-                }
-              } else {
-                // Add new device
-                data.devices.push(newDevice);
-              }
-            }
-          }
-        }
-      } catch (error) {
-        console.error("WebSocket error:", error);
-      }
-    })();
-  });
+		(async () => {
+			try {
+				const stream = await wsClient.deviceUpdates();
+
+				for await (const event of stream) {
+					console.log("WebSocket Event:", event);
+					if (event?.devices && Array.isArray(event.devices)) {
+						const newDevices = event.devices as Device[];
+						const newDeviceIds = new Set(newDevices.map((d) => d.device_id));
+
+						// Remove devices that are no longer in the list
+						data.devices = data.devices.filter((d) => newDeviceIds.has(d.device_id));
+
+						// Add or update devices
+						for (const newDevice of newDevices) {
+							const existingIndex = data.devices.findIndex(
+								(d) => d.device_id === newDevice.device_id
+							);
+							if (existingIndex >= 0) {
+								// Update existing device if status changed
+								if (data.devices[existingIndex].device_status !== newDevice.device_status) {
+									data.devices[existingIndex] = newDevice;
+								}
+							} else {
+								// Add new device
+								data.devices.push(newDevice);
+							}
+						}
+					}
+				}
+			} catch (error) {
+				console.error("WebSocket error:", error);
+			}
+		})();
+	});
 </script>
 
 <div class="grid w-full grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 py-10">
