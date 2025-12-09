@@ -38,7 +38,7 @@
 			if (isStaging) {
 				document.cookie = `better-auth.session_token=${JSON.stringify(data.token)}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
 			}
-			
+
 			// Navigate to dashboard after successful login
 			window.location.href = "/dashboard";
 		}

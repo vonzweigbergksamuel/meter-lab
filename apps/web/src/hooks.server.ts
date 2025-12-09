@@ -1,6 +1,6 @@
-import { authClient } from '$lib/auth-client';
-import { redirect } from '@sveltejs/kit';
-import { decodeJwt } from 'jose';
+import { redirect } from "@sveltejs/kit";
+import { authClient } from "$lib/auth-client";
+import { decodeJwt } from "jose";
 
 export const handle = async ({ event, resolve }) => {
 	const pathname = event.url.pathname;
@@ -16,15 +16,15 @@ export const handle = async ({ event, resolve }) => {
 
 	const { data: session } = await authClient.getSession({
 		fetchOptions: {
-			headers: event.request.headers,
-		},
+			headers: event.request.headers
+		}
 	});
 
 	if (!session) {
 		return redirect(302, "/sign-in");
 	}
 
-	let jwt = event.cookies.get('jwt');
+	let jwt = event.cookies.get("jwt");
 	let needsRefresh = false;
 
 	if (jwt) {
@@ -32,12 +32,12 @@ export const handle = async ({ event, resolve }) => {
 			const decoded = decodeJwt(jwt);
 			const now = Math.floor(Date.now() / 1000);
 			const exp = decoded.exp || 0;
-			
+
 			if (exp < now + 60) {
 				needsRefresh = true;
 			}
 		} catch (error) {
-			console.error('Failed to decode JWT:', error);
+			console.error("Failed to decode JWT:", error);
 			needsRefresh = true;
 		}
 	} else {
@@ -48,34 +48,34 @@ export const handle = async ({ event, resolve }) => {
 		try {
 			const { data: tokenData, error: tokenError } = await authClient.token({
 				fetchOptions: {
-					headers: event.request.headers,
-				},
+					headers: event.request.headers
+				}
 			});
 
 			if (tokenError) {
-				console.error('Failed to get JWT token:', tokenError);
+				console.error("Failed to get JWT token:", tokenError);
 				return redirect(302, "/sign-in");
 			}
 
 			if (tokenData?.token) {
 				jwt = tokenData.token;
-				event.cookies.set('jwt', jwt, {
+				event.cookies.set("jwt", jwt, {
 					httpOnly: true,
 					secure: false,
-					sameSite: 'lax',
-					path: '/',
+					sameSite: "lax",
+					path: "/",
 					maxAge: 60 * 15
 				});
-				event.cookies.set('jwt-client', jwt, {
+				event.cookies.set("jwt-client", jwt, {
 					httpOnly: false,
 					secure: false,
-					sameSite: 'lax',
-					path: '/',
+					sameSite: "lax",
+					path: "/",
 					maxAge: 60 * 15
 				});
 			}
 		} catch (error) {
-			console.error('Error fetching JWT token:', error);
+			console.error("Error fetching JWT token:", error);
 			return redirect(302, "/sign-in");
 		}
 	}
