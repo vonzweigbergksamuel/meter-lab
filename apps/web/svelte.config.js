@@ -13,8 +13,8 @@ const config = {
 		alias: {
 			"@/*": "./src/lib/*"
 		},
-		base: process.env.ENVIROMENT === "stage" ? "/frontend" : "",
 	},
+	base: process.env.ENVIROMENT === "stage" ? "/frontend" : "",
 };
 
 export default config;

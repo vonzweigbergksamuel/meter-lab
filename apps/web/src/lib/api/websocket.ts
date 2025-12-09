@@ -9,7 +9,9 @@ let wsClient: SocketRouterClient | undefined;
 if (browser) {
 	console.log("WS url: ", PUBLIC_BACKEND_URL);
 
-	const websocket = new WebSocket(PUBLIC_BACKEND_URL);
+	const WS_URL = PUBLIC_BACKEND_URL.replace('http', "ws")
+
+	const websocket = new WebSocket(WS_URL);
 
 	// TODO Remove
 	websocket.addEventListener("open", () => {

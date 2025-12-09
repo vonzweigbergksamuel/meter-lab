@@ -20,7 +20,7 @@ steps:
     args: ['build', '-f', 'apps/backend/Dockerfile', '-t', '${_IMAGE_NAME_BACKEND}', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.247.167', '--build-arg', 'PUBLIC_AUTH_URL=http://34.51.168.51', '.']
+    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.136.135/backend', '--build-arg', 'PUBLIC_AUTH_URL=http://34.51.136.135/auth', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
