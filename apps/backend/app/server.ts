@@ -26,7 +26,7 @@ app.get("/", (c) => {
 
 // Only neccessaty in stage
 let BASE_PATH = '';
-const isStage = env.AUTH_SERVICE_URL.includes("IP");
+const isStage = env.AUTH_SERVICE_URL.includes("34.51");
 if (isStage) {
 	BASE_PATH = "/backend";
 }

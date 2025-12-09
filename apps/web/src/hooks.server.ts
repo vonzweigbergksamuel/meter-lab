@@ -1,8 +1,9 @@
 import { redirect } from "@sveltejs/kit";
+import type { Handle } from "@sveltejs/kit";
 import { authClient } from "$lib/auth-client";
 import { decodeJwt } from "jose";
 
-export const handle = async ({ event, resolve }) => {
+export const handle: Handle = async ({ event, resolve }) => {
 	const pathname = event.url.pathname;
 	const publicPaths = ["/sign-in", "/logout"];
 
