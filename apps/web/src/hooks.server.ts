@@ -15,18 +15,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	let { data: session } = await authClient.getSession({
+	const { data: session } = await authClient.getSession({
 		fetchOptions: {
 			headers: event.request.headers
 		}
 	});
-
-	// Only in staging
-	// const isStaging = event.url.origin.includes("localhost")
-	const isStaging = event.url.origin.includes("34.51")
-	if (isStaging) {
-		session = event.cookies.get("better-auth.session_token")
-	}
 
 	if (!session) {
 		return redirect(302, "/sign-in");
