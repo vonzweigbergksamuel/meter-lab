@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { authClient } from "$lib/auth-client";
+	import { goto } from "$app/navigation";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Card from "$lib/components/ui/card/index.js";
 	import {
@@ -31,16 +32,9 @@
 		}
 		if (data) {
 			console.log("data", data);
-
-			// Only in testing - Staging - Remove
-			// Set data in cookie
-			const isStaging = window.location.hostname.includes("34.51");
-			if (isStaging) {
-				document.cookie = `better-auth.session_token=${data.token}; path=/; max-age=${60 * 60 * 24}; SameSite=Lax`;
-			}
-
+			
 			// Navigate to dashboard after successful login
-			window.location.href = "/devices";
+			await goto("/devices");
 		}
 	};
 </script>

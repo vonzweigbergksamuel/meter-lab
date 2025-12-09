@@ -2,6 +2,10 @@ import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
+const getBasePath = () => {
+	return process.env.ENVIROMENT === "stage" ? "/auth" : "";
+};
+
 export async function proxy(request: NextRequest) {
 	const session = await auth.api.getSession({
 		headers: await headers(),
@@ -11,7 +15,8 @@ export async function proxy(request: NextRequest) {
 	// This is the recommended approach to optimistically redirect users
 	// We recommend handling auth checks in each page/route
 	if (!session) {
-		return NextResponse.redirect(new URL("/sign-in", request.url));
+		const basePath = getBasePath();
+		return NextResponse.redirect(new URL(`${basePath}/sign-in`, request.url));
 	}
 
 	return NextResponse.next();
