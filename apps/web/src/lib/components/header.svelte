@@ -17,11 +17,11 @@
 	}
 </script>
 
-<div class="hidden h-full w-full border-b border-border md:block">
+<div class="hidden h-full w-full md:block">
 	<Container>
 		<div class="flex flex-row items-center justify-between">
-			<a href="/" class="text-3xl font-bold">Meter Lab</a>
-			<div class="mr-5 flex flex-row items-center justify-center gap-5 text-lg">
+			<a href="/" class="text-3xl font-bold tracking-wider">Meter Lab</a>
+			<div class="flex flex-row items-center justify-center gap-8 text-lg">
 				{#each NAV_LINKS as link (link.path)}
 					<a href={`${link.path}`}>{link.label}</a>
 				{/each}
@@ -31,7 +31,7 @@
 	</Container>
 </div>
 
-<div class="relative block h-full w-full border-b border-border md:hidden">
+<div class="relative block h-full w-full md:hidden">
 	<Container>
 		<div class="flex flex-row items-center justify-between">
 			<a href="/" class="text-3xl font-bold">Meter Lab</a>

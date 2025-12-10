@@ -25,8 +25,10 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="min-h-screen w-full">
+<div class="flex min-h-screen w-full flex-col">
 	<Header />
-	{@render children()}
+	<main class="flex-1">
+		{@render children()}
+	</main>
 	<Footer />
 </div>

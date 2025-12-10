@@ -68,14 +68,15 @@
 	});
 </script>
 
-<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 py-10">
+<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 py-4">
 	{#if response.isPending}
 		<DeviceCardSkeleton />
 		<DeviceCardSkeleton />
 		<DeviceCardSkeleton />
 		<DeviceCardSkeleton />
+		<DeviceCardSkeleton />
 	{:else if !data.devices || data.devices.length === 0}
-		<h1 class="col-span-6 text-center text-5xl font-bold text-gray-500">No Devices Connected</h1>
+		<h1 class="col-span-6 text-center text-5xl font-bold">No Devices Connected</h1>
 	{:else}
 		{#each data.devices as device (device.device_id)}
 			<DeviceCard device_id={device.device_id} device_status={device.device_status} />

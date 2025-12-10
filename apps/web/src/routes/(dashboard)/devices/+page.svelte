@@ -4,7 +4,7 @@
 	import Container from "@/components/ui/container.svelte";
 </script>
 
-<Container className="mt-10 px-8">
-	<HeroText title="Device" />
+<Container className="mt-8">
+	<HeroText title="Devices" />
 	<DeviceManager />
 </Container>
