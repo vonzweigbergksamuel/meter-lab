@@ -21,7 +21,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: meter-lab-web-service
+            name: web
             port:
               number: 80
   - host: auth.nordicode.se
@@ -31,7 +31,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: meter-lab-auth-service
+            name: auth
             port:
               number: 80
   - host: api.nordicode.se
@@ -41,6 +41,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: meter-lab-backend-service
+            name: backend
             port:
               number: 80
