@@ -4,9 +4,9 @@ metadata:
   name: meter-lab-ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: meter-lab-ingress-ip
-    kubernetes.io/ingress.class: "gce"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
+  ingressClassName: gce
   tls:
   - hosts:
     - nordicode.se
