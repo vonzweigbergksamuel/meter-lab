@@ -26,15 +26,7 @@
 </svelte:head>
 
 <div class="min-h-screen w-full">
-	<!-- {#if data.session} -->
 	<Header />
-	<!-- {/if} -->
-	<QueryClientProvider client={queryClient}>
-		<SvelteQueryDevtools />
-		{@render children()}
-	</QueryClientProvider>
-
-	<!-- {#if data.session} -->
+	{@render children()}
 	<Footer />
-	<!-- {/if} -->
 </div>

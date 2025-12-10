@@ -23,7 +23,7 @@
 			<a href="/" class="text-3xl font-bold">Meter Lab</a>
 			<div class="mr-5 flex flex-row items-center justify-center gap-5 text-lg">
 				{#each NAV_LINKS as link (link.path)}
-					<a href={`/dashboard${link.path}`}>{link.label}</a>
+					<a href={`${link.path}`}>{link.label}</a>
 				{/each}
 				<SignOut />
 			</div>
@@ -44,7 +44,7 @@
 			class="absolute top-full right-0 left-0 z-10 flex hidden flex-col gap-5 border-t border-border p-5 text-lg"
 		>
 			{#each NAV_LINKS as link (link.path)}
-				<a href={`/dashboard${link.path}`}>{link.label}</a>
+				<a href={`${link.path}`}>{link.label}</a>
 			{/each}
 			<SignOut />
 		</div>
