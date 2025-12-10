@@ -21,7 +21,7 @@
 	<Card.Content>
 		<!-- <Status status={device_status} /> for now we use a badge -->
 		<Badge variant={device_status === "available" ? "default" : "warning"}>
-			{device_status === "available" ? "Available" : "Under test"}
+			{device_status === "available" ? "Available" : "Under testing"}
 		</Badge>
 	</Card.Content>
 </Card.Root>
