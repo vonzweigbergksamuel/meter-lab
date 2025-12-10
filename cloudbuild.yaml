@@ -97,40 +97,6 @@ steps:
         sed -i 's|port: 5433|port: 5432|g' infra/gke/generated/komposed.yaml
         sed -i 's|name: "5433"|name: "5432"|g' infra/gke/generated/komposed.yaml
         awk '/port:/ && !/name:/ {gsub(/^[[:space:]]*- port:/, "  - name: port\n    port:"); print; next} {print}' infra/gke/generated/komposed.yaml > infra/gke/generated/komposed.tmp && mv infra/gke/generated/komposed.tmp infra/gke/generated/komposed.yaml
-        
-        # Add NEG annotation to web, auth, and backend services
-        # Use a more reliable awk script to add annotations
-        awk '
-        BEGIN { 
-          service_name = ""
-          in_target_service = 0
-          annotation_added = 0
-        }
-        /^kind: Service$/ { 
-          in_target_service = 0
-          annotation_added = 0
-        }
-        /^  name: (web|auth|backend)$/ { 
-          service_name = $3
-          in_target_service = 1
-        }
-        in_target_service && /^  metadata:$/ {
-          print
-          print "    annotations:"
-          print "      cloud.google.com/neg: '\''{\"ingress\": true}'\''"
-          annotation_added = 1
-          next
-        }
-        in_target_service && annotation_added && /^    annotations:$/ {
-          # Skip if we already added it
-          next
-        }
-        in_target_service && annotation_added && /^      cloud.google.com\/neg:/ {
-          # Skip if we already added it
-          next
-        }
-        { print }
-        ' infra/gke/generated/komposed.yaml > infra/gke/generated/komposed.tmp && mv infra/gke/generated/komposed.tmp infra/gke/generated/komposed.yaml
 
   # Cleanup previous gke-deploy outputs to avoid conflicts
   - name: 'gcr.io/cloud-builders/gcloud'
