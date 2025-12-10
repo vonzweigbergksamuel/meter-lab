@@ -42,28 +42,26 @@
 <div class={cn("flex flex-col gap-6", className)} {...restProps}>
 	<Card.Root>
 		<Card.Header class="text-center text-pretty">
-			<Card.Title class="text-xl">Logga in</Card.Title>
-			<Card.Description
-				>Fyll i din e-postadress nedan för att logga in på ditt konto</Card.Description
-			>
+			<Card.Title class="text-xl">Sign in</Card.Title>
+			<Card.Description>Enter your email below to sign in to your account</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<form onsubmit={handleSubmit}>
 				<FieldGroup>
 					<Field>
-						<FieldLabel for="email-{id}">E-postadress</FieldLabel>
+						<FieldLabel for="email-{id}">Email</FieldLabel>
 						<Input id="email-{id}" name="email" type="email" placeholder="m@example.com" required />
 					</Field>
 					<Field>
 						<div class="flex items-center">
-							<FieldLabel for="password-{id}">Lösenord</FieldLabel>
+							<FieldLabel for="password-{id}">Password</FieldLabel>
 						</div>
 						<Input id="password-{id}" name="password" type="password" required />
 					</Field>
 					<Field>
-						<Button type="submit">Logga in</Button>
+						<Button type="submit">Sign in</Button>
 						<FieldDescription class="text-center">
-							Har du inget konto? <span class="text-primary">Kontakta en administratör</span>
+							Don't have an account? <span class="text-primary">Contact an administrator</span>
 						</FieldDescription>
 					</Field>
 				</FieldGroup>
@@ -71,7 +69,7 @@
 		</Card.Content>
 	</Card.Root>
 	<FieldDescription class="px-6 text-center">
-		Genom att klicka på logga in, godkänner du våra <a href="##">Användarvillkor</a> och
-		<a href="##">Integritetspolicy</a>.
+		By clicking sign in, you agree to our <a href="##">Terms of Service</a> and
+		<a href="##">Privacy Policy</a>.
 	</FieldDescription>
 </div>

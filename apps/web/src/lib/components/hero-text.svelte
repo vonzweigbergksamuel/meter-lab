@@ -2,6 +2,6 @@
 	let { title } = $props();
 </script>
 
-<div class="border-gray w-full border-b-2">
-	<h1 class="text-3xl">{title}</h1>
+<div class="w-full">
+	<h1 class="text-2xl font-medium tracking-wider">{title}</h1>
 </div>

@@ -1,14 +1,18 @@
 <script lang="ts">
 	import Container from "./ui/container.svelte";
+	import ThemeToggle from "./ui/theme-toggle.svelte";
 
 	const date = new Date().getFullYear();
 </script>
 
-<div>
-	<Container className="flex flex-row">
-		<div class="mr-auto ml-0">© {date} Meter lab</div>
-		<div class="mr-0 ml-auto">
-			Website by <a class="hover:text-gray-500" href="https://codesquare.dev/">CODESQUARE</a>
-		</div>
-	</Container>
-</div>
+<Container className="flex flex-row items-center justify-between">
+	<div>© {date} Meter Lab</div>
+	<div class="flex flex-row items-center gap-4">
+		<p>
+			Serivce by <a href="https://codesquare.dev/" class="hover:text-[#5c8772cc]" target="_blank"
+				>CODESQUARE</a
+			>
+		</p>
+		<ThemeToggle />
+	</div>
+</Container>

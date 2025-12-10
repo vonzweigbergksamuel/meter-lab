@@ -25,16 +25,10 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="min-h-screen w-full">
-	<!-- {#if data.session} -->
+<div class="flex min-h-screen w-full flex-col">
 	<Header />
-	<!-- {/if} -->
-	<QueryClientProvider client={queryClient}>
-		<SvelteQueryDevtools />
+	<main class="flex-1">
 		{@render children()}
-	</QueryClientProvider>
-
-	<!-- {#if data.session} -->
+	</main>
 	<Footer />
-	<!-- {/if} -->
 </div>
