@@ -31,8 +31,12 @@ export const auth = betterAuth({
 	advanced: {
 		defaultCookieAttributes: {
 			secure: true,
-			httpOnly: false,
-			sameSite: "none",
+			httpOnly: true,
+			sameSite: "lax",
+		},
+		crossSubDomainCookies: {
+			enabled: true,
+			domain: env.NODE_ENV === "stage" ? "nordicode.se" : "jemac.se",
 		},
 	},
 	plugins: [
