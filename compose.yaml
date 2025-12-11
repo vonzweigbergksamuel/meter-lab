@@ -94,7 +94,7 @@ services:
         DATABASE_NAME: ${AUTH_DB_NAME:-auth}
         BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
         BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
-        NODE_ENV: ${NODE_ENV:-development}
+        ENVIROMENT: ${ENVIROMENT:-development}
     ports:
       - "${AUTH_PORT:-5090}:${AUTH_PORT:-5090}"
     environment:
@@ -107,7 +107,7 @@ services:
       DATABASE_NAME: ${AUTH_DB_NAME:-auth}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
-      NODE_ENV: ${NODE_ENV:-development}
+      ENVIROMENT: ${ENVIROMENT:-development}
     depends_on:
       migrate:
         condition: service_completed_successfully
