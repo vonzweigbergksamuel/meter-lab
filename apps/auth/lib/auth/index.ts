@@ -33,7 +33,6 @@ export const auth = betterAuth({
 			secure: true,
 			httpOnly: false,
 			sameSite: "none",
-			partitioned: true,
 		},
 	},
 	plugins: [
