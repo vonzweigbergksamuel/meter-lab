@@ -99,7 +99,6 @@ steps:
         sed -i "s|port: 5070|port: 80|g" infra/gke/generated/komposed.yaml
 
         sed -i 's|value: development|value: stage|g' infra/gke/generated/komposed.yaml
-        sed -i 's|value: prod|value: stage|g' infra/gke/generated/komposed.yaml
         sed -i '/hostPort/d' infra/gke/generated/komposed.yaml
         sed -i 's/imagePullPolicy: Never/imagePullPolicy: Always/g' infra/gke/generated/komposed.yaml
         sed -i 's|port: 5433|port: 5432|g' infra/gke/generated/komposed.yaml
