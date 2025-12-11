@@ -2,7 +2,7 @@
 
 ## Install the `cert-manager`
 
-1.
+1. In the gke terminal enter: 
 
 ```bash
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
@@ -37,3 +37,11 @@ gcloud compute addresses describe travindex-ingress-ip --global
 ```
 
 This ip should you add as DNS to your domains that you have in the ingress.yaml file
+
+## Install `nginx ingress controller`
+
+In the gke terminal enter: 
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
+```

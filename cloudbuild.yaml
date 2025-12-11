@@ -10,6 +10,7 @@ substitutions:
   _IMAGE_NAME_BACKEND: "gcr.io/${PROJECT_ID}/backend/gcpdevops-prod:${SHORT_SHA}"
   _IMAGE_NAME_WEB: "gcr.io/${PROJECT_ID}/web/gcpdevops-prod:${SHORT_SHA}"
   _IMAGE_NAME_AUTH: "gcr.io/${PROJECT_ID}/auth/gcpdevops-prod:${SHORT_SHA}"
+  _IMAGE_NAME_MIGRATE: "gcr.io/${PROJECT_ID}/migrate/gcpdevops-prod:${SHORT_SHA}"
   _CLUSTER_NAME: "meter-lab-production-standard-cluster"
   _NAMESPACE: "meter-lab"
   _LOCATION: "europe-north2"
@@ -20,7 +21,7 @@ steps:
     args: ['build', '-f', 'apps/backend/Dockerfile', '-t', '${_IMAGE_NAME_BACKEND}', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=http://34.51.136.135/backend', '--build-arg', 'PUBLIC_AUTH_URL=http://34.51.136.135/auth', '.']
+    args: ['build', '-f', 'apps/web/Dockerfile', '-t', '${_IMAGE_NAME_WEB}', '--build-arg', 'PUBLIC_BACKEND_URL=https://api.nordicode.se', '--build-arg', 'PUBLIC_AUTH_URL=https://auth.nordicode.se', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -44,8 +45,11 @@ steps:
       - '--build-arg'
       - 'BETTER_AUTH_SECRET=build-time-secret-replace-at-runtime'
       - '--build-arg'
-      - 'BETTER_AUTH_URL=http://34.51.168.51'
+      - 'BETTER_AUTH_URL=https://auth.nordicode.se'
       - '.'
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', '/packages/migrate/Dockerfile', '-t', '${_IMAGE_NAME_MIGRATE}', '.']
 
   # Step 2: Push Docker image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -56,6 +60,9 @@ steps:
 
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '${_IMAGE_NAME_AUTH}']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_IMAGE_NAME_MIGRATE}']
 
   # 2) Install Kompose
   - name: 'gcr.io/cloud-builders/gcloud'
