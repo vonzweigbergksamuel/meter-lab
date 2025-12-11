@@ -7,6 +7,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const pathname = event.url.pathname;
 	const publicPaths = ["/sign-in", "/logout"];
 
+	if (pathname.startsWith("/.well-known/acme-challenge/")) {
+		return resolve(event);
+	}
+
 	const isPublicRoute = publicPaths.some((path) => {
 		return pathname === path || pathname.startsWith(path);
 	});
