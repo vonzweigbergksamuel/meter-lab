@@ -46,6 +46,8 @@ steps:
       - 'BETTER_AUTH_SECRET=build-time-secret-replace-at-runtime'
       - '--build-arg'
       - 'BETTER_AUTH_URL=https://auth.nordicode.se'
+      - '--build-arg'
+      - 'NODE_ENV=stage'
       - '.'
   
   - name: 'gcr.io/cloud-builders/docker'
@@ -98,7 +100,8 @@ steps:
         sed -i "s|port: 5080|port: 80|g" infra/gke/generated/komposed.yaml
         sed -i "s|port: 5070|port: 80|g" infra/gke/generated/komposed.yaml
 
-        sed -i 's|value: development|value: stage|g' infra/gke/generated/komposed.yaml
+        sed -i '/name: NODE_ENV/,/value:/ s|value: development|value: stage|g' infra/gke/generated/komposed.yaml
+        awk '/io.kompose.service: auth/,/^---/ {if (/name: PORT/ && !found_nenv) {print; print "            - name: NODE_ENV"; print "              value: stage"; found_nenv=1; next} if (/^---/) found_nenv=0} {print}' infra/gke/generated/komposed.yaml > infra/gke/generated/komposed.tmp && mv infra/gke/generated/komposed.tmp infra/gke/generated/komposed.yaml
         sed -i '/hostPort/d' infra/gke/generated/komposed.yaml
         sed -i 's/imagePullPolicy: Never/imagePullPolicy: Always/g' infra/gke/generated/komposed.yaml
         sed -i 's|port: 5433|port: 5432|g' infra/gke/generated/komposed.yaml
