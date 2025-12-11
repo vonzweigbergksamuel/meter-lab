@@ -49,7 +49,7 @@ steps:
       - '.'
   
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', '/packages/migrate/Dockerfile', '-t', '${_IMAGE_NAME_MIGRATE}', '.']
+    args: ['build', '-f', 'packages/migrate/Dockerfile', '-t', '${_IMAGE_NAME_MIGRATE}', '.']
 
   # Step 2: Push Docker image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
