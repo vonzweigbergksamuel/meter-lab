@@ -24,6 +24,11 @@ export const allowedOrigins = new Set([
 	"http://blade.jemac.se:5090", // Prod
 ]);
 
+console.log(env.ENVIROMENT)
+console.log(env.ENVIROMENT === "stage" ? "nordicode.se" : "jemac.se");
+console.log(env.ENVIROMENT === "stage" ? "http://auth:80" : "http://auth:5090");
+console.log(env.ENVIROMENT === "stage" ? "http://auth:80" : "http://auth:5090");
+
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "pg",
@@ -36,16 +41,16 @@ export const auth = betterAuth({
 		},
 		crossSubDomainCookies: {
 			enabled: true,
-			domain: env.NODE_ENV === "stage" ? "nordicode.se" : "jemac.se",
+			domain: env.ENVIROMENT === "stage" ? "nordicode.se" : "jemac.se",
 		},
 	},
 	plugins: [
 		jwt({
 			jwt: {
 				issuer:
-					env.NODE_ENV === "stage" ? "http://auth:80" : "http://auth:5090",
+					env.ENVIROMENT === "stage" ? "http://auth:80" : "http://auth:5090",
 				audience:
-					env.NODE_ENV === "stage" ? "http://auth:80" : "http://auth:5090",
+					env.ENVIROMENT === "stage" ? "http://auth:80" : "http://auth:5090",
 			},
 		}),
 		admin(),
