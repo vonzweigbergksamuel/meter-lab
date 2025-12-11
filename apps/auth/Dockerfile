@@ -64,5 +64,6 @@ ARG PORT
 EXPOSE ${PORT}
 ENV PORT=${PORT}
 ENV HOST=0.0.0.0
+ENV NODE_ENV=stage
 
 CMD ["node", "/app/apps/auth/server.js"]

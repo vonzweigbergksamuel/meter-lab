@@ -3,7 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, jwt, openAPI } from "better-auth/plugins";
 import { db } from "@/lib/db";
-import { env } from "../env/server";
+// import { env } from "../env/server";
 
 export const allowedOrigins = new Set([
 	/* ----- Web ----- */
@@ -36,16 +36,17 @@ export const auth = betterAuth({
 		},
 		crossSubDomainCookies: {
 			enabled: true,
-			domain: env.NODE_ENV === "stage" ? "nordicode.se" : "jemac.se",
+			// domain: env.NODE_ENV === "stage" ? "nordicode.se" : "jemac.se",
+			domain: "nordicode.se"
 		},
 	},
 	plugins: [
 		jwt({
 			jwt: {
-				issuer:
-					env.NODE_ENV === "stage" ? "http://auth:80" : "http://auth:5090",
-				audience:
-					env.NODE_ENV === "stage" ? "http://auth:80" : "http://auth:5090",
+				issuer: "http://auth:80",
+				// 	env.NODE_ENV === "stage" ? "http://auth:80" : "http://auth:5090",
+				audience: "http://auth:80"
+					// env.NODE_ENV === "stage" ? "http://auth:80" : "http://auth:5090",
 			},
 		}),
 		admin(),
