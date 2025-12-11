@@ -30,16 +30,19 @@ export const auth = betterAuth({
 	}),
 	advanced: {
 		defaultCookieAttributes: {
-			secure: false,
+			secure: true,
 			httpOnly: false,
-			sameSite: "lax",
+			sameSite: "none",
+			partitioned: true,
 		},
 	},
 	plugins: [
 		jwt({
 			jwt: {
-				issuer: env.NODE_ENV === "stage" ? "http://auth:80" : "http://auth:5090",
-				audience: env.NODE_ENV === "stage" ? "http://auth:80" : "http://auth:5090",
+				issuer:
+					env.NODE_ENV === "stage" ? "http://auth:80" : "http://auth:5090",
+				audience:
+					env.NODE_ENV === "stage" ? "http://auth:80" : "http://auth:5090",
 			},
 		}),
 		admin(),
