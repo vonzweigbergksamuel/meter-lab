@@ -30,7 +30,7 @@ export function injectDependencies() {
 	container.register<IIoTBrokerService>(
 		TOKENS.MqttService,
 		() =>
-			env.NODE_ENV === "testing"
+			env.NODE_ENV === "testing" || env.NODE_ENV === "stage"
 				? new MockIoTBrokerService(
 						container.resolve<PayloadService>(TOKENS.PayloadService),
 					)
