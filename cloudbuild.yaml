@@ -48,6 +48,8 @@ steps:
       - 'BETTER_AUTH_URL=https://auth.nordicode.se'
       - '--build-arg'
       - 'NODE_ENV=stage'
+      - '--build-arg'
+      - 'ENVIROMENT=stage'
       - '.'
   
   - name: 'gcr.io/cloud-builders/docker'
