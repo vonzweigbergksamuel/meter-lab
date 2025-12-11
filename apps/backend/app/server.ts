@@ -56,6 +56,8 @@ app.use(`${BASE_PATH}/api/*`, async (c, next) => {
 		},
 	});
 
+	console.log(c.req.raw);
+
 	if (matched) {
 		return c.newResponse(response.body, response);
 	}
