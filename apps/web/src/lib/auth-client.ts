@@ -4,9 +4,8 @@ import { jwtClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/svelte";
 
 const isLocalUrl = PUBLIC_AUTH_URL.includes("localhost");
+const isExternalUrl = PUBLIC_AUTH_URL.startsWith("https://");
 
-// TODO
-// Just in development outside Docker
 const getAuthUrl = () => {
 	if (browser) {
 		return PUBLIC_AUTH_URL;
@@ -16,12 +15,16 @@ const getAuthUrl = () => {
 		return PUBLIC_AUTH_URL;
 	}
 
+	if (isExternalUrl) {
+		return "http://auth:80";
+	}
+
 	return "http://auth:5090";
 };
 
 const authUrl = getAuthUrl();
 
-console.log(authUrl);
+console.log("Auth URL:", authUrl);
 
 export const authClient = createAuthClient({
 	baseURL: authUrl,
