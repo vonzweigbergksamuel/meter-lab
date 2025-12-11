@@ -3,7 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, jwt, openAPI } from "better-auth/plugins";
 import { db } from "@/lib/db";
-// import { env } from "../env/server";
+import { env } from "../env/server";
 
 export const allowedOrigins = new Set([
 	/* ----- Web ----- */
