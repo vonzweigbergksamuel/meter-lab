@@ -49,8 +49,6 @@ app.use("/api/*", async (c, next) => {
 		},
 	});
 
-	console.log(c.req.raw);
-
 	if (matched) {
 		return c.newResponse(response.body, response);
 	}
@@ -58,23 +56,8 @@ app.use("/api/*", async (c, next) => {
 	await next();
 });
 
-/* --------- Start Websocket Server --------- */
-const WS_PORT = Number(env.WEBSOCKET_PORT);
-
-export const wss = new WebSocketServer({ port: WS_PORT });
-
-wss.on("connection", (ws) => {
-	wsRpcHandler.upgrade(ws, {
-		context: {},
-	});
-});
-
-wss.on("listening", () => {
-	console.log(`WebSocket server listening on ws://localhost:${WS_PORT}`);
-});
-
 /* --------- Start HTTP Server --------- */
-serve(
+const server = serve(
 	{
 		fetch: app.fetch,
 		port: env.PORT,
@@ -83,3 +66,16 @@ serve(
 		console.log(`Server is running on http://localhost:${info.port}`);
 	},
 );
+
+/* --------- Attach WebSocket Server to HTTP Server --------- */
+export const wss = new WebSocketServer({ noServer: true });
+
+server.on("upgrade", (request, socket, head) => {
+	wss.handleUpgrade(request, socket, head, (ws) => {
+		wsRpcHandler.upgrade(ws, {
+			context: {},
+		});
+	});
+});
+
+console.log(`WebSocket server attached to http://localhost:${env.PORT}`);
