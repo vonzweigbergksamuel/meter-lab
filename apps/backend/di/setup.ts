@@ -1,5 +1,6 @@
 import { DeviceController } from "../api/controllers/device.controller.js";
 import { TestsController } from "../api/controllers/tests.controller.js";
+import { TestDBService } from "../core/services/database/testsDB.service.js";
 import type { IIoTBrokerService } from "../core/services/iot-broker/interface.js";
 import { MockIoTBrokerService } from "../core/services/iot-broker/mock.service.js";
 import { MqttService } from "../core/services/iot-broker/mqtt.service.js";
@@ -46,10 +47,18 @@ export function injectDependencies() {
 		() => new DeviceController(),
 		"singleton",
 	);
-
-	container.register<TestsController>(
-		TOKENS.TestController,
-		() => new TestsController(),
+	
+	container.register<TestDBService>(
+		TOKENS.TestDBService,
+		() => new TestDBService(),
 		"singleton",
 	);
+	container.register<TestsController>(
+		TOKENS.TestController,
+		() => new TestsController(
+			container.resolve<TestDBService>(TOKENS.TestDBService)
+		),
+		"singleton",
+	);
+
 }

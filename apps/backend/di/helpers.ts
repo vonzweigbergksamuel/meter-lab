@@ -1,5 +1,6 @@
 import type { DeviceController } from "../api/controllers/device.controller.js";
 import type { TestsController } from "../api/controllers/tests.controller.js";
+import type { TestDBService } from "../core/services/database/testsDB.service.js";
 import type { MqttService } from "../core/services/iot-broker/mqtt.service.js";
 import type { PayloadService } from "../core/services/iot-broker/payload.service.js";
 import type { KeyValueStoreService } from "../core/services/key-value-store/interface.js";
@@ -17,6 +18,9 @@ export const getPayloadService = () =>
 
 export const getMqttService = () =>
 	container.resolve<MqttService>(TOKENS.MqttService);
+
+export const getTestDBService = () =>
+	container.resolve<TestDBService>(TOKENS.TestDBService);
 
 /* --------- Controllers --------- */
 export const getDeviceController = () =>
