@@ -32,7 +32,7 @@
 		}
 		if (data) {
 			console.log("data", data);
-			
+
 			// Navigate to dashboard after successful login
 			await goto("/devices");
 		}
