@@ -55,9 +55,11 @@ export function injectDependencies() {
 	);
 	container.register<TestsController>(
 		TOKENS.TestController,
-		() => new TestsController(
-			container.resolve<TestDBService>(TOKENS.TestDBService)
-		),
+		() =>
+			new TestsController(
+				container.resolve<TestDBService>(TOKENS.TestDBService),
+				container.resolve<KeyValueStoreService>(TOKENS.KeyValueService),
+			),
 		"singleton",
 	);
 

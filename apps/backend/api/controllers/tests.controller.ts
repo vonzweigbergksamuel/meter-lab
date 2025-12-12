@@ -1,35 +1,44 @@
+import { ORPCError } from "@orpc/client";
 import type { TestDB } from "../../core/services/database/interface.js";
-import type { TestInput } from "../../core/services/database/types.js";
+import type { Filter, TestInput } from "../../core/services/database/types.js";
+import type { KeyValueStoreService } from "../../core/services/key-value-store/interface.js";
 
 export class TestsController {
-	#service: TestDB;
+		#dBservice: TestDB;
+		#keyValueService: KeyValueStoreService;
 
-	constructor(service: TestDB) {
-		this.#service = service;
+		constructor(service: TestDB, keyValueService: KeyValueStoreService) {
+			this.#dBservice = service;
+			this.#keyValueService = keyValueService
+		}
+
+		async getAllTests(filter?: Filter) {
+			return await this.#dBservice.findAll(filter);
+		}
+
+		async getTest(id: number) {
+			return await this.#dBservice.findById(id);
+		}
+
+		async createTest(data: TestInput) {
+			// Validate connected devices exist in redis
+			const devices = data.devices;
+
+			for (const deviceId in devices) {
+				const device = this.#keyValueService.get(deviceId);
+
+				if (!device) {
+					throw new ORPCError("BAD_REQUEST")
+				}
+			}
+
+			await this.#dBservice.create(data);
+
+			// Append the test to the queue
+			// Append two callback urls
+		}
+
+		async deleteTest(id: number) {
+			await this.#dBservice.delete(id);
+		}
 	}
-
-	async getAllTests() {
-		// Find all tests
-		// with filter or search
-		return await this.#service.findAll();
-
-	}
-
-	async getTest(id: number) {
-		// find test with id
-		return await this.#service.findById(id);
-	}
-
-	async createTest(data: TestInput) {
-		// Route validates input
-		// Validate connected devices exist in redis
-		// Append the test to the queue
-		// Append two callback urls
-
-		await this.#service.create(data);;
-	}
-
-	async deleteTest(id: number) {
-		await this.#service.delete(id);
-	}
-}

@@ -6,6 +6,12 @@ import { getTestController } from "../../di/helpers.js";
 // import { protectedProcedure } from "../index.js";
 
 /** ------------------ Input Schemas ------------------ */
+export const filterInputSchema = z.object({
+	limit: z.coerce.number().optional(),
+	endAt: z.coerce.date().optional(),
+	testType: z.literal("alive").optional(),
+});
+
 export const testInputSchema = z.object({
 	title: z.string(),
 	description: z.string(),
@@ -16,10 +22,10 @@ export const testInputSchema = z.object({
 export const testsRouter = {
 	tests: os //protectedProcedure // TODO change to protected later
 		.route({ method: "GET" })
-		.input(z.object({ limit: z.number().optional() })) // We will need to filter on somethings
+		.input(filterInputSchema)
 		.output(z.array(testDataZodSchema))
-		.handler(() => {
-			return getTestController().getAllTests();
+		.handler((opts) => {
+			return getTestController().getAllTests(opts.input);
 		}),
 	findTests: os //protectedProcedure // TODO change to protected later
 		.route({ method: "GET" })
@@ -35,7 +41,6 @@ export const testsRouter = {
 		.handler((opts) => {
 			const input = opts.input;
 			// Provide default values for missing fields required by the controller
-
 			return getTestController().createTest(input);
 		}),
 	deleteTests: os //protectedProcedure // TODO change to protected later

@@ -1,5 +1,5 @@
 import { ORPCError } from "@orpc/client";
-import { eq } from "drizzle-orm";
+import { and, eq, lt } from "drizzle-orm";
 import { db } from "../../../db/index.js";
 import {
 	type TestData,
@@ -7,12 +7,32 @@ import {
 	testData,
 } from "../../../db/schema/schema.js";
 import type { TestDB } from "./interface.js";
-import type { TestInput } from "./types.js";
+import type { Filter, TestInput } from "./types.js";
 
 export class TestDBService implements TestDB {
-	async findAll(): Promise<TestData[]> {
+	async findAll(filter?: Filter): Promise<TestData[]> {
 		try {
-			return await db.select().from(testData);
+			const conditions = [];
+
+			if (filter?.testType) {
+				conditions.push(eq(testData.testType, filter.testType));
+			}
+
+			if (filter?.endAt) {
+				conditions.push(lt(testData.endAt, filter.endAt));
+			}
+
+			const query = db.select().from(testData);
+			const results =
+				conditions.length > 0
+					? await query.where(and(...conditions))
+					: await query;
+
+			if (filter?.limit) {
+				return results.slice(0, filter.limit);
+			}
+
+			return results;
 		} catch (error) {
 			console.error(error);
 			throw new ORPCError("INTERNAL_SERVER_ERROR");
