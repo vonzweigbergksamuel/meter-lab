@@ -73,7 +73,9 @@ export const wss = new WebSocketServer({ noServer: true });
 server.on("upgrade", (request, socket, head) => {
 	wss.handleUpgrade(request, socket, head, (ws) => {
 		wsRpcHandler.upgrade(ws, {
-			context: {},
+			context: {
+				request
+			},
 		});
 	});
 });

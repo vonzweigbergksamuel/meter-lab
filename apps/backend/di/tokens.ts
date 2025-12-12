@@ -7,4 +7,5 @@ export const TOKENS = {
 
 	/* --------- Controllers --------- */
 	DeviceController: Symbol("DeviceController"),
+	TestController: Symbol("TestController"),
 } as const;

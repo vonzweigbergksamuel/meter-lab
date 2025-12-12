@@ -5,6 +5,7 @@ import {
 	type RouterClient,
 } from "@orpc/server";
 import * as z from "zod";
+import { protectedProcedure } from "../../api/index.js";
 import { WS_CHANNELS } from "./channels.js";
 import type { CachedDevices } from "./types.js";
 
@@ -31,7 +32,7 @@ export function publish(channel: WS_CHANNELS, data: CachedDevices[]) {
 }
 
 export const websocketRouter = {
-	deviceUpdates: os
+	deviceUpdates: protectedProcedure
 		.output(eventIterator(devicesSchema))
 		.handler(async function* ({ signal }) {
 			for await (const payload of publisher.subscribe(

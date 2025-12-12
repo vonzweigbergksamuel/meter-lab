@@ -1,4 +1,5 @@
 import { DeviceController } from "../api/controllers/device.controller.js";
+import { TestsController } from "../api/controllers/tests.controller.js";
 import type { IIoTBrokerService } from "../core/services/iot-broker/interface.js";
 import { MockIoTBrokerService } from "../core/services/iot-broker/mock.service.js";
 import { MqttService } from "../core/services/iot-broker/mqtt.service.js";
@@ -43,6 +44,12 @@ export function injectDependencies() {
 	container.register<DeviceController>(
 		TOKENS.DeviceController,
 		() => new DeviceController(),
+		"singleton",
+	);
+
+	container.register<TestsController>(
+		TOKENS.TestController,
+		() => new TestsController(),
 		"singleton",
 	);
 }
