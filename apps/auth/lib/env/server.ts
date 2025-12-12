@@ -8,9 +8,9 @@ export const env = createEnv({
 			.enum(["development", "production", "testing", "stage"])
 			.default("development"),
 
-		ENVIROMENT: z
-			.enum(["development", "production", "testing", "stage"])
-			.default("development"),
+		// Domain
+		DOMAIN: z.string().default("localhost"),
+		PUBLIC_AUTH_URL: z.string(),
 
 		// DB
 		DATABASE_HOST: z.string(),
