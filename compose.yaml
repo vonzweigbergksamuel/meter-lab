@@ -30,7 +30,6 @@ services:
       - "${WEBSOCKET_PORT:-5071}:${WEBSOCKET_PORT:-5071}"
     environment:
       PORT: ${BACKEND_PORT:-5070}
-      WEBSOCKET_PORT: ${WEBSOCKET_PORT:-5071}
       BACKEND_RUN_MIGRATIONS: ${BACKEND_RUN_MIGRATIONS:-false}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth:5090}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
@@ -96,7 +95,8 @@ services:
         DATABASE_NAME: ${AUTH_DB_NAME:-auth}
         BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
         BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
-        ENVIROMENT: ${ENVIROMENT:-development}
+        DOMAIN: ${DOMAIN:-localhost}
+        PUBLIC_AUTH_URL: ${PUBLIC_AUTH_URL:-http://auth:5090}
     ports:
       - "${AUTH_PORT:-5090}:${AUTH_PORT:-5090}"
     environment:
@@ -109,7 +109,8 @@ services:
       DATABASE_NAME: ${AUTH_DB_NAME:-auth}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
-      ENVIROMENT: ${ENVIROMENT:-development}
+      DOMAIN: ${DOMAIN:-localhost}
+      PUBLIC_AUTH_URL: ${PUBLIC_AUTH_URL:-http://auth:5090}
     depends_on:
       migrate:
         condition: service_completed_successfully
