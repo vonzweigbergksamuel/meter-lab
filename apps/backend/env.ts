@@ -29,6 +29,9 @@ export const env = createEnv({
 
 		// REDIS
 		REDIS_URL: z.string(),
+
+		// Backend
+		BACKEND_URL: z.string(),
 	},
 
 	/**

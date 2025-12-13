@@ -5,6 +5,8 @@ export type TestInput = Pick<
 	"title" | "description" | "testType" | "devices"
 >;
 
+export type TestUpdate = Partial<Omit<TestDataInsert, "id">>;
+
 export type Filter = {
 	limit?: number;
 	endAt?: Date;

@@ -13,35 +13,37 @@ export const filterInputSchema = z.object({
 });
 
 export const testInputSchema = z.object({
-	title: z.string(),
-	description: z.string(),
+	title: z.string().trim().min(1),
+	description: z.string().trim().min(1),
 	testType: z.literal("alive"),
-	devices: z.array(z.string()),
+	devices: z.array(z.string().trim().min(1)),
 });
 
 export const testsRouter = {
-	tests: os //protectedProcedure // TODO change to protected later
+	allTests: os //protectedProcedure // TODO change to protected later
 		.route({ method: "GET" })
 		.input(filterInputSchema)
 		.output(z.array(testDataZodSchema))
-		.handler((opts) => {
-			return getTestController().getAllTests(opts.input);
+		.handler(async (opts) => {
+			return await getTestController().getAllTests(opts.input);
 		}),
 	findTests: os //protectedProcedure // TODO change to protected later
 		.route({ method: "GET" })
 		.input(z.object({ id: z.coerce.number() })) // Id
 		.output(testDataZodSchema)
-		.handler((opts) => {
+		.handler(async (opts) => {
 			const { id } = opts.input;
-			return getTestController().getTest(id);
+			return await getTestController().getTest(id);
 		}),
 	createTests: os //protectedProcedure // TODO change to protected later
 		.route({ method: "POST" })
 		.input(testInputSchema)
-		.handler((opts) => {
+		.output(z.object({ testId: z.string() }))
+		.handler(async (opts) => {
 			const input = opts.input;
 			// Provide default values for missing fields required by the controller
-			return getTestController().createTest(input);
+			const { testId } = await getTestController().createTest(input);
+			return { testId: String(testId) };
 		}),
 	deleteTests: os //protectedProcedure // TODO change to protected later
 		.route({ method: "DELETE" })
@@ -49,5 +51,13 @@ export const testsRouter = {
 		.handler((opts) => {
 			const { id } = opts.input;
 			return getTestController().deleteTest(id);
+		}),
+	testStart: os //protectedProcedure // TODO change to protected later
+		.route({ method: "GET" })
+		.input(z.object({ id: z.coerce.number() }))
+		.handler((opts) => {
+			const { id } = opts.input;
+
+			return getTestController().testStart(id);
 		}),
 };
