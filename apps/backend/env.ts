@@ -32,6 +32,9 @@ export const env = createEnv({
 
 		// Backend
 		BACKEND_URL: z.string(),
+
+		// Rabbit
+		RABBIT_URL: z.string()
 	},
 
 	/**

@@ -43,6 +43,7 @@ services:
       EMQX_USERNAME: ${EMQX_USERNAME:-admin}
       EMQX_PASSWORD: ${EMQX_PASSWORD:-admin123}
       NODE_ENV: ${NODE_ENV:-development}
+      BACKEND_URL: ${BACKEND_URL:-http://localhost:${BACKEND_PORT:-5070}}
     restart: unless-stopped
     depends_on:
       migrate:

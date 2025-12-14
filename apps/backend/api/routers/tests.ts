@@ -2,6 +2,7 @@ import { os } from "@orpc/server";
 import * as z from "zod";
 import { testDataZodSchema } from "../../db/schema/schema.js";
 import { getTestController } from "../../di/helpers.js";
+import { tokenProtectedProcedure } from "../index.js";
 
 // import { protectedProcedure } from "../index.js";
 
@@ -41,7 +42,6 @@ export const testsRouter = {
 		.output(z.object({ testId: z.string() }))
 		.handler(async (opts) => {
 			const input = opts.input;
-			// Provide default values for missing fields required by the controller
 			const { testId } = await getTestController().createTest(input);
 			return { testId: String(testId) };
 		}),
@@ -52,12 +52,27 @@ export const testsRouter = {
 			const { id } = opts.input;
 			return getTestController().deleteTest(id);
 		}),
-	testStart: os //protectedProcedure // TODO change to protected later
-		.route({ method: "GET" })
+	testStart: tokenProtectedProcedure //tokenProtectedProcedure // TODO change to tokenProtectedProcedure later
+		.route({ method: "POST" })
 		.input(z.object({ id: z.coerce.number() }))
 		.handler((opts) => {
 			const { id } = opts.input;
+			const { token } = opts.context;
 
-			return getTestController().testStart(id);
+			return getTestController().testStart(id, token);
+		}),
+	testResult: tokenProtectedProcedure //tokenProtectedProcedure // TODO change to tokenProtectedProcedure later
+		.route({ method: "POST" })
+		.input(
+			z.object({
+				id: z.coerce.number(),
+				status: z.union([z.literal("completed"), z.literal("failed")]),
+			}),
+		)
+		.handler((opts) => {
+			const { id, status } = opts.input;
+			const { token } = opts.context;
+
+			return getTestController().testResult(id, status, token);
 		}),
 };

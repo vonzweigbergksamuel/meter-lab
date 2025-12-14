@@ -1,4 +1,5 @@
 import { ORPCError, os } from "@orpc/server";
+import { getKeyValueStoreService } from "../di/helpers.js";
 import { type JWTPayload, verifyJWT } from "../utils/jwt-verify.js";
 
 export interface BaseContext {
@@ -30,4 +31,31 @@ const authMiddleware = publicProcedure.middleware(async ({ context, next }) => {
 	}
 });
 
+const tokenAuthMiddleware = publicProcedure.middleware(
+	async ({ context, next }) => {
+		const authHeader = context.request.headers.get("meter-lab-api-key");
+
+		if (!authHeader) {
+			throw new ORPCError("BAD_REQUEST", {
+				message: "meter-lab-api-key header is required",
+			});
+		}
+
+		const validToken = await getKeyValueStoreService().get(authHeader);
+
+		if (!validToken || validToken !== authHeader) {
+			throw new ORPCError("UNAUTHORIZED", {
+				message: "Not valid Token",
+			});
+		}
+
+		return next({
+			context: {
+				token: validToken,
+			},
+		});
+	},
+);
+
 export const protectedProcedure = publicProcedure.use(authMiddleware);
+export const tokenProtectedProcedure = publicProcedure.use(tokenAuthMiddleware);
