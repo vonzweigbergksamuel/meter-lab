@@ -1,4 +1,4 @@
 export enum WS_CHANNELS {
 		DEVICE_UPDATE = "device_update",
-		DEVICE_TEST = "device_test"
+		TEST_UPDATE = "test_update"
 	}

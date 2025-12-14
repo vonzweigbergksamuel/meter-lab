@@ -24,7 +24,7 @@ export class PayloadService implements IPayloadService {
 		this.#cachedConnectedDevices = [];
 
 		// Send updated data to the client
-		publish(WS_CHANNELS.DEVICE_UPDATE, this.#cachedConnectedDevices);
+		publish(WS_CHANNELS.DEVICE_UPDATE, { devices: this.#cachedConnectedDevices });
 	}
 
 	async setPayload(payload: Device[]): Promise<void> {
@@ -61,7 +61,7 @@ export class PayloadService implements IPayloadService {
 		this.#cachedConnectedDevices = await this.#service.getAll();
 
 		// Send updated data to the client
-		publish(WS_CHANNELS.DEVICE_UPDATE, this.#cachedConnectedDevices);
+		publish(WS_CHANNELS.DEVICE_UPDATE, { devices: this.#cachedConnectedDevices });
 	}
 
 	#isSameDevice(cachedIds: Set<string>, newIds: Set<string>) {

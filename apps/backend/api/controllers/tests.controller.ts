@@ -5,6 +5,8 @@ import type { Filter, TestInput } from "../../core/services/database/types.js";
 import type { KeyValueStoreService } from "../../core/services/key-value-store/interface.js";
 import type { IQueue } from "../../core/services/queue/interface.js";
 import { env } from "../../env.js";
+import { WS_CHANNELS } from "../../utils/websocket/channels.js";
+import { publish } from "../../utils/websocket/websocket.js";
 
 export class TestsController {
 	#dBservice: TestDB;
@@ -62,7 +64,6 @@ export class TestsController {
 
 		// Update Websocket
 
-
 		return { testId: testData.id };
 	}
 
@@ -98,7 +99,7 @@ export class TestsController {
 			startAt: new Date(),
 			status: "running" as const,
 		};
-		
+
 		await this.#dBservice.update(id, data);
 
 		this.#keyValueService.set(token, "running");
@@ -130,7 +131,8 @@ export class TestsController {
 	}
 
 	async #sendToWebsocket(id: number) {
-		const result = await this.#dBservice.findById(id)
+		const result = await this.#dBservice.findById(id);
 		// this.#queueService.addToQueue(result);
+		publish(WS_CHANNELS.TEST_UPDATE, result);
 	}
 }
