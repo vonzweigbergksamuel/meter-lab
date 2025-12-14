@@ -43,7 +43,7 @@ const tokenAuthMiddleware = publicProcedure.middleware(
 
 		const validToken = await getKeyValueStoreService().get(authHeader);
 
-		if (!validToken || validToken !== authHeader) {
+		if (!validToken) {
 			throw new ORPCError("UNAUTHORIZED", {
 				message: "Not valid Token",
 			});
@@ -51,6 +51,7 @@ const tokenAuthMiddleware = publicProcedure.middleware(
 
 		return next({
 			context: {
+				...context,
 				token: validToken,
 			},
 		});

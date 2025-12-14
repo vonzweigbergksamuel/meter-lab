@@ -53,8 +53,8 @@ export class TestsController {
 		const testObj = {
 			testData,
 			callback: {
-				testStart: `${env.BACKEND_URL}/tests/testStart?id=${testData.id}`,
-				testEnd: `${env.BACKEND_URL}/tests/testResult?id=${testData.id}`,
+				testStart: `${env.BACKEND_URL}/rpc/tests/testStart`,
+				testEnd: `${env.BACKEND_URL}/rpc/tests/testResult`,
 				token,
 			},
 		};
@@ -63,6 +63,7 @@ export class TestsController {
 		this.#queueService.addToQueue(testObj);
 
 		// Update Websocket
+		await this.#sendToWebsocket(testData.id);
 
 		return { testId: testData.id };
 	}
@@ -90,6 +91,7 @@ export class TestsController {
 	async testStart(id: number, token: string) {
 		// Check if test already started
 		const testCase = await this.#dBservice.findById(id);
+		console.log(testCase);
 		if (testCase.startAt) {
 			throw new ORPCError("BAD_REQUEST");
 		}
@@ -105,7 +107,7 @@ export class TestsController {
 		this.#keyValueService.set(token, "running");
 
 		// Update Websocket
-		// this.#sendToQueue(id);
+		await this.#sendToWebsocket(id);
 	}
 
 	async testResult(id: number, status: "completed" | "failed", token: string) {

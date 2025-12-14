@@ -48,18 +48,27 @@ export const testsRouter = {
 	deleteTests: os //protectedProcedure // TODO change to protected later
 		.route({ method: "DELETE" })
 		.input(z.object({ id: z.coerce.number() })) // Id
-		.handler((opts) => {
+		.handler(async (opts) => {
 			const { id } = opts.input;
-			return getTestController().deleteTest(id);
+			return await getTestController().deleteTest(id);
 		}),
 	testStart: tokenProtectedProcedure //tokenProtectedProcedure // TODO change to tokenProtectedProcedure later
 		.route({ method: "POST" })
 		.input(z.object({ id: z.coerce.number() }))
-		.handler((opts) => {
+		.handler(async (opts) => {
+			console.log("METHOD:", opts.context.request.method);
+			console.log(
+				"CONTENT-TYPE:",
+				opts.context.request.headers.get("content-type"),
+			);
+			console.log("RAW BODY:", await opts.context.request.clone().text());
+			console.log("INPUT:", opts.input);
 			const { id } = opts.input;
 			const { token } = opts.context;
 
-			return getTestController().testStart(id, token);
+			console.log(id, token);
+
+			return await getTestController().testStart(id, token);
 		}),
 	testResult: tokenProtectedProcedure //tokenProtectedProcedure // TODO change to tokenProtectedProcedure later
 		.route({ method: "POST" })
@@ -69,10 +78,10 @@ export const testsRouter = {
 				status: z.union([z.literal("completed"), z.literal("failed")]),
 			}),
 		)
-		.handler((opts) => {
+		.handler(async (opts) => {
 			const { id, status } = opts.input;
 			const { token } = opts.context;
 
-			return getTestController().testResult(id, status, token);
+			return await getTestController().testResult(id, status, token);
 		}),
 };

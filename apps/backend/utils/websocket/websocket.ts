@@ -26,17 +26,20 @@ export function publish(
 	data: { devices: CachedDevices[] } | z.infer<typeof testDataZodSchema>,
 ) {
 	// type narrowing/guard for safe publish
-	if (
-		(channel === WS_CHANNELS.DEVICE_UPDATE && "devices" in data) ||
-		(channel === WS_CHANNELS.TEST_UPDATE && !("devices" in data))
+	if (channel === WS_CHANNELS.DEVICE_UPDATE && "devices" in data) {
+		publisher.publish(channel, data as { devices: CachedDevices[] });
+	} else if (
+		channel === WS_CHANNELS.TEST_UPDATE &&
+		"id" in data &&
+		"title" in data
 	) {
-		publisher.publish(channel, data as any);
+		publisher.publish(channel, data as z.infer<typeof testDataZodSchema>);
 	} else {
 		throw new Error(
 			`Invalid data type for the channel ${channel}: expected ${
 				channel === WS_CHANNELS.DEVICE_UPDATE
 					? "'{ devices: CachedDevices[] }'"
-					: "test data object"
+					: "test data object with id and title"
 			}`,
 		);
 	}
