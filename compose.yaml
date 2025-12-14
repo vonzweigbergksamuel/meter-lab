@@ -44,6 +44,7 @@ services:
       EMQX_PASSWORD: ${EMQX_PASSWORD:-admin123}
       NODE_ENV: ${NODE_ENV:-development}
       BACKEND_URL: ${BACKEND_URL:-http://localhost:${BACKEND_PORT:-5070}}
+      RABBIT_URL: ${RABBIT_URL:-amqp://${RABBIT_USER:-admin}:${RABBIT_PASS:-admin}@rabbit:5672}
     restart: unless-stopped
     depends_on:
       migrate:
@@ -80,6 +81,19 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - meter-lab
+
+  rabbit:
+    image: rabbitmq:4-management
+    container_name: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASS:-admin}
+    restart: unless-stopped
     networks:
       - meter-lab
 

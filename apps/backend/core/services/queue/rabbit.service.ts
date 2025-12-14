@@ -1,75 +1,50 @@
-import amqp from "amqplib";
+import type { Channel } from "amqplib";
+import * as amqp from "amqplib";
 import { env } from "../../../env.js";
 import type { IQueue } from "./interface.js";
 
 export class RabbitServive implements IQueue {
 	#queue: string;
-	#channel: any;
+	#channel: Channel | null = null;
 
 	constructor() {
 		this.#queue = "meter-lab/data";
 	}
 
-	connect(): Promise<void> {
-		return new Promise((resolve, reject) => {
-			amqp.connect(env.RABBIT_URL, (error0: any, connection: any) => {
-				if (error0) {
-					console.log(
-						error0 && error0.message ? error0.message : String(error0),
-					);
-					reject(error0);
-					return;
-				}
+	async connect(): Promise<void> {
+		try {
+			const connection = await amqp.connect(env.RABBIT_URL);
 
-				connection.on("error", (err: any) => {
-					console.log(err.message);
-					reject(err);
-				});
-
-				connection.on("close", () => {
-					console.log("RabbitMQ conn closed");
-					this.#channel = undefined;
-				});
-
-				console.log("RabbitMQ connected");
-
-				connection.createChannel((error1: any, innerChannel: any) => {
-					if (error1) {
-						console.log(error1.message);
-						reject(error1);
-						return;
-					}
-
-					this.#channel = innerChannel;
-
-					if (this.#channel) {
-						this.#channel.assertQueue(
-							this.#queue,
-							{
-								durable: true,
-								arguments: {
-									"x-queue-type": "quorum",
-								},
-							},
-							(err: any, ok: any) => {
-								if (err) {
-									console.log(err.message);
-									reject(err);
-									return;
-								}
-								console.log("RabbitMQ queue asserted");
-								resolve(connection);
-							},
-						);
-					}
-				});
+			connection.on("error", (err) => {
+				console.error("RabbitMQ connection error:", err.message);
+				this.#channel = null;
 			});
-		});
+
+			connection.on("close", () => {
+				console.log("RabbitMQ connection closed");
+				this.#channel = null;
+			});
+
+			console.log("RabbitMQ connected");
+
+			const channel = await connection.createChannel();
+			this.#channel = channel;
+
+			await channel.assertQueue(this.#queue, {
+				durable: true,
+				arguments: {
+					"x-queue-type": "quorum",
+				},
+			});
+		} catch (error) {
+			console.error("Failed to connect to RabbitMQ:", error);
+			throw error;
+		}
 	}
 
 	addToQueue(value: unknown): void {
 		if (!this.#channel) {
-			throw new Error("Rabbit is not ready yes");
+			throw new Error("RabbitMQ is not ready yet");
 		}
 
 		this.#channel.sendToQueue(this.#queue, Buffer.from(JSON.stringify(value)), {
