@@ -7,13 +7,13 @@ import { basicAuthProcedure, protectedProcedure } from "../index.js";
 export const filterInputSchema = z.object({
 	limit: z.coerce.number().optional(),
 	endAt: z.coerce.date().optional(),
-	testType: z.literal("alive").optional(),
+	testType: z.enum(["alive", "stress"]).optional(),
 });
 
 export const testInputSchema = z.object({
 	title: z.string().trim().min(1),
 	description: z.string().trim().min(1),
-	testType: z.literal("alive"),
+	testType: z.enum(["alive", "stress"]),
 	devices: z.array(z.string().trim().min(1)),
 });
 
@@ -22,36 +22,45 @@ export const testsRouter = {
 		.route({ method: "GET" })
 		.input(filterInputSchema)
 		.output(z.array(testDataSchemaZod))
-		.handler(async (opts) => {
-			return await getTestController().getAllTests(opts.input);
+		.handler(async ({ input }) => {
+			return await getTestController().getAllTests(input);
 		}),
 	findTests: protectedProcedure
 		.route({ method: "GET" })
 		.input(z.object({ id: z.coerce.number() })) // Id
 		.output(testDataSchemaZod)
-		.handler(async (opts) => {
-			const { id } = opts.input;
+		.handler(async ({ input: { id } }) => {
 			return await getTestController().getTest(id);
 		}),
 	createTests: protectedProcedure
 		.route({ method: "POST" })
 		.input(testInputSchema)
-		.output(z.object({ testId: z.string() }))
+		.output(
+			z.object({
+				success: z.boolean(),
+				testId: z.string(),
+			}),
+		)
 		.handler(async ({ input }) => {
+			console.log("input", input);
 			const { testId } = await getTestController().createTest(input);
-			return { testId: String(testId) };
+			console.log("testId", testId);
+			return {
+				success: true,
+				testId: String(testId),
+			};
 		}),
 	deleteTests: protectedProcedure
 		.route({ method: "DELETE" })
 		.input(z.object({ id: z.coerce.number() }))
-		.handler(async ({ input }) => {
-			return await getTestController().deleteTest(input.id);
+		.handler(async ({ input: { id } }) => {
+			await getTestController().deleteTest(id);
 		}),
 	testStart: basicAuthProcedure
 		.route({ method: "POST" })
 		.input(z.object({ id: z.coerce.number() }))
-		.handler(async ({ input }) => {
-			return await getTestController().testStart(input.id);
+		.handler(async ({ input: { id } }) => {
+			await getTestController().testStart(id);
 		}),
 	testResult: basicAuthProcedure
 		.route({ method: "POST" })
@@ -61,7 +70,7 @@ export const testsRouter = {
 				status: z.union([z.literal("completed"), z.literal("failed")]),
 			}),
 		)
-		.handler(async ({ input }) => {
-			return await getTestController().testResult(input.id, input.status);
+		.handler(async ({ input: { id, status } }) => {
+			await getTestController().testResult(id, status);
 		}),
 };

@@ -1,7 +1,6 @@
 import type { AppRouterClient } from "@meter-lab/orpc";
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
-import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { browser } from "$app/environment";
 import { PUBLIC_BACKEND_URL } from "$env/static/public";
 
@@ -49,5 +48,4 @@ const rpcLink = new RPCLink({
 });
 
 const rpcClient: AppRouterClient = createORPCClient(rpcLink);
-export const rpc = createTanstackQueryUtils(rpcClient);
 export { rpcClient };

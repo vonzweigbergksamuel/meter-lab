@@ -1,8 +1,8 @@
-// import type { AppRouterClient } from "@meter-lab/orpc";
-// import { createORPCClient } from "@orpc/client";
-// import { RPCLink } from "@orpc/client/fetch";
+import type { AppRouterClient } from "@meter-lab/orpc";
+import { createORPCClient } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
 import { form, getRequestEvent } from "$app/server";
-// import { PUBLIC_BACKEND_URL } from "$env/static/public";
+import { PUBLIC_BACKEND_URL } from "$env/static/public";
 import { z } from "zod";
 
 const createTestSchema = z.object({
@@ -17,37 +17,37 @@ const createTestSchema = z.object({
 export const createTest = form(createTestSchema, async (data) => {
 	try {
 		console.log("data", data);
-		// const event = getRequestEvent();
-		// const jwt = event.locals.jwt || event.cookies.get("jwt");
+		const event = getRequestEvent();
+		const jwt = event.locals.jwt || event.cookies.get("jwt");
 
-		// const rpcLink = new RPCLink({
-		// 	url: `${PUBLIC_BACKEND_URL}/rpc`,
-		// 	headers: () => {
-		// 		if (jwt) {
-		// 			return {
-		// 				Authorization: `Bearer ${jwt}`
-		// 			};
-		// 		}
-		// 		return {};
-		// 	}
-		// });
+		const rpcLink = new RPCLink({
+			// TODO: Change to the backend url from the environment variables
+			url: `${PUBLIC_BACKEND_URL}/rpc`,
+			headers: () => {
+				if (jwt) {
+					return {
+						Authorization: `Bearer ${jwt}`
+					};
+				}
+				return {};
+			}
+		});
 
-		// const rpcClient: AppRouterClient = createORPCClient(rpcLink);
-		// const response = await rpcClient.createTest({
-		// 	title: data.title,
-		// 	description: data.description,
-		// 	testType: data.testType,
-		// 	devices: data.devices
-		// });
+		const rpcClient: AppRouterClient = createORPCClient(rpcLink);
+		const response = await rpcClient.tests.createTests({
+			title: data.title,
+			description: data.description,
+			testType: data.testType,
+			devices: data.devices
+		});
 
-		// if (!response.success) {
-		// 	throw new Error(response.message || "Failed to create test");
-		// }
+		if (!response.success) {
+			throw new Error("Failed to create test");
+		}
 
 		return {
-			success: true
-			// testId: response.testId,
-			// message: response.message
+			success: true,
+			testId: response.testId
 		};
 	} catch (error) {
 		console.error("Error creating test:", error);

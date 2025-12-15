@@ -60,7 +60,6 @@ export class MqttService implements IIoTBrokerService {
 
 				// Setpayload
 				const data = this.#deviceDTO(message);
-				console.log(data);
 				this.#service.setPayload(data);
 			}
 		});

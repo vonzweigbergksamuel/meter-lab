@@ -5,27 +5,16 @@
 	import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 	import { Input } from "@/components/ui/input";
 	import { cn } from "@/utils";
-	import { createQuery } from "@tanstack/svelte-query";
 	import { browser } from "$app/environment";
-	import { rpc } from "$lib/api/client";
 	import * as Select from "$lib/components/ui/select/index.js";
+	import { getDeviceService } from "$lib/services/device.svelte";
 	import { toast } from "svelte-sonner";
 	import { createTest } from "./data.remote";
 
 	const { title, description, testType, devices } = createTest.fields;
 
-	const devicesQuery = browser
-		? createQuery(() =>
-				rpc.device.queryOptions({
-					input: {},
-					context: { cache: false }
-				})
-			)
-		: null;
-
-	const availableDevices = $derived(
-		devicesQuery?.data?.devices?.filter((d) => d.device_status === "available") || []
-	);
+	const deviceService = getDeviceService();
+	const availableDevices = $derived(deviceService.available);
 
 	const testTypes = [
 		{ value: "alive", label: "Alive Test" },
@@ -58,7 +47,9 @@
 
 			if (createTest.result?.success) {
 				// TODO: Get test id from backend and show it in the toast
-				toast.success(`Test ${4} created successfully`, { position: "top-center" });
+				toast.success(`Test ${createTest.result?.testId} created successfully`, {
+					position: "top-center"
+				});
 				form.reset();
 				selectedTestType = undefined;
 				selectedDevices = [];
@@ -110,11 +101,11 @@
 
 			<Field class="relative">
 				<FieldLabel for="devices">Select Devices</FieldLabel>
-				{#if !browser || !devicesQuery}
+				{#if !browser}
 					<div class="text-sm text-muted-foreground">Loading devices...</div>
-				{:else if devicesQuery?.isLoading}
+				{:else if deviceService.loading}
 					<div class="text-sm text-muted-foreground">Loading devices...</div>
-				{:else if devicesQuery?.error}
+				{:else if deviceService.error}
 					<div class="text-sm text-destructive">Error loading devices</div>
 				{:else if availableDevices.length === 0}
 					<div class="text-sm text-muted-foreground">No available devices</div>

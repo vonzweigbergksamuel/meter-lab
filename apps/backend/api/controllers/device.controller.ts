@@ -5,7 +5,6 @@ export class DeviceController {
 		const service = getKeyValueStoreService();
 		const data = await service.getAll();
 
-		console.log(data);
 		return { devices: data };
 	}
 }

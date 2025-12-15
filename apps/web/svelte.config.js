@@ -13,6 +13,9 @@ const config = {
 		alias: {
 			"@/*": "./src/lib/*"
 		},
+		// csrf: {
+		// 	checkOrigin: false
+		// },
 		experimental: {
 			remoteFunctions: true
 		}

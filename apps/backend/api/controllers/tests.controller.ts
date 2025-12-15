@@ -86,7 +86,6 @@ export class TestsController {
 	async testStart(id: number) {
 		// Check if test already started
 		const testCase = await this.#dBservice.findById(id);
-		console.log(testCase);
 		if (testCase.startAt) {
 			throw new ORPCError("BAD_REQUEST");
 		}
@@ -131,7 +130,6 @@ export class TestsController {
 	async #sendToWebsocketDevice() {
 		// Get all in values in redis and send that instead
 		const devices = await this.#keyValueService.getAll();
-		console.log(devices);
 		publish(WS_CHANNELS.DEVICE_UPDATE, { devices });
 	}
 }

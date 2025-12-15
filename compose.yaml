@@ -11,6 +11,8 @@ services:
         PUBLIC_WEBSOCKET_URL: "${PUBLIC_WEBSOCKET_URL:-ws://localhost:${WEBSOCKET_PORT:-5071}}"
     ports:
       - "${WEB_PORT:-5080}:${WEB_PORT:-5080}"
+    environment:
+      ORIGIN: "${ORIGIN:-http://localhost:${WEB_PORT:-5080}}"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:

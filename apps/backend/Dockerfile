@@ -45,7 +45,6 @@ COPY --from=dependencies /app/apps/backend/node_modules ./apps/backend/node_modu
 # Copy compiled dist and other necessary files
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
 COPY --from=builder /app/apps/backend/package.json ./apps/backend/package.json
-COPY --from=builder /app/apps/backend/lib/db/migrations ./apps/backend/lib/db/migrations
 
 RUN ls -la /app/apps/backend
 

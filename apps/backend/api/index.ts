@@ -18,7 +18,6 @@ const jwtAuthMiddleware = publicProcedure.middleware(
 		}
 		try {
 			const user = await verifyJWT(authHeader);
-			console.warn("user", user);
 			return next({
 				context: {
 					...context,

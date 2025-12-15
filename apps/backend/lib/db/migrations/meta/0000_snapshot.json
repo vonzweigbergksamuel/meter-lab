@@ -1,5 +1,5 @@
 {
-	"id": "bf258a0c-524d-4d18-8574-adb2dee2bcd1",
+	"id": "e8e8be81-2d7f-4f71-a2fc-82d33d5e2eb6",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"version": "7",
 	"dialect": "postgresql",
@@ -37,13 +37,13 @@
 					"name": "start_at",
 					"type": "timestamp",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": false
 				},
 				"end_at": {
 					"name": "end_at",
 					"type": "timestamp",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": false
 				},
 				"status": {
 					"name": "status",
@@ -78,7 +78,7 @@
 		"test_data.test_type": {
 			"name": "test_type",
 			"schema": "test_data",
-			"values": ["alive"]
+			"values": ["alive", "stress"]
 		}
 	},
 	"schemas": {
