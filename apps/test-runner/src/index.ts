@@ -5,4 +5,4 @@ const rs = new RabbitServive()
 await rs.connect()
 rs.listenQueue()
 
-console.log("Hello World");
+console.log("Mock test runner is running!");

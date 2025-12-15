@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto";
 import { ORPCError } from "@orpc/client";
 import type { TestDB } from "../../core/services/database/interface.js";
 import type { Filter, TestInput } from "../../core/services/database/types.js";
@@ -6,6 +5,7 @@ import type { KeyValueStoreService } from "../../core/services/key-value-store/i
 import type { IQueue } from "../../core/services/queue/interface.js";
 import { env } from "../../env.js";
 import { WS_CHANNELS } from "../../utils/websocket/channels.js";
+import type { CachedDevices } from "../../utils/websocket/types.js";
 import { publish } from "../../utils/websocket/websocket.js";
 
 export class TestsController {
@@ -36,7 +36,6 @@ export class TestsController {
 	}
 
 	async createTest(data: TestInput) {
-		// Validate connected devices exist in redis
 		const devices = data.devices;
 
 		await this.#deviceAvailability(devices);
@@ -44,18 +43,12 @@ export class TestsController {
 		const testData = await this.#dBservice.create(data);
 
 		await this.#updateDeviceStatus(devices, "unavailable");
-		// Append the test to the queue
-
-		const token = randomUUID();
-
-		this.#keyValueService.set(token, "pending");
 
 		const testObj = {
 			testData,
 			callback: {
-				testStart: `${env.BACKEND_URL}/rpc/tests/testStart`,
-				testEnd: `${env.BACKEND_URL}/rpc/tests/testResult`,
-				token,
+				testStart: `${env.BACKEND_URL}/api/tests/testStart`,
+				testEnd: `${env.BACKEND_URL}/api/tests/testResult`,
 			},
 		};
 
@@ -63,7 +56,7 @@ export class TestsController {
 		this.#queueService.addToQueue(testObj);
 
 		// Update Websocket
-		await this.#sendToWebsocket(testData.id);
+		await this.#sendToWebsocketTest(testData.id);
 
 		return { testId: testData.id };
 	}
@@ -73,7 +66,7 @@ export class TestsController {
 		for (const deviceId of devices) {
 			const device = await this.#keyValueService.get(deviceId);
 
-			if (!device) {
+			if (!device || device !== "available") {
 				throw new ORPCError("BAD_REQUEST");
 			}
 		}
@@ -86,9 +79,12 @@ export class TestsController {
 		for (const deviceId of devices) {
 			await this.#keyValueService.set(deviceId, status);
 		}
+
+		// send all devices that is under test
+		this.#sendToWebsocketDevice();
 	}
 
-	async testStart(id: number, token: string) {
+	async testStart(id: number) {
 		// Check if test already started
 		const testCase = await this.#dBservice.findById(id);
 		console.log(testCase);
@@ -104,13 +100,11 @@ export class TestsController {
 
 		await this.#dBservice.update(id, data);
 
-		this.#keyValueService.set(token, "running");
-
 		// Update Websocket
-		await this.#sendToWebsocket(id);
+		await this.#sendToWebsocketTest(id);
 	}
 
-	async testResult(id: number, status: "completed" | "failed", token: string) {
+	async testResult(id: number, status: "completed" | "failed") {
 		// Check if test already ended
 		const testCase = await this.#dBservice.findById(id);
 		if (testCase.endAt) {
@@ -126,15 +120,20 @@ export class TestsController {
 
 		this.#updateDeviceStatus(testCase.devices, "available");
 
-		this.#keyValueService.delete(token);
-
 		// Update Websocket
-		await this.#sendToWebsocket(id);
+		await this.#sendToWebsocketTest(id);
 	}
 
-	async #sendToWebsocket(id: number) {
+	async #sendToWebsocketTest(id: number) {
 		const result = await this.#dBservice.findById(id);
-		// this.#queueService.addToQueue(result);
 		publish(WS_CHANNELS.TEST_UPDATE, result);
+	}
+
+	async #sendToWebsocketDevice(
+	) {
+		// Get all in values in redis and send that instead
+		const devices = await this.#keyValueService.getAll()
+		console.log(devices)
+		publish(WS_CHANNELS.DEVICE_UPDATE, { devices });
 	}
 }

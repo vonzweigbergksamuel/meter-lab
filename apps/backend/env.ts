@@ -34,7 +34,12 @@ export const env = createEnv({
 		BACKEND_URL: z.string(),
 
 		// Rabbit
-		RABBIT_URL: z.string()
+		RABBIT_URL: z.string(),
+		RABBIT_QUEUE: z.string(),
+
+		// Test runner
+		TEST_RUNNER_USERNAME: z.string(),
+		TEST_RUNNER_PASSWORD: z.string(),
 	},
 
 	/**

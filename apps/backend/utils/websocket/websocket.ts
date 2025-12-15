@@ -1,6 +1,5 @@
-import { EventPublisher, eventIterator, type RouterClient } from "@orpc/server";
+import { EventPublisher, eventIterator, os, type RouterClient } from "@orpc/server";
 import * as z from "zod";
-import { protectedProcedure } from "../../api/index.js";
 import { testDataZodSchema } from "../../db/schema/schema.js";
 import { WS_CHANNELS } from "./channels.js";
 import type { CachedDevices } from "./types.js";
@@ -46,7 +45,7 @@ export function publish(
 }
 
 export const websocketRouter = {
-	deviceUpdates: protectedProcedure
+	deviceUpdates: os
 		.output(eventIterator(devicesSchema))
 		.handler(async function* ({ signal }) {
 			for await (const payload of publisher.subscribe(
@@ -58,7 +57,7 @@ export const websocketRouter = {
 				yield payload;
 			}
 		}),
-	testUpdates: protectedProcedure
+	testUpdates: os
 		.output(eventIterator(testDataZodSchema))
 		.handler(async function* ({ signal }) {
 			for await (const payload of publisher.subscribe(WS_CHANNELS.TEST_UPDATE, {

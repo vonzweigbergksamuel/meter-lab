@@ -1,33 +1,44 @@
-export async function mockTestRun(msg: any) {
+import { env } from "../../env.js";
+
+type Message = {
+	testData: {
+		id: number;
+		title: string;
+		description: string;
+		testType: string;
+		startAt: string;
+		endAt: string;
+		status: "pending" | "running" | "completed" | "failed";
+		devices: string[];
+	};
+	callback: {
+		testStart: string;
+		testEnd: string;
+	};
+};
+
+export async function mockTestRun(msg: Message) {
 	const testId = msg.testData?.id;
 	if (!testId) {
 		console.error("Missing testData.id in message");
 		return;
 	}
 
-  await simulateTestRun()
-
-	console.log("Test Start URL:", msg.callback.testStart);
-	await notifyTestStart(msg.callback.testStart, msg.callback.token, testId);
-	console.log("Start");
+	await notifyTestStart(msg.callback.testStart, testId);
 
 	await simulateTestRun();
-	console.log("Simulated");
+	console.log("Test run simulated");
 
-	console.log("Test End URL:", msg.callback.testEnd);
-	await notifyTestEnd(msg.callback.testEnd, msg.callback.token, testId);
-	console.log("End");
+	await notifyTestEnd(msg.callback.testEnd, testId);
 }
 
-async function notifyTestStart(url: string, token: string, id: number) {
+async function notifyTestStart(url: string, id: number) {
 	try {
 		const body = { id };
-		console.log("→ Sending testStart:", { url, body, hasToken: !!token });
-
 		const response = await fetch(url, {
 			method: "POST",
 			headers: {
-				"meter-lab-api-key": token,
+				Authorization: `Basic ${btoa(`${env.TEST_RUNNER_USERNAME}:${env.TEST_RUNNER_PASSWORD}`)}`,
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(body),
@@ -35,28 +46,20 @@ async function notifyTestStart(url: string, token: string, id: number) {
 
 		if (response.ok) {
 			console.log(`✓ Test start notified (${response.status})`);
-		} else {
-			const errorText = await response.text();
-			console.error(
-				`✗ Failed test start (${response.status} ${response.statusText})`,
-			);
-			console.error("Response:", errorText);
-			console.error("Sent body:", body);
 		}
 	} catch (error) {
 		console.error(`✗ Error notifying test start:`, error);
 	}
 }
 
-async function notifyTestEnd(url: string, token: string, id: number) {
+async function notifyTestEnd(url: string, id: number) {
 	try {
 		const body = { id, status: "completed" };
-		console.log("→ Sending testEnd:", { url, body, hasToken: !!token });
 
 		const response = await fetch(url, {
 			method: "POST",
 			headers: {
-				"meter-lab-api-key": token,
+				Authorization: `Basic ${btoa(`${env.TEST_RUNNER_USERNAME}:${env.TEST_RUNNER_PASSWORD}`)}`,
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(body),
@@ -64,13 +67,6 @@ async function notifyTestEnd(url: string, token: string, id: number) {
 
 		if (response.ok) {
 			console.log(`✓ Test end notified (${response.status})`);
-		} else {
-			const errorText = await response.text();
-			console.error(
-				`✗ Failed test end (${response.status} ${response.statusText})`,
-			);
-			console.error("Response:", errorText);
-			console.error("Sent body:", body);
 		}
 	} catch (error) {
 		console.error(`✗ Error notifying test end:`, error);

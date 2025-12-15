@@ -8,7 +8,7 @@ export class RabbitServive implements IQueue {
 	#channel: Channel | null = null;
 
 	constructor() {
-		this.#queue = "meter-lab/data";
+		this.#queue = env.RABBIT_QUEUE;
 	}
 
 	async connect(): Promise<void> {

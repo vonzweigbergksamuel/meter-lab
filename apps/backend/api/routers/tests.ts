@@ -1,10 +1,7 @@
-import { os } from "@orpc/server";
 import * as z from "zod";
 import { testDataZodSchema } from "../../db/schema/schema.js";
 import { getTestController } from "../../di/helpers.js";
-import { tokenProtectedProcedure } from "../index.js";
-
-// import { protectedProcedure } from "../index.js";
+import { basicAuthProcedure, protectedProcedure } from "../index.js";
 
 /** ------------------ Input Schemas ------------------ */
 export const filterInputSchema = z.object({
@@ -21,14 +18,14 @@ export const testInputSchema = z.object({
 });
 
 export const testsRouter = {
-	allTests: os //protectedProcedure // TODO change to protected later
+	allTests: protectedProcedure
 		.route({ method: "GET" })
 		.input(filterInputSchema)
 		.output(z.array(testDataZodSchema))
 		.handler(async (opts) => {
 			return await getTestController().getAllTests(opts.input);
 		}),
-	findTests: os //protectedProcedure // TODO change to protected later
+	findTests: protectedProcedure
 		.route({ method: "GET" })
 		.input(z.object({ id: z.coerce.number() })) // Id
 		.output(testDataZodSchema)
@@ -36,41 +33,27 @@ export const testsRouter = {
 			const { id } = opts.input;
 			return await getTestController().getTest(id);
 		}),
-	createTests: os //protectedProcedure // TODO change to protected later
+	createTests: protectedProcedure
 		.route({ method: "POST" })
 		.input(testInputSchema)
 		.output(z.object({ testId: z.string() }))
-		.handler(async (opts) => {
-			const input = opts.input;
+		.handler(async ({ input }) => {
 			const { testId } = await getTestController().createTest(input);
 			return { testId: String(testId) };
 		}),
-	deleteTests: os //protectedProcedure // TODO change to protected later
+	deleteTests: protectedProcedure
 		.route({ method: "DELETE" })
-		.input(z.object({ id: z.coerce.number() })) // Id
-		.handler(async (opts) => {
-			const { id } = opts.input;
-			return await getTestController().deleteTest(id);
+		.input(z.object({ id: z.coerce.number() }))
+		.handler(async ({ input }) => {
+			return await getTestController().deleteTest(input.id);
 		}),
-	testStart: tokenProtectedProcedure //tokenProtectedProcedure // TODO change to tokenProtectedProcedure later
+	testStart: basicAuthProcedure
 		.route({ method: "POST" })
 		.input(z.object({ id: z.coerce.number() }))
-		.handler(async (opts) => {
-			console.log("METHOD:", opts.context.request.method);
-			console.log(
-				"CONTENT-TYPE:",
-				opts.context.request.headers.get("content-type"),
-			);
-			console.log("RAW BODY:", await opts.context.request.clone().text());
-			console.log("INPUT:", opts.input);
-			const { id } = opts.input;
-			const { token } = opts.context;
-
-			console.log(id, token);
-
-			return await getTestController().testStart(id, token);
+		.handler(async ({ input }) => {
+			return await getTestController().testStart(input.id);
 		}),
-	testResult: tokenProtectedProcedure //tokenProtectedProcedure // TODO change to tokenProtectedProcedure later
+	testResult: basicAuthProcedure
 		.route({ method: "POST" })
 		.input(
 			z.object({
@@ -78,10 +61,7 @@ export const testsRouter = {
 				status: z.union([z.literal("completed"), z.literal("failed")]),
 			}),
 		)
-		.handler(async (opts) => {
-			const { id, status } = opts.input;
-			const { token } = opts.context;
-
-			return await getTestController().testResult(id, status, token);
+		.handler(async ({ input }) => {
+			return await getTestController().testResult(input.id, input.status);
 		}),
 };
