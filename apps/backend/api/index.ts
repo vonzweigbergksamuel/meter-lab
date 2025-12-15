@@ -1,6 +1,6 @@
 import { ORPCError, os } from "@orpc/server";
 import { env } from "../env.js";
-import { type JWTPayload, verifyJWT } from "../utils/jwt-verify.js";
+import { type JWTPayload, verifyJWT } from "../lib/utils/jwt-verify.js";
 export interface BaseContext {
 	request: Request;
 }

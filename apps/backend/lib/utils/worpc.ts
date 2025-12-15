@@ -3,7 +3,7 @@ import { onError } from "@orpc/server";
 import { CORSPlugin } from "@orpc/server/plugins";
 import { RPCHandler as WebSocketRPCHandler } from "@orpc/server/ws";
 import pino from "pino";
-import { websocketRouter } from "./websocket/websocket.js";
+import { websocketRouter } from "../websocket/websocket.js";
 
 const logger = pino();
 

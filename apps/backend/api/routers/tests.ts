@@ -1,6 +1,6 @@
 import * as z from "zod";
-import { testDataZodSchema } from "../../db/schema/schema.js";
 import { getTestController } from "../../di/helpers.js";
+import { testDataSchemaZod } from "../../lib/db/schema/schema.js";
 import { basicAuthProcedure, protectedProcedure } from "../index.js";
 
 /** ------------------ Input Schemas ------------------ */
@@ -21,14 +21,14 @@ export const testsRouter = {
 	allTests: protectedProcedure
 		.route({ method: "GET" })
 		.input(filterInputSchema)
-		.output(z.array(testDataZodSchema))
+		.output(z.array(testDataSchemaZod))
 		.handler(async (opts) => {
 			return await getTestController().getAllTests(opts.input);
 		}),
 	findTests: protectedProcedure
 		.route({ method: "GET" })
 		.input(z.object({ id: z.coerce.number() })) // Id
-		.output(testDataZodSchema)
+		.output(testDataSchemaZod)
 		.handler(async (opts) => {
 			const { id } = opts.input;
 			return await getTestController().getTest(id);

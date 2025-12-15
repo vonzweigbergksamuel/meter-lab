@@ -1,7 +1,4 @@
-import type {
-	IIoTBrokerService,
-	IPayloadService,
-} from "./interface.js";
+import type { IIoTBrokerService, IPayloadService } from "./interface.js";
 import type { Device } from "./types.js";
 
 export class MockIoTBrokerService implements IIoTBrokerService {

@@ -1,4 +1,4 @@
-import type { TestData } from "../../../db/schema/schema.js";
+import type { TestData } from "../../../lib/db/schema/schema.js";
 import type { Filter, TestInput, TestUpdate } from "./types.js";
 
 export interface TestDB {

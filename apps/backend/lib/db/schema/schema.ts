@@ -26,13 +26,26 @@ export const testData = testDataSchema.table("test_data", {
 export type TestData = InferSelectModel<typeof testData>;
 export type TestDataInsert = InferInsertModel<typeof testData>;
 
-export const testDataZodSchema = z.object({
+// Zod schema definitions
+const _testDataSchemaZod = z.object({
 	id: z.number(),
 	title: z.string(),
 	description: z.string(),
-	testType: z.literal("alive"),
+	testType: z.enum(["alive", "stress"]),
 	startAt: z.date().nullable(),
 	endAt: z.date().nullable(),
 	status: z.enum(["pending", "running", "completed", "failed"]),
 	devices: z.array(z.string()),
 });
+
+// Zod schema validation to ensure the schema matches the database schema
+type _ValidateSchema =
+	z.infer<typeof _testDataSchemaZod> extends TestData
+		? TestData extends z.infer<typeof _testDataSchemaZod>
+			? true
+			: false
+		: false;
+
+const _schemaCheck: _ValidateSchema = true;
+
+export const testDataSchemaZod = _testDataSchemaZod;

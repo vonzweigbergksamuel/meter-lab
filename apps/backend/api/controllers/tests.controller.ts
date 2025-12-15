@@ -4,8 +4,8 @@ import type { Filter, TestInput } from "../../core/services/database/types.js";
 import type { KeyValueStoreService } from "../../core/services/key-value-store/interface.js";
 import type { IQueue } from "../../core/services/queue/interface.js";
 import { env } from "../../env.js";
-import { WS_CHANNELS } from "../../utils/websocket/channels.js";
-import { publish } from "../../utils/websocket/websocket.js";
+import { WS_CHANNELS } from "../../lib/websocket/channels.js";
+import { publish } from "../../lib/websocket/websocket.js";
 
 export class TestsController {
 	#dBservice: TestDB;
@@ -128,11 +128,10 @@ export class TestsController {
 		publish(WS_CHANNELS.TEST_UPDATE, result);
 	}
 
-	async #sendToWebsocketDevice(
-	) {
+	async #sendToWebsocketDevice() {
 		// Get all in values in redis and send that instead
-		const devices = await this.#keyValueService.getAll()
-		console.log(devices)
+		const devices = await this.#keyValueService.getAll();
+		console.log(devices);
 		publish(WS_CHANNELS.DEVICE_UPDATE, { devices });
 	}
 }

@@ -15,7 +15,7 @@ export const appRouter = {
 		}),
 	...resultsRouter,
 	...deviceRouter,
-	tests: testsRouter
+	tests: testsRouter,
 };
 
 export type AppRouter = typeof appRouter;

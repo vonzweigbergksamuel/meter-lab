@@ -1,11 +1,11 @@
 import { ORPCError } from "@orpc/client";
 import { and, eq, lt } from "drizzle-orm";
-import { db } from "../../../db/index.js";
+import { db } from "../../../lib/db/index.js";
 import {
 	type TestData,
 	type TestDataInsert,
 	testData,
-} from "../../../db/schema/schema.js";
+} from "../../../lib/db/schema/schema.js";
 import type { TestDB } from "./interface.js";
 import type { Filter, TestInput, TestUpdate } from "./types.js";
 

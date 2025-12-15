@@ -6,4 +6,4 @@ export type {
 export type {
 	SocketRouter,
 	SocketRouterClient,
-} from "../../../apps/backend/utils/websocket/websocket.js";
+} from "../../../apps/backend/lib/websocket/websocket.js";

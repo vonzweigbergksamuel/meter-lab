@@ -8,8 +8,8 @@ import {
 } from "../di/helpers.js";
 import { injectDependencies } from "../di/setup.js";
 import { env } from "../env.js";
-import { openApiHandler, rpcHandler } from "../utils/orpc.js";
-import { wsRpcHandler } from "../utils/worpc.js";
+import { openApiHandler, rpcHandler } from "../lib/utils/orpc.js";
+import { wsRpcHandler } from "../lib/utils/worpc.js";
 
 // Create DI container
 injectDependencies();
