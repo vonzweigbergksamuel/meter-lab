@@ -11,23 +11,66 @@ export interface ProtectedContext extends BaseContext {
 
 export const publicProcedure = os.$context<BaseContext>();
 
-const authMiddleware = publicProcedure.middleware(async ({ context, next }) => {
-	const authHeader = context.request.headers.get("Authorization");
+const jwtAuthMiddleware = publicProcedure.middleware(
+	async ({ context, next }) => {
+		const authHeader = context.request.headers.get("Authorization");
 
-	try {
-		const user = await verifyJWT(authHeader);
-		console.warn("user", user);
-		return next({
-			context: {
-				...context,
-				user,
-			},
-		});
-	} catch (error) {
-		throw new ORPCError("UNAUTHORIZED", {
-			message: error instanceof Error ? error.message : "Unauthorized",
-		});
-	}
-});
+		if (!authHeader) {
+			throw new ORPCError("UNAUTHORIZED", {
+				message: "Unauthorized",
+			});
+		}
 
-export const protectedProcedure = publicProcedure.use(authMiddleware);
+		try {
+			const user = await verifyJWT(authHeader);
+			console.warn("user", user);
+			return next({
+				context: {
+					...context,
+					user,
+				},
+			});
+		} catch (error) {
+			throw new ORPCError("UNAUTHORIZED", {
+				message: error instanceof Error ? error.message : "Unauthorized",
+			});
+		}
+	},
+);
+
+const basicAuthMiddleware = publicProcedure.middleware(
+	async ({ context, next }) => {
+		const authHeader = context.request.headers.get("Authorization");
+
+		if (!authHeader) {
+			throw new ORPCError("UNAUTHORIZED", {
+				message: "Unauthorized",
+			});
+		}
+
+		try {
+			const [username, password] = Buffer.from(
+				authHeader.split(" ")[1],
+				"base64",
+			)
+				.toString()
+				.split(":");
+
+			// TODO: Set username and password from environment variables
+			if (username !== "admin" || password !== "admin") {
+				throw new ORPCError("UNAUTHORIZED", {
+					message: "Unauthorized",
+				});
+			}
+
+			return next({ context });
+		} catch (error) {
+			throw new ORPCError("UNAUTHORIZED", {
+				message: error instanceof Error ? error.message : "Unauthorized",
+			});
+		}
+	},
+);
+
+export const protectedProcedure = publicProcedure.use(jwtAuthMiddleware);
+export const basicAuthProcedure = publicProcedure.use(basicAuthMiddleware);

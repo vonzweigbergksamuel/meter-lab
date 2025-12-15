@@ -5,7 +5,8 @@
 
 	const NAV_LINKS = [
 		{ path: "/devices", label: "Devices" },
-		{ path: "/tests", label: "Tests" }
+		{ path: "/tests", label: "Tests" },
+		{ path: "/create-test", label: "Create test" }
 	];
 
 	if (browser) {

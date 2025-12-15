@@ -4,5 +4,5 @@
 </script>
 
 <Container className="mt-8">
-	<HeroText title="Tests" />
+	<HeroText title="Create test" />
 </Container>
