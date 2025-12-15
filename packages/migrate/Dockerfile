@@ -19,7 +19,7 @@ COPY --from=builder /app/out/full/ .
 
 WORKDIR /app/packages/migrate
 
-COPY apps/backend/db/migrations ./migrations/backend
+COPY apps/backend/lib/db/migrations ./migrations/backend
 COPY apps/auth/lib/db/migrations ./migrations/auth
 
 CMD ["pnpm", "migrate:all"]
