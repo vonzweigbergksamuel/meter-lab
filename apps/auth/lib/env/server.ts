@@ -5,8 +5,12 @@ export const env = createEnv({
 	server: {
 		// NODE
 		NODE_ENV: z
-			.enum(["development", "production", "testing"])
+			.enum(["development", "production", "testing", "stage"])
 			.default("development"),
+
+		// Domain
+		DOMAIN: z.string().default("localhost"),
+		PUBLIC_AUTH_URL: z.string(),
 
 		// DB
 		DATABASE_HOST: z.string(),

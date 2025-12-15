@@ -1,7 +1,11 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { WebSocketServer } from "ws";
-import { getKeyValueStoreService, getMqttService } from "../di/helpers.js";
+import {
+	getKeyValueStoreService,
+	getMqttService,
+	getRabbitService,
+} from "../di/helpers.js";
 import { injectDependencies } from "../di/setup.js";
 import { env } from "../env.js";
 import { openApiHandler, rpcHandler } from "../utils/orpc.js";
@@ -16,6 +20,9 @@ await getKeyValueStoreService().connect();
 // Connect to Broker instance (EMQX/MQTT), non-blocking
 await getMqttService().connect();
 getMqttService().listen();
+
+// Connect to Queue (Rabbit)
+await getRabbitService().connect();
 
 // Create HTTP app
 const app = new Hono();
@@ -56,23 +63,8 @@ app.use("/api/*", async (c, next) => {
 	await next();
 });
 
-/* --------- Start Websocket Server --------- */
-const WS_PORT = Number(env.WEBSOCKET_PORT);
-
-export const wss = new WebSocketServer({ port: WS_PORT });
-
-wss.on("connection", (ws) => {
-	wsRpcHandler.upgrade(ws, {
-		context: {},
-	});
-});
-
-wss.on("listening", () => {
-	console.log(`WebSocket server listening on ws://localhost:${WS_PORT}`);
-});
-
 /* --------- Start HTTP Server --------- */
-serve(
+const server = serve(
 	{
 		fetch: app.fetch,
 		port: env.PORT,
@@ -81,3 +73,18 @@ serve(
 		console.log(`Server is running on http://localhost:${info.port}`);
 	},
 );
+
+/* --------- Attach WebSocket Server to HTTP Server --------- */
+export const wss = new WebSocketServer({ noServer: true });
+
+server.on("upgrade", (request, socket, head) => {
+	wss.handleUpgrade(request, socket, head, (ws) => {
+		wsRpcHandler.upgrade(ws, {
+			context: {
+				request,
+			},
+		});
+	});
+});
+
+console.log(`WebSocket server attached to http://localhost:${env.PORT}`);

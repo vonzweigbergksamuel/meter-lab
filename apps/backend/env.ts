@@ -5,7 +5,7 @@ export const env = createEnv({
 	server: {
 		// NODE
 		NODE_ENV: z
-			.enum(["development", "production", "testing"])
+			.enum(["development", "production", "testing", "stage"])
 			.default("development"),
 
 		// SERVER
@@ -30,8 +30,16 @@ export const env = createEnv({
 		// REDIS
 		REDIS_URL: z.string(),
 
-		// WS
-		WEBSOCKET_PORT: z.coerce.number(),
+		// Backend
+		BACKEND_URL: z.string(),
+
+		// Rabbit
+		RABBIT_URL: z.string(),
+		RABBIT_QUEUE: z.string(),
+
+		// Test runner
+		TEST_RUNNER_USERNAME: z.string(),
+		TEST_RUNNER_PASSWORD: z.string(),
 	},
 
 	/**

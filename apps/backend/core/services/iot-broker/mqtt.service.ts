@@ -53,6 +53,7 @@ export class MqttService implements IIoTBrokerService {
 					clearTimeout(this.#messageTimeout);
 				}
 
+
 				this.#messageTimeout = setTimeout(() => {
 					console.log("No data for 20s, clearing payload");
 					this.#service.clearPayload();
@@ -60,6 +61,7 @@ export class MqttService implements IIoTBrokerService {
 
 				// Setpayload
 				const data = this.#deviceDTO(message);
+				console.log(data);
 				this.#service.setPayload(data);
 			}
 		});

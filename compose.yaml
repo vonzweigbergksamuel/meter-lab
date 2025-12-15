@@ -30,7 +30,6 @@ services:
       - "${WEBSOCKET_PORT:-5071}:${WEBSOCKET_PORT:-5071}"
     environment:
       PORT: ${BACKEND_PORT:-5070}
-      WEBSOCKET_PORT: ${WEBSOCKET_PORT:-5071}
       BACKEND_RUN_MIGRATIONS: ${BACKEND_RUN_MIGRATIONS:-false}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL:-http://auth:5090}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379}
@@ -44,6 +43,11 @@ services:
       EMQX_USERNAME: ${EMQX_USERNAME:-admin}
       EMQX_PASSWORD: ${EMQX_PASSWORD:-admin123}
       NODE_ENV: ${NODE_ENV:-development}
+      BACKEND_URL: ${BACKEND_URL:-http://host.docker.internal:${BACKEND_PORT:-5070}}
+      RABBIT_URL: ${RABBIT_URL:-amqp://${RABBIT_USER:-admin}:${RABBIT_PASS:-admin}@rabbit:5672}
+      RABBIT_QUEUE: ${RABBIT_QUEUE:-meter-lab/data}
+      TEST_RUNNER_USERNAME: ${TEST_RUNNER_USERNAME:-test-runner}
+      TEST_RUNNER_PASSWORD: ${TEST_RUNNER_PASSWORD:-test-runner123}
     restart: unless-stopped
     depends_on:
       migrate:
@@ -83,6 +87,19 @@ services:
     networks:
       - meter-lab
 
+  rabbit:
+    image: rabbitmq:4-management
+    container_name: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASS:-admin}
+    restart: unless-stopped
+    networks:
+      - meter-lab
+
   auth:
     image: auth:latest
     build:
@@ -96,6 +113,8 @@ services:
         DATABASE_NAME: ${AUTH_DB_NAME:-auth}
         BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
         BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
+        DOMAIN: ${DOMAIN:-localhost}
+        PUBLIC_AUTH_URL: ${PUBLIC_AUTH_URL:-http://auth:5090}
     ports:
       - "${AUTH_PORT:-5090}:${AUTH_PORT:-5090}"
     environment:
@@ -108,6 +127,8 @@ services:
       DATABASE_NAME: ${AUTH_DB_NAME:-auth}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-some-secret}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:${AUTH_PORT:-5090}}
+      DOMAIN: ${DOMAIN:-localhost}
+      PUBLIC_AUTH_URL: ${PUBLIC_AUTH_URL:-http://auth:5090}
     depends_on:
       migrate:
         condition: service_completed_successfully

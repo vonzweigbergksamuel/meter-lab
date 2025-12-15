@@ -3,6 +3,7 @@ import * as z from "zod";
 import { publicProcedure } from "../index.js";
 import { deviceRouter } from "./device.js";
 import { resultsRouter } from "./results.js";
+import { testsRouter } from "./tests.js";
 
 export const appRouter = {
 	healthCheck: publicProcedure
@@ -14,6 +15,7 @@ export const appRouter = {
 		}),
 	...resultsRouter,
 	...deviceRouter,
+	tests: testsRouter
 };
 
 export type AppRouter = typeof appRouter;

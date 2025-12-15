@@ -4,7 +4,10 @@ export const TOKENS = {
 	KeyValueService: Symbol("KeyValueStoreService"),
 	MqttService: Symbol("MqttService"),
 	PayloadService: Symbol("PayloadService"),
+	TestDBService: Symbol("TestDBService"),
+	RabbitService: Symbol("RabbitService"),
 
 	/* --------- Controllers --------- */
 	DeviceController: Symbol("DeviceController"),
+	TestController: Symbol("TestController"),
 } as const;

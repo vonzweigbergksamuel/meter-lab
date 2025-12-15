@@ -5,9 +5,9 @@ export type Device = {
 };
 
 export type CachedDevices = {
-	device_id: string;
-	device_status: "available" | "under_test";
-};
+		device_id: string;
+		device_status: "available" | "unavailable";
+	};
 
 export type JemacDevice = {
 	meter_id: string;
