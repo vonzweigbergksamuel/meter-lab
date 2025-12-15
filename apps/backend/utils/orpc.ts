@@ -15,6 +15,9 @@ export const openApiHandler = new OpenAPIHandler(appRouter, {
 		new CORSPlugin(),
 		new OpenAPIReferencePlugin({
 			schemaConverters: [new ZodToJsonSchemaConverter()],
+			specGenerateOptions: {
+				servers: [{ url: "/api" }],
+			},
 		}),
 		new LoggingHandlerPlugin({
 			logger,

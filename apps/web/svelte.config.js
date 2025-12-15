@@ -12,6 +12,14 @@ const config = {
 		adapter: adapter({}),
 		alias: {
 			"@/*": "./src/lib/*"
+		},
+		experimental: {
+			remoteFunctions: true
+		}
+	},
+	compilerOptions: {
+		experimental: {
+			async: true
 		}
 	}
 };
