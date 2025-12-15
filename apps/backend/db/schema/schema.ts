@@ -4,7 +4,7 @@ import * as z from "zod";
 
 export const testDataSchema = pgSchema("test_data");
 
-export const testType = testDataSchema.enum("test_type", ["alive"]);
+export const testType = testDataSchema.enum("test_type", ["alive", "stress"]);
 export const testStatus = testDataSchema.enum("test_status", [
 	"pending",
 	"running",
