@@ -72,7 +72,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -92,7 +92,7 @@ jobs:
           docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }}
           docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }}
           docker pull ghcr.io/$GITHUB_REPOSITORY/migrate:${{ github.sha }}
-          
+
           echo "Tagging images for compose..."
           docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }} backend:latest
           docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }} auth:latest
@@ -133,10 +133,10 @@ jobs:
         run: |
           echo "Waiting for services to start..."
           sleep 15
-          
+
           echo "=== Checking container status ==="
           docker compose ps
-          
+
           echo "=== Checking backend health at http://localhost:${BACKEND_PORT}/api/healthCheck ==="
           for i in {1..60}; do
             if curl -f http://localhost:${BACKEND_PORT}/api/healthCheck 2>&1; then
@@ -154,7 +154,7 @@ jobs:
             echo "Attempt $i/60: Waiting for backend..."
             sleep 2
           done
-          
+
           echo "=== Checking auth service at http://localhost:${AUTH_PORT} ==="
           for i in {1..60}; do
             if curl -f http://localhost:${AUTH_PORT} 2>&1; then
@@ -172,7 +172,7 @@ jobs:
             echo "Attempt $i/60: Waiting for auth..."
             sleep 2
           done
-          
+
           echo "All services are ready!"
 
       - name: Install Newman
@@ -229,7 +229,6 @@ jobs:
           EOF
       - name: Copy compose file and deploy
         env:
-          # Add more environment variables here as needed
           WEB_PORT: ${{ vars.WEB_PORT }}
           BACKEND_PORT: ${{ vars.BACKEND_PORT }}
           REDIS_URL: ${{ vars.REDIS_URL }}
@@ -241,6 +240,20 @@ jobs:
           AUTH_PORT: ${{ vars.AUTH_PORT }}
           BETTER_AUTH_URL: ${{ vars.BETTER_AUTH_URL }}
           AUTH_DB_PUBLIC_PORT: ${{ vars.AUTH_DB_PUBLIC_PORT }}
+
+          PUBLIC_BACKEND_URL: ${{ vars.PUBLIC_BACKEND_URL }}
+          PUBLIC_AUTH_URL: ${{ vars.PUBLIC_AUTH_URL }}
+          PUBLIC_WEBSOCKET_URL: ${{ vars.PUBLIC_WEBSOCKET_URL }}
+          ORIGIN: ${{ vars.ORIGIN }}
+
+          AUTH_SERVICE_URL: ${{ vars.AUTH_SERVICE_URL }}
+          BACKEND_URL: ${{ vars.BACKEND_URL }}
+          RABBIT_URL: ${{ vars.RABBIT_URL }}
+          RABBIT_QUEUE: ${{ vars.RABBIT_QUEUE }}
+          RABBIT_USER: ${{ vars.RABBIT_USER }}
+          RABBIT_PASS: ${{ vars.RABBIT_PASS }}
+          TEST_RUNNER_USERNAME: ${{ vars.TEST_RUNNER_USERNAME }}
+          TEST_RUNNER_PASSWORD: ${{ vars.TEST_RUNNER_PASSWORD }}
 
           AUTH_DB_HOST: ${{ secrets.AUTH_DB_HOST }}
           AUTH_DB_PORT: ${{ secrets.AUTH_DB_PORT }}
@@ -258,8 +271,8 @@ jobs:
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           ADMIN_NAME: ${{ vars.ADMIN_NAME }}
-          # Conditional variables for migrations in entrypoint.sh
-          BACKEND_RUN_MIGRATIONS: ${{ vars.BACKEND_RUN_MIGRATIONS }}
+
+          DOMAIN: ${{ vars.DOMAIN }}
         run: |
           scp -o StrictHostKeyChecking=no compose.yaml ${{ secrets.SSH_HOST }}:/tmp/compose.yaml
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_HOST }} bash -s << EOF
@@ -271,7 +284,7 @@ jobs:
             sleep 10
             
             echo "Starting services..."
-            WEB_PORT="$WEB_PORT" BACKEND_PORT="$BACKEND_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" AUTH_DB_HOST="$AUTH_DB_HOST" AUTH_DB_PORT="$AUTH_DB_PORT" AUTH_DB_USER="$AUTH_DB_USER" AUTH_DB_PASSWORD="$AUTH_DB_PASSWORD" AUTH_DB_NAME="$AUTH_DB_NAME" BACKEND_DB_HOST="$BACKEND_DB_HOST" BACKEND_DB_PORT="$BACKEND_DB_PORT" BACKEND_DB_USER="$BACKEND_DB_USER" BACKEND_DB_PASSWORD="$BACKEND_DB_PASSWORD" BACKEND_DB_NAME="$BACKEND_DB_NAME" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" BACKEND_RUN_MIGRATIONS="$BACKEND_RUN_MIGRATIONS" ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" AUTH_DB_PUBLIC_PORT="$AUTH_DB_PUBLIC_PORT" docker compose up -d
+            WEB_PORT="$WEB_PORT" BACKEND_PORT="$BACKEND_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" AUTH_DB_HOST="$AUTH_DB_HOST" AUTH_DB_PORT="$AUTH_DB_PORT" AUTH_DB_USER="$AUTH_DB_USER" AUTH_DB_PASSWORD="$AUTH_DB_PASSWORD" AUTH_DB_NAME="$AUTH_DB_NAME" BACKEND_DB_HOST="$BACKEND_DB_HOST" BACKEND_DB_PORT="$BACKEND_DB_PORT" BACKEND_DB_USER="$BACKEND_DB_USER" BACKEND_DB_PASSWORD="$BACKEND_DB_PASSWORD" BACKEND_DB_NAME="$BACKEND_DB_NAME" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" AUTH_DB_PUBLIC_PORT="$AUTH_DB_PUBLIC_PORT" DOMAIN="$DOMAIN" PUBLIC_BACKEND_URL="$PUBLIC_BACKEND_URL" PUBLIC_AUTH_URL="$PUBLIC_AUTH_URL" PUBLIC_WEBSOCKET_URL="$PUBLIC_WEBSOCKET_URL" PUBLIC_IS_LOCAL="$PUBLIC_IS_LOCAL" ORIGIN="$ORIGIN" BACKEND_RUN_MIGRATIONS="$BACKEND_RUN_MIGRATIONS" AUTH_SERVICE_URL="$AUTH_SERVICE_URL" BACKEND_URL="$BACKEND_URL" RABBIT_URL="$RABBIT_URL" RABBIT_QUEUE="$RABBIT_QUEUE" RABBIT_USER="$RABBIT_USER" RABBIT_PASS="$RABBIT_PASS" TEST_RUNNER_USERNAME="$TEST_RUNNER_USERNAME" TEST_RUNNER_PASSWORD="$TEST_RUNNER_PASSWORD" docker compose up -d
 
             echo "Deployment complete!"
             echo "Pruning unused images..."
