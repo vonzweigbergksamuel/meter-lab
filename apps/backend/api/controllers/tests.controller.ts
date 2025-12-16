@@ -31,6 +31,8 @@ export class TestsController {
 	}
 
 	async deleteTest(id: number) {
+		await this.getTest(id);
+
 		await this.#dBservice.delete(id);
 	}
 

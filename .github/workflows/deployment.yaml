@@ -9,19 +9,9 @@ on:
       - main
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Print message
-        run: echo 'Coming soon...'
-
   build:
     name: Build images
-    needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
       contents: read
       packages: write
@@ -77,8 +67,131 @@ jobs:
             BETTER_AUTH_URL=${{ vars.BETTER_AUTH_URL }}
             BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
 
-  deploy:
+  test:
     needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Pull and tag images from GHCR
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          echo "Pulling images from GHCR..."
+          docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }}
+          docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }}
+          docker pull ghcr.io/$GITHUB_REPOSITORY/migrate:${{ github.sha }}
+          
+          echo "Tagging images for compose..."
+          docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }} backend:latest
+          docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }} auth:latest
+          docker tag ghcr.io/$GITHUB_REPOSITORY/migrate:${{ github.sha }} migrate:latest
+          echo "Images ready!"
+
+      - name: Start services
+        env:
+          BACKEND_PORT: ${{ vars.BACKEND_PORT || '5070' }}
+          AUTH_PORT: ${{ vars.AUTH_PORT || '5090' }}
+          WEBSOCKET_PORT: ${{ vars.WEBSOCKET_PORT || '5071' }}
+          REDIS_URL: ${{ vars.REDIS_URL || 'redis://localhost:6379' }}
+          EMQX_URL: ${{ vars.EMQX_URL || 'mqtt://localhost:1884' }}
+          EMQX_TOPIC: ${{ vars.EMQX_TOPIC || 'mock-data' }}
+          EMQX_USERNAME: ${{ vars.EMQX_USERNAME || 'admin' }}
+          EMQX_PASSWORD: ${{ vars.EMQX_PASSWORD || 'admin123' }}
+          NODE_ENV: testing
+          BACKEND_RUN_MIGRATIONS: true
+          AUTH_SERVICE_URL: http://auth:${{ vars.AUTH_PORT || '5090' }}
+          DATABASE_HOST: backend-db
+          DATABASE_PORT: ${{ vars.BACKEND_DB_PORT || '5432' }}
+          DATABASE_USER: ${{ secrets.BACKEND_DB_USER }}
+          DATABASE_PASSWORD: ${{ secrets.BACKEND_DB_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.BACKEND_DB_NAME }}
+          BACKEND_DB_HOST: backend-db
+          BACKEND_DB_PORT: ${{ vars.BACKEND_DB_PORT || '5432' }}
+          BACKEND_DB_USER: ${{ secrets.BACKEND_DB_USER }}
+          BACKEND_DB_PASSWORD: ${{ secrets.BACKEND_DB_PASSWORD }}
+          BACKEND_DB_NAME: ${{ secrets.BACKEND_DB_NAME }}
+          AUTH_DB_HOST: auth-db
+          AUTH_DB_PORT: ${{ vars.AUTH_DB_PORT || '5432' }}
+          AUTH_DB_USER: ${{ secrets.AUTH_DB_USER }}
+          AUTH_DB_PASSWORD: ${{ secrets.AUTH_DB_PASSWORD }}
+          AUTH_DB_NAME: ${{ secrets.AUTH_DB_NAME }}
+          BACKEND_URL: http://localhost:${{ vars.BACKEND_PORT || '5070' }}
+          RABBIT_URL: ${{ vars.RABBIT_URL || 'amqp://admin:admin@rabbit:5672' }}
+          RABBIT_QUEUE: ${{ vars.RABBIT_QUEUE || 'meter-lab/data' }}
+          TEST_RUNNER_USERNAME: ${{ vars.TEST_RUNNER_USERNAME || 'test-runner' }}
+          TEST_RUNNER_PASSWORD: ${{ vars.TEST_RUNNER_PASSWORD || 'test-runner123' }}
+          BETTER_AUTH_URL: http://localhost:${{ vars.AUTH_PORT || '5090' }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          DOMAIN: localhost
+          PUBLIC_AUTH_URL: http://localhost:${{ vars.AUTH_PORT || '5090' }}
+        run: |
+          docker compose up -d
+
+      - name: Wait for databases to be ready
+        run: |
+          echo "Waiting for PostgreSQL databases to be ready..."
+          timeout 60 bash -c 'until docker compose exec -T backend-db pg_isready -U postgres; do sleep 2; done'
+          timeout 60 bash -c 'until docker compose exec -T auth-db pg_isready -U postgres; do sleep 2; done'
+          echo "Databases are ready!"
+
+      - name: Wait for services to be healthy
+        env:
+          BACKEND_PORT: ${{ vars.BACKEND_PORT || '5070' }}
+          AUTH_PORT: ${{ vars.AUTH_PORT || '5090' }}
+        run: |
+          echo "Waiting for services to start..."
+          sleep 10
+          
+          echo "Checking backend health..."
+          timeout 120 bash -c "until curl -f http://localhost:${BACKEND_PORT}/api/healthCheck > /dev/null 2>&1; do echo 'Waiting for backend...'; sleep 2; done"
+          echo "Backend is healthy!"
+          
+          echo "Checking auth service..."
+          timeout 120 bash -c "until curl -f http://localhost:${AUTH_PORT} > /dev/null 2>&1; do echo 'Waiting for auth...'; sleep 2; done"
+          echo "Auth service is healthy!"
+          
+          echo "All services are ready!"
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman tests
+        env:
+          BACKEND_PORT: ${{ vars.BACKEND_PORT || '5070' }}
+          AUTH_PORT: ${{ vars.AUTH_PORT || '5090' }}
+        run: |
+          newman run test/API_TEST.postman_collection.json \
+            --variable "authURL=http://localhost:${AUTH_PORT}" \
+            --variable "backendUrl=http://localhost:${BACKEND_PORT}" \
+            --variable "baseUrl=http://localhost:${BACKEND_PORT}/api" \
+            --reporter-cli-no-summary \
+            --reporter-cli-no-banner
+
+      - name: Cleanup services
+        if: always()
+        run: |
+          docker compose down --remove-orphans
+          docker system prune -f
+
+  deploy:
+    needs: test
     environment: meter-lab
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
