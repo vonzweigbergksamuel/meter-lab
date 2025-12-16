@@ -12,18 +12,37 @@ export const publicProcedure = os.$context<BaseContext>();
 
 const websocketProcedure = publicProcedure.middleware(
 	async ({ context, next }) => {
-		const cookies = context.request.headers.cookie?.split(";");
-
-		const cookie = cookies?.filter((cookie) =>
-			cookie.trim().startsWith("jwt="),
-		);
-
-		if (!cookie) {
-			throw new ORPCError("UNAUTHORIZED");
+		if (!context.request?.headers) {
+			throw new ORPCError("UNAUTHORIZED", {
+				message: "Request headers not found",
+			});
 		}
 
-		// Get the token
-		const token = cookie[0].split("=")[1];
+		const cookieHeader = context.request.headers.cookie;
+		if (!cookieHeader) {
+			throw new ORPCError("UNAUTHORIZED", {
+				message: "No cookie header found",
+			});
+		}
+
+		const cookies = cookieHeader.split(";");
+
+		const cookie = cookies.filter((cookie) => cookie.trim().startsWith("jwt="));
+
+		if (!cookie || cookie.length === 0) {
+			throw new ORPCError("UNAUTHORIZED", {
+				message: "No JWT cookie found",
+			});
+		}
+
+		const jwtCookie = cookie[0].trim();
+		if (!jwtCookie.includes("=")) {
+			throw new ORPCError("UNAUTHORIZED", {
+				message: "Invalid JWT cookie format",
+			});
+		}
+
+		const token = jwtCookie.split("=")[1];
 
 		try {
 			const user = await verifyJWT(`Bearer ${token}`);
