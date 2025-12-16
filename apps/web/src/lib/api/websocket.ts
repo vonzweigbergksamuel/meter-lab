@@ -4,6 +4,18 @@ import { RPCLink } from "@orpc/client/websocket";
 import { browser } from "$app/environment";
 import { PUBLIC_BACKEND_URL, PUBLIC_IS_LOCAL } from "$env/static/public";
 
+function getJwtFromCookie(): string | null {
+	if (!browser) return null;
+	const cookies = document.cookie.split(";");
+	for (const cookie of cookies) {
+		const [name, value] = cookie.trim().split("=");
+		if (name === "jwt-client") {
+			return value;
+		}
+	}
+	return null;
+}
+
 function getWebSocketUrl(): string {
 	const isLocalUrl = PUBLIC_BACKEND_URL.includes("localhost");
 	const isStagingUrl = PUBLIC_BACKEND_URL.includes("nordicode");
@@ -19,7 +31,16 @@ function getWebSocketUrl(): string {
 		backendUrl = "http://backend:5070";
 	}
 
-	return backendUrl.replace(/^http/, "ws");
+	let wsUrl = backendUrl.replace(/^http/, "ws");
+	
+	const jwt = getJwtFromCookie();
+	if (jwt) {
+		const url = new URL(wsUrl);
+		url.searchParams.set("token", jwt);
+		wsUrl = url.toString();
+	}
+
+	return wsUrl;
 }
 
 export function createWebSocketClient(): SocketRouterClient | undefined {
