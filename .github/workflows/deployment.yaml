@@ -184,6 +184,8 @@ jobs:
       - name: Run Postman tests
         run: |
           newman run test/API_TEST.postman_collection.json \
+            --variable "authURL=http://localhost:5090/api/auth" \
+            --variable "backendUrl=http://localhost:5070/api" \
             --reporter-cli-no-summary \
             --reporter-cli-no-banner
 
