@@ -24,13 +24,17 @@ export const allowedOrigins = new Set([
 	"http://blade.jemac.se:5090", // Prod
 ]);
 
+const isSecure =
+	env.PUBLIC_AUTH_URL.startsWith("https://") ||
+	env.BETTER_AUTH_URL.startsWith("https://");
+
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "pg",
 	}),
 	advanced: {
 		defaultCookieAttributes: {
-			secure: true,
+			secure: isSecure,
 			httpOnly: true,
 			sameSite: "lax",
 		},
