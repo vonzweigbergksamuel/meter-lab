@@ -1687,12 +1687,12 @@
 		},
 		{
 			"key": "TS_USERNAME",
-			"value": "",
+			"value": "test-runner",
 			"type": "default"
 		},
 		{
 			"key": "TS_PASSWORD",
-			"value": "",
+			"value": "test-runner123",
 			"type": "default"
 		},
 		{
