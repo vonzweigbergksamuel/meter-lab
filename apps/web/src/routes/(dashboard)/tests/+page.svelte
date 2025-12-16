@@ -5,11 +5,7 @@
 	import { createWebSocketClient } from "$lib/api/websocket";
 	import { Badge } from "$lib/components/ui/badge";
 	import * as Card from "$lib/components/ui/card/index.js";
-	import {
-		setTestService,
-		TestService,
-		type TestData
-	} from "$lib/services/test.svelte";
+	import { setTestService, TestService, type TestData } from "$lib/services/test.svelte";
 	import { onMount } from "svelte";
 
 	const testService = new TestService();

@@ -5,6 +5,7 @@
 	import {
 		Field,
 		FieldDescription,
+		FieldError,
 		FieldGroup,
 		FieldLabel
 	} from "$lib/components/ui/field/index.js";
@@ -16,22 +17,23 @@
 
 	const id = $props.id();
 
+	let errorMessage = $state<string | null>(null);
+
 	const handleSubmit = async (e: Event) => {
 		e.preventDefault();
 		const formData = new FormData(e.target as HTMLFormElement);
 		const email = formData.get("email") as string;
 		const password = formData.get("password") as string;
+		errorMessage = null;
 		const { data, error } = await authClient.signIn.email({
 			email: email,
 			password: password,
 			callbackURL: "/devices"
 		});
 		if (error) {
-			console.error("error", error);
+			errorMessage = error.message || "Invalid email or password";
 		}
 		if (data) {
-			console.log("data", data);
-
 			// Navigate to dashboard after successful login
 			window.location.href = "/devices";
 		}
@@ -49,14 +51,36 @@
 				<FieldGroup>
 					<Field>
 						<FieldLabel for="email-{id}">Email</FieldLabel>
-						<Input id="email-{id}" name="email" type="email" placeholder="m@example.com" required />
+						<Input
+							id="email-{id}"
+							name="email"
+							type="email"
+							placeholder="m@example.com"
+							required
+							oninput={() => {
+								errorMessage = null;
+							}}
+						/>
 					</Field>
 					<Field>
 						<div class="flex items-center">
 							<FieldLabel for="password-{id}">Password</FieldLabel>
 						</div>
-						<Input id="password-{id}" name="password" type="password" required />
+						<Input
+							id="password-{id}"
+							name="password"
+							type="password"
+							required
+							oninput={() => {
+								errorMessage = null;
+							}}
+						/>
 					</Field>
+					{#if errorMessage}
+						<Field>
+							<FieldError>{errorMessage}</FieldError>
+						</Field>
+					{/if}
 					<Field>
 						<Button type="submit">Sign in</Button>
 						<FieldDescription class="text-center">
