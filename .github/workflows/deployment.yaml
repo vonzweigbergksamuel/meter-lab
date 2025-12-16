@@ -108,7 +108,7 @@ jobs:
         env:
           NODE_ENV: test
         run: |
-          NODE_ENV=$"NODE_ENV" docker compose up -d
+          NODE_ENV="$NODE_ENV" docker compose up -d
           echo "Services started, checking status..."
           docker compose ps
 
