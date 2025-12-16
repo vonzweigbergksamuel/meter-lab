@@ -182,9 +182,6 @@ jobs:
         run: npm install -g newman
 
       - name: Run Postman tests
-        env:
-          BACKEND_PORT: ${{ vars.BACKEND_PORT || '5070' }}
-          AUTH_PORT: ${{ vars.AUTH_PORT || '5090' }}
         run: |
           newman run test/API_TEST.postman_collection.json \
             --reporter-cli-no-summary \
