@@ -2,11 +2,7 @@ name: Deployment Main
 
 on:
   push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   build:
@@ -186,6 +182,7 @@ jobs:
       - name: Run Postman tests
         run: |
           newman run test/API_TEST.postman_collection.json \
+            --delay-request 2000 \
             --reporter-cli-no-summary \
             --reporter-cli-no-banner
 
