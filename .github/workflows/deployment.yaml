@@ -187,9 +187,6 @@ jobs:
           AUTH_PORT: ${{ vars.AUTH_PORT || '5090' }}
         run: |
           newman run test/API_TEST.postman_collection.json \
-            --variable "authURL=http://localhost:${AUTH_PORT}" \
-            --variable "backendUrl=http://localhost:${BACKEND_PORT}" \
-            --variable "baseUrl=http://localhost:${BACKEND_PORT}/api" \
             --reporter-cli-no-summary \
             --reporter-cli-no-banner
 

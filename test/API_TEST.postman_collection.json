@@ -1548,12 +1548,12 @@
 		},
 		{
 			"key": "authURL",
-			"value": "",
+			"value": "http://localhost:5090",
 			"type": "default"
 		},
 		{
 			"key": "backendUrl",
-			"value": "",
+			"value": "http://localhost:5070",
 			"type": "default"
 		},
 		{
