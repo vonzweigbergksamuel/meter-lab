@@ -1,0 +1,12 @@
+services:
+  test-runner:
+    image: test-runner:latest
+    build:
+      context: .
+      dockerfile: ./apps/test-runner/Dockerfile
+    environment:
+      - TEST_RUNNER_USERNAME=${TEST_RUNNER_USERNAME:-test-runner}
+      - TEST_RUNNER_PASSWORD=${TEST_RUNNER_PASSWORD:-test-runner123}
+      - RABBIT_URL=${RABBIT_URL:-amqp://${RABBIT_USER:-admin}:${RABBIT_PASS:-admin}@host.docker.internal:5672}
+      - RABBIT_QUEUE=${RABBIT_QUEUE:-meter-lab/data}
+    restart: unless-stopped
