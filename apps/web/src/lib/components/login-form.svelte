@@ -82,7 +82,7 @@
 						</Field>
 					{/if}
 					<Field>
-						<Button type="submit">Sign in</Button>
+						<Button type="submit" id="sign-in-btn">Sign in</Button>
 						<FieldDescription class="text-center">
 							Don't have an account? <span class="text-primary">Contact an administrator</span>
 						</FieldDescription>

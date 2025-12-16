@@ -74,9 +74,9 @@
 				{/each}
 			</Field>
 
-			<Field class="relative">
+			<Field class="relative" id="testType-field">
 				<FieldLabel for="testType">Test Type</FieldLabel>
-				<input type="hidden" name={testTypeProps.name} value={selectedTestType ?? ""} />
+				<input id="testType" type="hidden" name={testTypeProps.name} value={selectedTestType ?? ""} />
 				<Select.Select bind:value={selectedTestType} type="single">
 					<Select.SelectTrigger
 						class={cn(
@@ -99,7 +99,7 @@
 				{/each}
 			</Field>
 
-			<Field class="relative">
+			<Field class="relative" id="devices-field">
 				<FieldLabel for="devices">Select Devices</FieldLabel>
 				{#if !browser}
 					<div class="text-sm text-muted-foreground">Loading devices...</div>
@@ -111,7 +111,7 @@
 					<div class="text-sm text-muted-foreground">No available devices</div>
 				{:else}
 					{#each selectedDevices as device}
-						<input type="hidden" name={devicesProps.name} value={device} />
+						<input id="devices" type="hidden" name={devicesProps.name} value={device} />
 					{/each}
 					<Select.Select bind:value={selectedDevices} type="multiple">
 						<Select.SelectTrigger
@@ -134,7 +134,7 @@
 			</Field>
 
 			<Field>
-				<Button type="submit" disabled={!browser || availableDevices.length === 0}>
+				<Button id="create-test-btn" type="submit" disabled={!browser || availableDevices.length === 0}>
 					Create Test
 				</Button>
 			</Field>
