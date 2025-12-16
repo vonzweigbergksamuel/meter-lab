@@ -1,0 +1,1703 @@
+{
+	"info": {
+		"_postman_id": "f3ec2f29-55ba-44bb-a63a-d8c776b9729f",
+		"name": "Meter-lab",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32445160",
+		"_collection_link": "https://meter-lab.postman.co/workspace/115c58e7-c301-4d8e-898e-42b3935a1858/collection/34193279-f3ec2f29-55ba-44bb-a63a-d8c776b9729f?action=share&source=collection_link&creator=32445160"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "register",
+					"item": [
+						{
+							"name": "Create User success",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse response and basic checks\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Function to generate a random string of specified length\r",
+											"function getRandomString(length) {\r",
+											"    let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';\r",
+											"    let result = '';\r",
+											"    for (let i = 0; i < length; i++) {\r",
+											"        result += chars.charAt(Math.floor(Math.random() * chars.length));\r",
+											"    }\r",
+											"    return result;\r",
+											"}\r",
+											"\r",
+											"// Function to generate a random email\r",
+											"function getRandomEmail() {\r",
+											"    let randomString = getRandomString(5);\r",
+											"    return `${randomString}${Math.floor(Math.random() * 1000)}@student.lnu.se`;\r",
+											"}\r",
+											"\r",
+											"// Function to generate a password (minimum 10 characters, including numbers & special characters)\r",
+											"function getRandomPassword() {\r",
+											"    let numbers = \"0123456789\";\r",
+											"    let basePassword = getRandomString(6) + \r",
+											"                       numbers.charAt(Math.floor(Math.random() * numbers.length)) + \r",
+											"                       getRandomString(3); // Ensures length of at least 10\r",
+											"    return basePassword;\r",
+											"}\r",
+											"\r",
+											"pm.collectionVariables.set(\"email\", getRandomEmail());\r",
+											"pm.collectionVariables.set(\"name\", getRandomString(6));\r",
+											"pm.collectionVariables.set(\"password\", getRandomPassword());"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Origin",
+										"value": "http://localhost:5070"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"image\": \"\",\r\n  \"callbackURL\": \"http://localhost:5070\",\r\n  \"rememberMe\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{authURL}}/sign-up/email",
+									"host": ["{{authURL}}"],
+									"path": ["sign-up", "email"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User fail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse response and basic checks\r",
+											"pm.test(\"Status code is 422, User already exist\", function () {\r",
+											"    pm.response.to.have.status(422);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains correct error message\", function () {\r",
+											"    pm.expect(pm.response.json().message).to.eql(\"User already exists. Use another email.\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [""],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Origin",
+										"value": "http://localhost:5070"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"{{name}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"image\": \"\",\r\n  \"callbackURL\": \"http://localhost:5070\",\r\n  \"rememberMe\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{authURL}}/sign-up/email",
+									"host": ["{{authURL}}"],
+									"path": ["sign-up", "email"]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "sign-in",
+					"item": [
+						{
+							"name": "Sign in success",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse response and basic checks\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// Get the set cookie header and place it in a session variablie\r",
+											"pm.test(\"Check if the response body contains the correct data\", function () {\r",
+											"    pm.expect(pm.response.json().redirect).to.be.true;\r",
+											"    pm.expect(pm.response.json().token).to.be.a('string');\r",
+											"    pm.expect(pm.response.json().url).to.equal(\"http://localhost:5070\");\r",
+											"    pm.expect(pm.response.json().user).to.have.property('id');\r",
+											"    pm.expect(pm.response.json().user).to.have.property('email');\r",
+											"    pm.expect(pm.response.json().user).to.have.property('name');\r",
+											"    pm.expect(pm.response.json().user).to.have.property('image');\r",
+											"    pm.expect(pm.response.json().user).to.have.property('emailVerified');\r",
+											"    pm.expect(pm.response.json().user).to.have.property('createdAt');\r",
+											"    pm.expect(pm.response.json().user).to.have.property('updatedAt');\r",
+											"})\r",
+											"\r",
+											"pm.environment.set(\"session\", pm.response.json().token);\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [""],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Origin",
+										"value": "http://localhost:5070"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"callbackURL\": \"http://localhost:5070\",\r\n  \"rememberMe\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{authURL}}/sign-in/email",
+									"host": ["{{authURL}}"],
+									"path": ["sign-in", "email"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign in fail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse response and basic checks\r",
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains correct error message\", function () {\r",
+											"    pm.expect(pm.response.json().message).to.eql(\"Invalid email or password\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Function to generate a random string of specified length\r",
+											"function getRandomString(length) {\r",
+											"    let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';\r",
+											"    let result = '';\r",
+											"    for (let i = 0; i < length; i++) {\r",
+											"        result += chars.charAt(Math.floor(Math.random() * chars.length));\r",
+											"    }\r",
+											"    return result;\r",
+											"}\r",
+											"\r",
+											"// Function to generate a random email\r",
+											"function getRandomEmail() {\r",
+											"    let randomString = getRandomString(5);\r",
+											"    return `${randomString}${Math.floor(Math.random() * 1000)}@student.lnu.se`;\r",
+											"}\r",
+											"\r",
+											"// Function to generate a password (minimum 10 characters, including numbers & special characters)\r",
+											"function getRandomPassword() {\r",
+											"    let numbers = \"0123456789\";\r",
+											"    let basePassword = getRandomString(6) + \r",
+											"                       numbers.charAt(Math.floor(Math.random() * numbers.length)) + \r",
+											"                       getRandomString(3); // Ensures length of at least 10\r",
+											"    return basePassword;\r",
+											"}\r",
+											"\r",
+											"pm.collectionVariables.set(\"email\", getRandomEmail());\r",
+											"pm.collectionVariables.set(\"firstName\", getRandomString(6));\r",
+											"pm.collectionVariables.set(\"password\", getRandomPassword());"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Origin",
+										"value": "http://localhost:5070"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"adawdadawdawd\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"image\": \"\",\r\n  \"callbackURL\": \"http://localhost:5070\",\r\n  \"rememberMe\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{authURL}}/sign-in/email",
+									"host": ["{{authURL}}"],
+									"path": ["sign-in", "email"]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "JWT",
+					"item": [
+						{
+							"name": "Get JWT Success",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse response and basic checks\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// Get the set cookie header and place it in a session variablie\r",
+											"pm.test(\"Check if the response body contains the correct data\", function () {\r",
+											"    pm.expect(pm.response.json().token).to.be.a('string');\r",
+											"})\r",
+											"\r",
+											"pm.collectionVariables.set(\"token\", pm.response.json().token);\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Origin",
+										"value": "http://localhost:5070"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{authURL}}/token",
+									"host": ["{{authURL}}"],
+									"path": ["token"]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "healthCheck",
+			"item": [
+				{
+					"name": "health Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Contains the correct message\", function () {\r",
+									"    pm.response.to.have.jsonBody('message', 'OK');\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{backendUrl}}/healthCheck",
+							"host": ["{{backendUrl}}"],
+							"path": ["healthCheck"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "device",
+			"item": [
+				{
+					"name": "Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check if the response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response body has an array property named 'devices'\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"devices\");",
+									"    pm.expect(jsonData.devices).to.be.an(\"array\");",
+									"});",
+									"",
+									"pm.test(\"Each device has string properties 'device_id' and 'device_status'\", function () {",
+									"    // Expect each object in the array to have \"device_id\" and \"device_status\" as strings",
+									"    const jsonData = pm.response.json();",
+									"    jsonData.devices.forEach(function (device) {",
+									"        pm.expect(device).to.be.an(\"object\");",
+									"        pm.expect(device).to.have.property(\"device_id\").that.is.a(\"string\");",
+									"        pm.expect(device).to.have.property(\"device_status\").that.is.a(\"string\");",
+									"    });",
+									"});",
+									"",
+									"const response = pm.response.json()",
+									"if (response.devices.length > 0) {",
+									"    const device = response.devices[0]",
+									"    console.log(device.device_id)",
+									"    pm.collectionVariables.set(\"device_id\", device.device_id) // Set the first device_id to a collection variable",
+									"    pm.collectionVariables.set(\"device_status\", device.device_status) // Set the first device_status to a collection variable",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{backendUrl}}/device",
+							"host": ["{{backendUrl}}"],
+							"path": ["device"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tests",
+			"item": [
+				{
+					"name": "createTests",
+					"item": [
+						{
+							"name": "tests.create Success",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Respone should have a valid body\", function () {\r",
+											"    pm.response.to.have.jsonBody();\r",
+											"    pm.expect(pm.response.json().testId).to.not.be.null; // Assuming the response has an 'id' field\r",
+											"})\r",
+											"\r",
+											"pm.collectionVariables.set(\"testId\", pm.response.json().testId); // Storing the test ID for future use"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"testType\": \"alive\",\n  \"devices\": [\n    \"{{device_id}}\"\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/createTests",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "createTests"]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"testType\": \"alive\",\n  \"devices\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tests/createTests",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "createTests"]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"success\": true,\n  \"testId\": \"string\"\n}"
+								}
+							]
+						},
+						{
+							"name": "tests.create Fail - missing test type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Respone should have a valid body\", function () {\r",
+											"    pm.response.to.have.jsonBody();\r",
+											"    pm.expect(pm.response.json().id).to.not.be.null; // Assuming the response has an 'id' field\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Missing test type\", function () {\r",
+											"    pm.expect(pm.response.json().message).to.eql(\"Input validation failed\");\r",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"testType\": \"\",\n  \"devices\": [\n    \"{{device_id}}\"\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/createTests",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "createTests"]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"testType\": \"alive\",\n  \"devices\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tests/createTests",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "createTests"]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"success\": true,\n  \"testId\": \"string\"\n}"
+								}
+							]
+						},
+						{
+							"name": "tests.create Fail - missing device",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Respone should have a valid body\", function () {\r",
+											"    pm.response.to.have.jsonBody();\r",
+											"    pm.expect(pm.response.json().id).to.not.be.null; // Assuming the response has an 'id' field\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Missing test type\", function () {\r",
+											"    pm.expect(pm.response.json().message).to.eql(\"Input validation failed\");\r",
+											"})"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"testType\": \"alive\",\n  \"devices\": [\n    \"\"\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/createTests",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "createTests"]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"testType\": \"alive\",\n  \"devices\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tests/createTests",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "createTests"]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"success\": true,\n  \"testId\": \"string\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "allTests",
+					"item": [
+						{
+							"name": "tests.all Tests",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response should be an array\", function () {\r",
+											"    pm.expect(pm.response.json()).to.be.an(\"array\");\r",
+											"\r",
+											"})\r",
+											"\r",
+											"pm.test(\"Each test has properties\", function () {\r",
+											"    // Expect each object in the array to have \"device_id\" and \"device_status\" as strings\r",
+											"    const jsonData = pm.response.json();\r",
+											"    jsonData.forEach(function (test) {\r",
+											"        pm.expect(test).to.be.an(\"object\");\r",
+											"        pm.expect(test).to.have.property(\"id\").that.is.a(\"number\");\r",
+											"        pm.expect(test).to.have.property(\"title\").that.is.a(\"string\");\r",
+											"        pm.expect(test).to.have.property(\"description\").that.is.a(\"string\");\r",
+											"        pm.expect(test).to.have.property(\"testType\").that.is.a(\"string\");\r",
+											"        pm.expect(test).to.have.property(\"status\").that.is.a(\"string\");\r",
+											"    });\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/allTests",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "allTests"]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/tests/allTests?limit=9489.829505584234&endAt=2006-01-16T09:21:23.127Z&testType=alive",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "allTests"],
+											"query": [
+												{
+													"key": "limit",
+													"value": "9489.829505584234"
+												},
+												{
+													"key": "endAt",
+													"value": "2006-01-16T09:21:23.127Z"
+												},
+												{
+													"key": "testType",
+													"value": "alive"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "[\n  {\n    \"id\": 4765.442443395062,\n    \"title\": \"string\",\n    \"description\": \"string\",\n    \"testType\": \"alive\",\n    \"startAt\": \"1990-11-12T23:31:01.381Z\",\n    \"endAt\": \"1965-01-03T21:55:58.004Z\",\n    \"status\": \"pending\",\n    \"devices\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  {\n    \"id\": 9570.132035892995,\n    \"title\": \"string\",\n    \"description\": \"string\",\n    \"testType\": \"alive\",\n    \"startAt\": \"1989-07-14T10:18:33.680Z\",\n    \"endAt\": \"2010-10-30T20:07:50.315Z\",\n    \"status\": \"running\",\n    \"devices\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n]"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "testRunner",
+					"item": [
+						{
+							"name": "start test",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{TS_PASSWORD}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{TS_USERNAME}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": {{testId}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/testStart",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "testStart"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "start test Fail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{TS_PASSWORD}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{TS_USERNAME}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": {{testId}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/testStart",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "testStart"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "end test",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{TS_PASSWORD}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{TS_USERNAME}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": {{testId}},\r\n    \"status\": \"completed\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/testResult",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "testResult"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "end test Fail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{TS_PASSWORD}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{TS_USERNAME}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": {{testId}},\r\n    \"status\": \"completed\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/testResult",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "testResult"]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "findTests",
+					"item": [
+						{
+							"name": "tests.find Tests",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Test 1: Assert status code is 200",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"// Test 2: Assert response is valid JSON object",
+											"pm.test(\"Response is a valid JSON object\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.be.an(\"object\");",
+											"});",
+											"",
+											"// Test 3: Assert all required properties exist with correct types",
+											"pm.test(\"Response has all required properties with correct types\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    ",
+											"    // id - number",
+											"    pm.expect(jsonData).to.have.property(\"id\");",
+											"    pm.expect(jsonData.id).to.be.a(\"number\");",
+											"    ",
+											"    // title - string",
+											"    pm.expect(jsonData).to.have.property(\"title\");",
+											"    pm.expect(jsonData.title).to.be.a(\"string\");",
+											"    ",
+											"    // description - string",
+											"    pm.expect(jsonData).to.have.property(\"description\");",
+											"    pm.expect(jsonData.description).to.be.a(\"string\");",
+											"    ",
+											"    // testType - string",
+											"    pm.expect(jsonData).to.have.property(\"testType\");",
+											"    pm.expect(jsonData.testType).to.be.a(\"string\");",
+											"    ",
+											"    // startAt - string (ISO 8601 date-time)",
+											"    pm.expect(jsonData).to.have.property(\"startAt\");",
+											"    pm.expect(jsonData.startAt).to.be.a(\"string\");",
+											"    pm.expect(new Date(jsonData.startAt).toISOString()).to.equal(jsonData.startAt);",
+											"    ",
+											"    // endAt - nullable (null or string)",
+											"    pm.expect(jsonData).to.have.property(\"endAt\");",
+											"    if (jsonData.endAt !== null) {",
+											"        pm.expect(jsonData.endAt).to.be.a(\"string\");",
+											"    }",
+											"    ",
+											"    // status - string",
+											"    pm.expect(jsonData).to.have.property(\"status\");",
+											"    pm.expect(jsonData.status).to.be.a(\"string\");",
+											"    ",
+											"    // devices - array of strings, non-empty",
+											"    pm.expect(jsonData).to.have.property(\"devices\");",
+											"    pm.expect(jsonData.devices).to.be.an(\"array\").that.is.not.empty;",
+											"});",
+											"",
+											"// Test 4: Assert testType is one of the allowed values",
+											"pm.test(\"testType is a valid value\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    const allowedTestTypes = [\"alive\"]; // Add more allowed values as needed",
+											"    pm.expect(allowedTestTypes).to.include(jsonData.testType);",
+											"});",
+											"",
+											"// Test 5: Loop over devices array and check each entry is a non-empty string",
+											"pm.test(\"Each device in devices array is a non-empty string\", function () {",
+											"    const jsonData = pm.response.json();",
+											"    jsonData.devices.forEach(function (device, index) {",
+											"        pm.expect(device, `Device at index ${index} should be a string`).to.be.a(\"string\");",
+											"        pm.expect(device, `Device at index ${index} should not be empty`).to.have.length.above(0);",
+											"    });",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [""],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{backendUrl}}/tests/findTests?id={{testId}}",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "findTests"],
+									"query": [
+										{
+											"key": "id",
+											"value": "{{testId}}"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/tests/findTests?id=9489.829505584234",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "findTests"],
+											"query": [
+												{
+													"key": "id",
+													"value": "9489.829505584234"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": 4013.796942558805,\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"testType\": \"stress\",\n  \"startAt\": \"1987-03-17T04:50:00.476Z\",\n  \"endAt\": \"1990-01-31T10:16:43.736Z\",\n  \"status\": \"completed\",\n  \"devices\": [\n    \"string\",\n    \"string\"\n  ]\n}"
+								}
+							]
+						},
+						{
+							"name": "tests.find Tests Fail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response body contains 'Not Found'\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"Not Found\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{backendUrl}}/tests/findTests?id=9999",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "findTests"],
+									"query": [
+										{
+											"key": "id",
+											"value": "9999"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/tests/findTests?id=9489.829505584234",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "findTests"],
+											"query": [
+												{
+													"key": "id",
+													"value": "9489.829505584234"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": 4013.796942558805,\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"testType\": \"stress\",\n  \"startAt\": \"1987-03-17T04:50:00.476Z\",\n  \"endAt\": \"1990-01-31T10:16:43.736Z\",\n  \"status\": \"completed\",\n  \"devices\": [\n    \"string\",\n    \"string\"\n  ]\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "deleteTests",
+					"item": [
+						{
+							"name": "tests.delete Tests",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": {{testId}}\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/deleteTests",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "deleteTests"]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 1749.5206116853856\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tests/deleteTests",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "deleteTests"]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "tests.delete Tests Fail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": 4000\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/deleteTests",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "deleteTests"]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"id\": 1749.5206116853856\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tests/deleteTests",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "deleteTests"]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "firstName",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "authURL",
+			"value": "http://localhost:5090/api/auth",
+			"type": "default"
+		},
+		{
+			"key": "backendUrl",
+			"value": "http://localhost:5070/api",
+			"type": "default"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "device_id",
+			"value": ""
+		},
+		{
+			"key": "device_status",
+			"value": ""
+		},
+		{
+			"key": "testId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "TS_USERNAME",
+			"value": "test-runner",
+			"type": "default"
+		},
+		{
+			"key": "TS_PASSWORD",
+			"value": "test-runner123",
+			"type": "default"
+		},
+		{
+			"key": "name",
+			"value": ""
+		}
+	]
+}

@@ -9,7 +9,7 @@
 	<div>© {date} Meter Lab</div>
 	<div class="flex flex-row items-center gap-4">
 		<p>
-			Serivce by <a href="https://codesquare.dev/" class="hover:text-[#5c8772cc]" target="_blank"
+			Service by <a href="https://codesquare.dev/" class="hover:text-[#5c8772cc]" target="_blank"
 				>CODESQUARE</a
 			>
 		</p>

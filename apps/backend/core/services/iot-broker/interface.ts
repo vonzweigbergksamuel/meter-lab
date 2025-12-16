@@ -12,5 +12,5 @@ export interface IoTData {
 
 export interface IPayloadService {
 	setPayload(payload: Device[]): Promise<void>;
-	clearPayload(): void
+	clearPayload(): void;
 }

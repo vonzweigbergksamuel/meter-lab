@@ -5,11 +5,8 @@
 	const signOut = async () => {
 		await authClient.signOut();
 
-		// Remove JWT cookies
-		document.cookie = "jwt; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
-		document.cookie = "jwt-client; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
-
-		window.location.href = "/sign-in";
+		// Redirect to logout route which will delete httpOnly jwt cookie server-side
+		window.location.href = "/logout";
 	};
 </script>
 

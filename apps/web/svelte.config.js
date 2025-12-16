@@ -13,8 +13,18 @@ const config = {
 		alias: {
 			"@/*": "./src/lib/*"
 		},
+		// csrf: {
+		// 	checkOrigin: false
+		// },
+		experimental: {
+			remoteFunctions: true
+		}
 	},
-	base: process.env.ENVIROMENT === "stage" ? "/frontend" : "",
+	compilerOptions: {
+		experimental: {
+			async: true
+		}
+	}
 };
 
 export default config;

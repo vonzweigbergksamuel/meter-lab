@@ -1,22 +1,23 @@
 import { browser } from "$app/environment";
-import { PUBLIC_AUTH_URL } from "$env/static/public";
+import { PUBLIC_AUTH_URL, PUBLIC_IS_LOCAL } from "$env/static/public";
 import { jwtClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/svelte";
 
-// const isLocalUrl = PUBLIC_AUTH_URL.includes("localhost");
-const isExternalUrl = PUBLIC_AUTH_URL.startsWith("https://");
+const isLocalUrl = PUBLIC_AUTH_URL.includes("localhost");
+const isStagingUrl = PUBLIC_AUTH_URL.includes("nordicode");
 
 const getAuthUrl = () => {
-	if (browser) {
+	// PUBLIC_IS_LOCAL is only needed when connecting to docker services but running the app with dev locally (not in docker)
+	if ((isLocalUrl && PUBLIC_IS_LOCAL === "true") || browser) {
 		return PUBLIC_AUTH_URL;
 	}
 
-	// osLocalUrl is only needed in local docker
-	// if (isLocalUrl) {
-	// 	return PUBLIC_AUTH_URL;
-	// }
+	// isLocalUrl is only needed in local docker
+	if (isLocalUrl) {
+		return PUBLIC_AUTH_URL.replace("localhost", "host.docker.internal");
+	}
 
-	if (isExternalUrl) {
+	if (isStagingUrl) {
 		return "http://auth:80";
 	}
 

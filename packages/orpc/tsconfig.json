@@ -1,13 +1,13 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "NodeNext",
-    "strict": true,
-    "verbatimModuleSyntax": true,
-    "skipLibCheck": true,
-    "moduleResolution": "NodeNext",
-    "resolveJsonModule": true
-  },
-  "include": ["src/**/*", "../../apps/backend/api/routers/**/*"],
-  "exclude": ["node_modules"]
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "NodeNext",
+		"strict": true,
+		"verbatimModuleSyntax": true,
+		"skipLibCheck": true,
+		"moduleResolution": "NodeNext",
+		"resolveJsonModule": true
+	},
+	"include": ["src/**/*", "../../apps/backend/api/routers/**/*"],
+	"exclude": ["node_modules"]
 }

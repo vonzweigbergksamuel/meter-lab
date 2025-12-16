@@ -2,26 +2,12 @@ name: Deployment Main
 
 on:
   push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Print message
-        run: echo 'Coming soon...'
-
   build:
     name: Build images
-    needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
       contents: read
       packages: write
@@ -76,8 +62,137 @@ jobs:
             BETTER_AUTH_URL=${{ vars.BETTER_AUTH_URL }}
             BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
 
-  deploy:
+  test:
     needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Pull and tag images from GHCR
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          echo "Pulling images from GHCR..."
+          docker pull ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }}
+          docker pull ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }}
+          docker pull ghcr.io/$GITHUB_REPOSITORY/migrate:${{ github.sha }}
+          
+          echo "Tagging images for compose..."
+          docker tag ghcr.io/$GITHUB_REPOSITORY/backend:${{ github.sha }} backend:latest
+          docker tag ghcr.io/$GITHUB_REPOSITORY/auth:${{ github.sha }} auth:latest
+          docker tag ghcr.io/$GITHUB_REPOSITORY/migrate:${{ github.sha }} migrate:latest
+          echo "Images ready!"
+
+      - name: Start services
+        env:
+          NODE_ENV: test
+        run: |
+          NODE_ENV="$NODE_ENV" docker compose up -d
+          echo "Services started, checking status..."
+          docker compose ps
+
+      - name: Wait for databases to be ready
+        run: |
+          echo "Waiting for PostgreSQL databases to be ready..."
+          timeout 60 bash -c 'until docker compose exec -T backend-db pg_isready -U postgres; do echo "Waiting for backend-db..."; sleep 2; done' || (echo "Backend DB failed!"; docker compose logs backend-db; exit 1)
+          timeout 60 bash -c 'until docker compose exec -T auth-db pg_isready -U postgres; do echo "Waiting for auth-db..."; sleep 2; done' || (echo "Auth DB failed!"; docker compose logs auth-db; exit 1)
+          echo "Databases are ready!"
+
+      - name: Check service logs
+        if: failure()
+        run: |
+          echo "=== Container Status ==="
+          docker compose ps
+          echo "=== Backend Logs ==="
+          docker compose logs backend --tail=50 || true
+          echo "=== Auth Logs ==="
+          docker compose logs auth --tail=50 || true
+          echo "=== Migrate Logs ==="
+          docker compose logs migrate --tail=50 || true
+
+      - name: Wait for services to be healthy
+        env:
+          BACKEND_PORT: ${{ vars.BACKEND_PORT || '5070' }}
+          AUTH_PORT: ${{ vars.AUTH_PORT || '5090' }}
+        run: |
+          echo "Waiting for services to start..."
+          sleep 15
+          
+          echo "=== Checking container status ==="
+          docker compose ps
+          
+          echo "=== Checking backend health at http://localhost:${BACKEND_PORT}/api/healthCheck ==="
+          for i in {1..60}; do
+            if curl -f http://localhost:${BACKEND_PORT}/api/healthCheck 2>&1; then
+              echo "Backend is healthy!"
+              break
+            fi
+            if [ $i -eq 60 ]; then
+              echo "Backend health check failed after 120 seconds"
+              echo "=== Backend container logs ==="
+              docker compose logs backend --tail=100
+              echo "=== Backend container status ==="
+              docker compose ps backend
+              exit 1
+            fi
+            echo "Attempt $i/60: Waiting for backend..."
+            sleep 2
+          done
+          
+          echo "=== Checking auth service at http://localhost:${AUTH_PORT} ==="
+          for i in {1..60}; do
+            if curl -f http://localhost:${AUTH_PORT} 2>&1; then
+              echo "Auth service is healthy!"
+              break
+            fi
+            if [ $i -eq 60 ]; then
+              echo "Auth health check failed after 120 seconds"
+              echo "=== Auth container logs ==="
+              docker compose logs auth --tail=100
+              echo "=== Auth container status ==="
+              docker compose ps auth
+              exit 1
+            fi
+            echo "Attempt $i/60: Waiting for auth..."
+            sleep 2
+          done
+          
+          echo "All services are ready!"
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman tests
+        run: |
+          newman run test/API_TEST.postman_collection.json \
+            --delay-request 2000 \
+            --reporter-cli-no-summary \
+            --reporter-cli-no-banner
+
+      - name: Cleanup services
+        if: always()
+        run: |
+          docker compose down --remove-orphans
+          docker system prune -f
+
+  deploy:
+    needs: test
     environment: meter-lab
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

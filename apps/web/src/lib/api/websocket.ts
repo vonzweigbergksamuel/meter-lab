@@ -4,18 +4,19 @@ import { RPCLink } from "@orpc/client/websocket";
 import { browser } from "$app/environment";
 import { PUBLIC_BACKEND_URL } from "$env/static/public";
 
-let wsClient: SocketRouterClient | undefined;
+export function createWebSocketClient(): SocketRouterClient | undefined {
+	if (!browser) {
+		return undefined;
+	}
 
-if (browser) {
-	const WS_URL = PUBLIC_BACKEND_URL.replace("http", "ws")
+	const WS_URL = PUBLIC_BACKEND_URL.replace("http", "ws");
 
 	console.log("WS url: ", WS_URL);
 
 	const websocket = new WebSocket(WS_URL);
 
-	// TODO Remove
 	websocket.addEventListener("open", () => {
-		console.log("WS OPEN ✅", websocket.readyState); // 1
+		console.log("WS OPEN ✅", websocket.readyState);
 	});
 
 	websocket.addEventListener("error", (err) => {
@@ -28,8 +29,5 @@ if (browser) {
 
 	const link = new RPCLink({ websocket });
 
-	// Type assertion to satisfy the expected type for wsClient
-	wsClient = createORPCClient(link) as SocketRouterClient;
+	return createORPCClient(link) as SocketRouterClient;
 }
-
-export { wsClient };
