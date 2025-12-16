@@ -105,44 +105,8 @@ jobs:
           echo "Images ready!"
 
       - name: Start services
-        env:
-          BACKEND_PORT: ${{ vars.BACKEND_PORT || '5070' }}
-          AUTH_PORT: ${{ vars.AUTH_PORT || '5090' }}
-          WEBSOCKET_PORT: ${{ vars.WEBSOCKET_PORT || '5071' }}
-          REDIS_URL: ${{ vars.REDIS_URL || 'redis://localhost:6379' }}
-          EMQX_URL: ${{ vars.EMQX_URL || 'mqtt://localhost:1884' }}
-          EMQX_TOPIC: ${{ vars.EMQX_TOPIC || 'mock-data' }}
-          EMQX_USERNAME: ${{ vars.EMQX_USERNAME || 'admin' }}
-          EMQX_PASSWORD: ${{ vars.EMQX_PASSWORD || 'admin123' }}
-          NODE_ENV: testing
-          BACKEND_RUN_MIGRATIONS: true
-          AUTH_SERVICE_URL: http://auth:${{ vars.AUTH_PORT || '5090' }}
-          DATABASE_HOST: backend-db
-          DATABASE_PORT: ${{ vars.BACKEND_DB_PORT || '5432' }}
-          DATABASE_USER: ${{ secrets.BACKEND_DB_USER }}
-          DATABASE_PASSWORD: ${{ secrets.BACKEND_DB_PASSWORD }}
-          DATABASE_NAME: ${{ secrets.BACKEND_DB_NAME }}
-          BACKEND_DB_HOST: backend-db
-          BACKEND_DB_PORT: ${{ vars.BACKEND_DB_PORT || '5432' }}
-          BACKEND_DB_USER: ${{ secrets.BACKEND_DB_USER }}
-          BACKEND_DB_PASSWORD: ${{ secrets.BACKEND_DB_PASSWORD }}
-          BACKEND_DB_NAME: ${{ secrets.BACKEND_DB_NAME }}
-          AUTH_DB_HOST: auth-db
-          AUTH_DB_PORT: ${{ vars.AUTH_DB_PORT || '5432' }}
-          AUTH_DB_USER: ${{ secrets.AUTH_DB_USER }}
-          AUTH_DB_PASSWORD: ${{ secrets.AUTH_DB_PASSWORD }}
-          AUTH_DB_NAME: ${{ secrets.AUTH_DB_NAME }}
-          BACKEND_URL: http://localhost:${{ vars.BACKEND_PORT || '5070' }}
-          RABBIT_URL: ${{ vars.RABBIT_URL || 'amqp://admin:admin@rabbit:5672' }}
-          RABBIT_QUEUE: ${{ vars.RABBIT_QUEUE || 'meter-lab/data' }}
-          TEST_RUNNER_USERNAME: ${{ vars.TEST_RUNNER_USERNAME || 'test-runner' }}
-          TEST_RUNNER_PASSWORD: ${{ vars.TEST_RUNNER_PASSWORD || 'test-runner123' }}
-          BETTER_AUTH_URL: http://localhost:${{ vars.AUTH_PORT || '5090' }}
-          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
-          DOMAIN: localhost
-          PUBLIC_AUTH_URL: http://localhost:${{ vars.AUTH_PORT || '5090' }}
         run: |
-          docker compose up -d
+          NODE_ENV=testing docker compose up -d
           echo "Services started, checking status..."
           docker compose ps
 
@@ -276,7 +240,6 @@ jobs:
           # Add more environment variables here as needed
           WEB_PORT: ${{ vars.WEB_PORT }}
           BACKEND_PORT: ${{ vars.BACKEND_PORT }}
-          WEBSOCKET_PORT: ${{ vars.WEBSOCKET_PORT }}
           REDIS_URL: ${{ vars.REDIS_URL }}
           EMQX_URL: ${{ vars.EMQX_URL }}
           EMQX_TOPIC: ${{ vars.EMQX_TOPIC }}
@@ -316,7 +279,7 @@ jobs:
             sleep 10
             
             echo "Starting services..."
-            WEB_PORT="$WEB_PORT" BACKEND_PORT="$BACKEND_PORT" WEBSOCKET_PORT="$WEBSOCKET_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" AUTH_DB_HOST="$AUTH_DB_HOST" AUTH_DB_PORT="$AUTH_DB_PORT" AUTH_DB_USER="$AUTH_DB_USER" AUTH_DB_PASSWORD="$AUTH_DB_PASSWORD" AUTH_DB_NAME="$AUTH_DB_NAME" BACKEND_DB_HOST="$BACKEND_DB_HOST" BACKEND_DB_PORT="$BACKEND_DB_PORT" BACKEND_DB_USER="$BACKEND_DB_USER" BACKEND_DB_PASSWORD="$BACKEND_DB_PASSWORD" BACKEND_DB_NAME="$BACKEND_DB_NAME" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" BACKEND_RUN_MIGRATIONS="$BACKEND_RUN_MIGRATIONS" ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" AUTH_DB_PUBLIC_PORT="$AUTH_DB_PUBLIC_PORT" docker compose up -d
+            WEB_PORT="$WEB_PORT" BACKEND_PORT="$BACKEND_PORT" REDIS_URL="$REDIS_URL" EMQX_URL="$EMQX_URL" EMQX_TOPIC="$EMQX_TOPIC" EMQX_USERNAME="$EMQX_USERNAME" EMQX_PASSWORD="$EMQX_PASSWORD" NODE_ENV="$NODE_ENV" AUTH_PORT="$AUTH_PORT" AUTH_DB_HOST="$AUTH_DB_HOST" AUTH_DB_PORT="$AUTH_DB_PORT" AUTH_DB_USER="$AUTH_DB_USER" AUTH_DB_PASSWORD="$AUTH_DB_PASSWORD" AUTH_DB_NAME="$AUTH_DB_NAME" BACKEND_DB_HOST="$BACKEND_DB_HOST" BACKEND_DB_PORT="$BACKEND_DB_PORT" BACKEND_DB_USER="$BACKEND_DB_USER" BACKEND_DB_PASSWORD="$BACKEND_DB_PASSWORD" BACKEND_DB_NAME="$BACKEND_DB_NAME" BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" BETTER_AUTH_URL="$BETTER_AUTH_URL" BACKEND_RUN_MIGRATIONS="$BACKEND_RUN_MIGRATIONS" ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASSWORD="$ADMIN_PASSWORD" ADMIN_NAME="$ADMIN_NAME" AUTH_DB_PUBLIC_PORT="$AUTH_DB_PUBLIC_PORT" docker compose up -d
 
             echo "Deployment complete!"
             echo "Pruning unused images..."
