@@ -2,19 +2,26 @@ import type { AppRouterClient } from "@meter-lab/orpc";
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import { browser } from "$app/environment";
-import { PUBLIC_BACKEND_URL } from "$env/static/public";
+import { PUBLIC_BACKEND_URL, PUBLIC_IS_LOCAL } from "$env/static/public";
 
 const isLocalUrl = PUBLIC_BACKEND_URL.includes("localhost");
+const isStagingUrl = PUBLIC_BACKEND_URL.includes("nordicode");
 
-const devUrl = browser
-	? PUBLIC_BACKEND_URL
-	: PUBLIC_BACKEND_URL.replace("localhost", "host.docker.internal");
-
-console.log("devUrl", devUrl);
-
-const backendUrl = isLocalUrl ? devUrl : PUBLIC_BACKEND_URL;
-
-console.log("backendUrl", backendUrl);
+function getBackendUrl(): string {	
+	if ((isLocalUrl && PUBLIC_IS_LOCAL === "true") || browser) {
+		return PUBLIC_BACKEND_URL;
+	}
+	
+	if (isLocalUrl) {
+		return PUBLIC_BACKEND_URL.replace("localhost", "backend");
+	}
+	
+	if (isStagingUrl) {
+		return "http://backend:80";
+	}
+	
+	return "http://backend:5070";
+}
 
 function getJwtFromCookie(): string | null {
 	if (!browser) return null;
@@ -34,22 +41,31 @@ export function setClientJwt(token: string | null) {
 	jwtToken = token;
 }
 
-console.log(backendUrl);
-
-const rpcLink = new RPCLink({
-	url: `${backendUrl}/rpc`,
-	headers: () => {
-		const jwt = jwtToken || getJwtFromCookie();
-		if (jwt) {
-			console.log("Sending JWT with request:", jwt.substring(0, 20) + "...");
-			return {
-				Authorization: `Bearer ${jwt}`
-			};
+function createRpcClient(jwt?: string | null): AppRouterClient {
+	const backendUrl = getBackendUrl();
+	console.log("Backend URL:", backendUrl);
+	
+	const rpcLink = new RPCLink({
+		url: `${backendUrl}/rpc`,
+		headers: () => {
+			// Use provided JWT, or fall back to token/cookie for client-side
+			const authJwt = jwt ?? (browser ? (jwtToken || getJwtFromCookie()) : null);
+			if (authJwt) {
+				return {
+					Authorization: `Bearer ${authJwt}`
+				};
+			}
+			return {};
 		}
-		console.warn("No JWT found in cookie or token");
-		return {};
-	}
-});
+	});
+	
+	return createORPCClient(rpcLink);
+}
 
-const rpcClient: AppRouterClient = createORPCClient(rpcLink);
-export { rpcClient };
+// Singleton for client-side use
+export const rpcClient: AppRouterClient = createRpcClient();
+
+// Factory function for server-side use (can also be used client-side with explicit JWT)
+export function createServerRpcClient(jwt?: string | null): AppRouterClient {
+	return createRpcClient(jwt);
+}

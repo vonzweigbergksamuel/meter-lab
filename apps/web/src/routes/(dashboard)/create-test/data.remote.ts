@@ -1,9 +1,6 @@
-import type { AppRouterClient } from "@meter-lab/orpc";
-import { createORPCClient } from "@orpc/client";
-import { RPCLink } from "@orpc/client/fetch";
 import { form, getRequestEvent } from "$app/server";
-import { PUBLIC_BACKEND_URL } from "$env/static/public";
 import { z } from "zod";
+import { createServerRpcClient } from "@/api/client";
 
 const createTestSchema = z.object({
 	title: z.string().min(1, "Required"),
@@ -20,20 +17,7 @@ export const createTest = form(createTestSchema, async (data) => {
 		const event = getRequestEvent();
 		const jwt = event.locals.jwt || event.cookies.get("jwt");
 
-		const rpcLink = new RPCLink({
-			// TODO: Change to the backend url from the environment variables
-			url: `${PUBLIC_BACKEND_URL}/rpc`,
-			headers: () => {
-				if (jwt) {
-					return {
-						Authorization: `Bearer ${jwt}`
-					};
-				}
-				return {};
-			}
-		});
-
-		const rpcClient: AppRouterClient = createORPCClient(rpcLink);
+		const rpcClient = createServerRpcClient(jwt);
 		const response = await rpcClient.tests.createTests({
 			title: data.title,
 			description: data.description,
