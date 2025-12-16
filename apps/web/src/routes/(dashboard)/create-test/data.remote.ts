@@ -1,6 +1,6 @@
+import { createServerRpcClient } from "@/api/client";
 import { form, getRequestEvent } from "$app/server";
 import { z } from "zod";
-import { createServerRpcClient } from "@/api/client";
 
 const createTestSchema = z.object({
 	title: z.string().min(1, "Required"),

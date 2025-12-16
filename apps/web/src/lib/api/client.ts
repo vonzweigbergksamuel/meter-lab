@@ -7,19 +7,19 @@ import { PUBLIC_BACKEND_URL, PUBLIC_IS_LOCAL } from "$env/static/public";
 const isLocalUrl = PUBLIC_BACKEND_URL.includes("localhost");
 const isStagingUrl = PUBLIC_BACKEND_URL.includes("nordicode");
 
-function getBackendUrl(): string {	
+function getBackendUrl(): string {
 	if ((isLocalUrl && PUBLIC_IS_LOCAL === "true") || browser) {
 		return PUBLIC_BACKEND_URL;
 	}
-	
+
 	if (isLocalUrl) {
 		return PUBLIC_BACKEND_URL.replace("localhost", "backend");
 	}
-	
+
 	if (isStagingUrl) {
 		return "http://backend:80";
 	}
-	
+
 	return "http://backend:5070";
 }
 
@@ -44,12 +44,12 @@ export function setClientJwt(token: string | null) {
 function createRpcClient(jwt?: string | null): AppRouterClient {
 	const backendUrl = getBackendUrl();
 	console.log("Backend URL:", backendUrl);
-	
+
 	const rpcLink = new RPCLink({
 		url: `${backendUrl}/rpc`,
 		headers: () => {
 			// Use provided JWT, or fall back to token/cookie for client-side
-			const authJwt = jwt ?? (browser ? (jwtToken || getJwtFromCookie()) : null);
+			const authJwt = jwt ?? (browser ? jwtToken || getJwtFromCookie() : null);
 			if (authJwt) {
 				return {
 					Authorization: `Bearer ${authJwt}`
@@ -58,7 +58,7 @@ function createRpcClient(jwt?: string | null): AppRouterClient {
 			return {};
 		}
 	});
-	
+
 	return createORPCClient(rpcLink);
 }
 

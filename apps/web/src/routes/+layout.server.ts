@@ -1,6 +1,6 @@
+import { createServerRpcClient } from "@/api/client";
 import type { Device } from "$lib/types/device";
 import type { LayoutServerLoad } from "./$types";
-import { createServerRpcClient } from "@/api/client";
 
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {
 	try {

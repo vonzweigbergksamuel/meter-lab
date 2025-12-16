@@ -1,5 +1,5 @@
 import { ORPCError } from "@orpc/client";
-import { and, eq, lt } from "drizzle-orm";
+import { and, desc, eq, lt } from "drizzle-orm";
 import { db } from "../../../lib/db/index.js";
 import {
 	type TestData,
@@ -22,11 +22,11 @@ export class TestDBService implements TestDB {
 				conditions.push(lt(testData.endAt, filter.endAt));
 			}
 
-			const query = db.select().from(testData);
+			const baseQuery = db.select().from(testData);
 			const results =
 				conditions.length > 0
-					? await query.where(and(...conditions))
-					: await query;
+					? await baseQuery.where(and(...conditions)).orderBy(desc(testData.id))
+					: await baseQuery.orderBy(desc(testData.id));
 
 			if (filter?.limit) {
 				return results.slice(0, filter.limit);
