@@ -68,6 +68,11 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     networks:
       - meter-lab
 
@@ -103,6 +108,11 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBIT_USER:-admin}
       RABBITMQ_DEFAULT_PASS: ${RABBIT_PASS:-admin}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
     networks:
       - meter-lab
