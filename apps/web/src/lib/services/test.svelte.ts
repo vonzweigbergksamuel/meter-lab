@@ -59,7 +59,6 @@ export class TestService implements ITestService {
 		}
 
 		this.status = "connected";
-		this.loading = false;
 
 		try {
 			const stream = await wsClient.testUpdates();
