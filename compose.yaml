@@ -55,6 +55,10 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+      rabbit:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - meter-lab
 
