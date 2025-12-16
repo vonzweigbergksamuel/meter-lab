@@ -5,7 +5,7 @@ export const env = createEnv({
 	server: {
 		// NODE
 		NODE_ENV: z
-			.enum(["development", "production", "testing", "stage"])
+			.enum(["development", "production", "test", "stage"])
 			.default("development"),
 
 		// SERVER

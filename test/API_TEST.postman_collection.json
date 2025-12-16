@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "f3ec2f29-55ba-44bb-a63a-d8c776b9729f",
-		"name": "API Reference",
+		"name": "Meter-lab",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32445160",
 		"_collection_link": "https://meter-lab.postman.co/workspace/115c58e7-c301-4d8e-898e-42b3935a1858/collection/34193279-f3ec2f29-55ba-44bb-a63a-d8c776b9729f?action=share&source=collection_link&creator=32445160"
@@ -93,13 +93,8 @@
 								},
 								"url": {
 									"raw": "{{authURL}}/sign-up/email",
-									"host": [
-										"{{authURL}}"
-									],
-									"path": [
-										"sign-up",
-										"email"
-									]
+									"host": ["{{authURL}}"],
+									"path": ["sign-up", "email"]
 								}
 							},
 							"response": []
@@ -128,9 +123,7 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"exec": [
-											""
-										],
+										"exec": [""],
 										"type": "text/javascript",
 										"packages": {},
 										"requests": {}
@@ -160,13 +153,8 @@
 								},
 								"url": {
 									"raw": "{{authURL}}/sign-up/email",
-									"host": [
-										"{{authURL}}"
-									],
-									"path": [
-										"sign-up",
-										"email"
-									]
+									"host": ["{{authURL}}"],
+									"path": ["sign-up", "email"]
 								}
 							},
 							"response": []
@@ -214,9 +202,7 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"exec": [
-											""
-										],
+										"exec": [""],
 										"type": "text/javascript",
 										"packages": {},
 										"requests": {}
@@ -246,13 +232,8 @@
 								},
 								"url": {
 									"raw": "{{authURL}}/sign-in/email",
-									"host": [
-										"{{authURL}}"
-									],
-									"path": [
-										"sign-in",
-										"email"
-									]
+									"host": ["{{authURL}}"],
+									"path": ["sign-in", "email"]
 								}
 							},
 							"response": []
@@ -341,13 +322,8 @@
 								},
 								"url": {
 									"raw": "{{authURL}}/sign-in/email",
-									"host": [
-										"{{authURL}}"
-									],
-									"path": [
-										"sign-in",
-										"email"
-									]
+									"host": ["{{authURL}}"],
+									"path": ["sign-in", "email"]
 								}
 							},
 							"response": []
@@ -404,12 +380,8 @@
 								},
 								"url": {
 									"raw": "{{authURL}}/token",
-									"host": [
-										"{{authURL}}"
-									],
-									"path": [
-										"token"
-									]
+									"host": ["{{authURL}}"],
+									"path": ["token"]
 								}
 							},
 							"response": []
@@ -452,12 +424,8 @@
 						],
 						"url": {
 							"raw": "{{backendUrl}}/healthCheck",
-							"host": [
-								"{{backendUrl}}"
-							],
-							"path": [
-								"healthCheck"
-							]
+							"host": ["{{backendUrl}}"],
+							"path": ["healthCheck"]
 						}
 					},
 					"response": []
@@ -524,12 +492,8 @@
 						"header": [],
 						"url": {
 							"raw": "{{backendUrl}}/device",
-							"host": [
-								"{{backendUrl}}"
-							],
-							"path": [
-								"device"
-							]
+							"host": ["{{backendUrl}}"],
+							"path": ["device"]
 						}
 					},
 					"response": []
@@ -600,13 +564,8 @@
 								},
 								"url": {
 									"raw": "{{backendUrl}}/tests/createTests",
-									"host": [
-										"{{backendUrl}}"
-									],
-									"path": [
-										"tests",
-										"createTests"
-									]
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "createTests"]
 								}
 							},
 							"response": [
@@ -635,14 +594,9 @@
 											}
 										},
 										"url": {
-											"raw": "{{backendUrl}}/tests/createTests",
-											"host": [
-												"{{backendUrl}}"
-											],
-											"path": [
-												"tests",
-												"createTests"
-											]
+											"raw": "{{baseUrl}}/tests/createTests",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "createTests"]
 										}
 									},
 									"status": "OK",
@@ -719,13 +673,8 @@
 								},
 								"url": {
 									"raw": "{{backendUrl}}/tests/createTests",
-									"host": [
-										"{{backendUrl}}"
-									],
-									"path": [
-										"tests",
-										"createTests"
-									]
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "createTests"]
 								}
 							},
 							"response": [
@@ -754,14 +703,9 @@
 											}
 										},
 										"url": {
-											"raw": "{{backendUrl}}/tests/createTests",
-											"host": [
-												"{{backendUrl}}"
-											],
-											"path": [
-												"tests",
-												"createTests"
-											]
+											"raw": "{{baseUrl}}/tests/createTests",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "createTests"]
 										}
 									},
 									"status": "OK",
@@ -838,13 +782,8 @@
 								},
 								"url": {
 									"raw": "{{backendUrl}}/tests/createTests",
-									"host": [
-										"{{backendUrl}}"
-									],
-									"path": [
-										"tests",
-										"createTests"
-									]
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "createTests"]
 								}
 							},
 							"response": [
@@ -873,14 +812,9 @@
 											}
 										},
 										"url": {
-											"raw": "{{backendUrl}}/tests/createTests",
-											"host": [
-												"{{backendUrl}}"
-											],
-											"path": [
-												"tests",
-												"createTests"
-											]
+											"raw": "{{baseUrl}}/tests/createTests",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "createTests"]
 										}
 									},
 									"status": "OK",
@@ -969,13 +903,8 @@
 								},
 								"url": {
 									"raw": "{{backendUrl}}/tests/allTests",
-									"host": [
-										"{{backendUrl}}"
-									],
-									"path": [
-										"tests",
-										"allTests"
-									]
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "allTests"]
 								}
 							},
 							"response": [
@@ -990,14 +919,9 @@
 											}
 										],
 										"url": {
-											"raw": "{{backendUrl}}/tests/allTests?limit=9489.829505584234&endAt=2006-01-16T09:21:23.127Z&testType=alive",
-											"host": [
-												"{{backendUrl}}"
-											],
-											"path": [
-												"tests",
-												"allTests"
-											],
+											"raw": "{{baseUrl}}/tests/allTests?limit=9489.829505584234&endAt=2006-01-16T09:21:23.127Z&testType=alive",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "allTests"],
 											"query": [
 												{
 													"key": "limit",
@@ -1027,6 +951,239 @@
 									"body": "[\n  {\n    \"id\": 4765.442443395062,\n    \"title\": \"string\",\n    \"description\": \"string\",\n    \"testType\": \"alive\",\n    \"startAt\": \"1990-11-12T23:31:01.381Z\",\n    \"endAt\": \"1965-01-03T21:55:58.004Z\",\n    \"status\": \"pending\",\n    \"devices\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  {\n    \"id\": 9570.132035892995,\n    \"title\": \"string\",\n    \"description\": \"string\",\n    \"testType\": \"alive\",\n    \"startAt\": \"1989-07-14T10:18:33.680Z\",\n    \"endAt\": \"2010-10-30T20:07:50.315Z\",\n    \"status\": \"running\",\n    \"devices\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n]"
 								}
 							]
+						}
+					]
+				},
+				{
+					"name": "testRunner",
+					"item": [
+						{
+							"name": "start test",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{TS_PASSWORD}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{TS_USERNAME}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": {{testId}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/testStart",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "testStart"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "start test Fail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{TS_PASSWORD}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{TS_USERNAME}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": {{testId}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/testStart",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "testStart"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "end test",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{TS_PASSWORD}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{TS_USERNAME}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": {{testId}},\r\n    \"status\": \"completed\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/testResult",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "testResult"]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "end test Fail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{TS_PASSWORD}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{TS_USERNAME}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": {{testId}},\r\n    \"status\": \"completed\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{backendUrl}}/tests/testResult",
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "testResult"]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -1115,9 +1272,7 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"exec": [
-											""
-										],
+										"exec": [""],
 										"type": "text/javascript",
 										"packages": {},
 										"requests": {}
@@ -1144,13 +1299,8 @@
 								],
 								"url": {
 									"raw": "{{backendUrl}}/tests/findTests?id={{testId}}",
-									"host": [
-										"{{backendUrl}}"
-									],
-									"path": [
-										"tests",
-										"findTests"
-									],
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "findTests"],
 									"query": [
 										{
 											"key": "id",
@@ -1171,14 +1321,9 @@
 											}
 										],
 										"url": {
-											"raw": "{{backendUrl}}/tests/findTests?id=9489.829505584234",
-											"host": [
-												"{{backendUrl}}"
-											],
-											"path": [
-												"tests",
-												"findTests"
-											],
+											"raw": "{{baseUrl}}/tests/findTests?id=9489.829505584234",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "findTests"],
 											"query": [
 												{
 													"key": "id",
@@ -1242,13 +1387,8 @@
 								],
 								"url": {
 									"raw": "{{backendUrl}}/tests/findTests?id=9999",
-									"host": [
-										"{{backendUrl}}"
-									],
-									"path": [
-										"tests",
-										"findTests"
-									],
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "findTests"],
 									"query": [
 										{
 											"key": "id",
@@ -1269,14 +1409,9 @@
 											}
 										],
 										"url": {
-											"raw": "{{backendUrl}}/tests/findTests?id=9489.829505584234",
-											"host": [
-												"{{backendUrl}}"
-											],
-											"path": [
-												"tests",
-												"findTests"
-											],
+											"raw": "{{baseUrl}}/tests/findTests?id=9489.829505584234",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "findTests"],
 											"query": [
 												{
 													"key": "id",
@@ -1355,13 +1490,8 @@
 								},
 								"url": {
 									"raw": "{{backendUrl}}/tests/deleteTests",
-									"host": [
-										"{{backendUrl}}"
-									],
-									"path": [
-										"tests",
-										"deleteTests"
-									]
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "deleteTests"]
 								}
 							},
 							"response": [
@@ -1390,14 +1520,9 @@
 											}
 										},
 										"url": {
-											"raw": "{{backendUrl}}/tests/deleteTests",
-											"host": [
-												"{{backendUrl}}"
-											],
-											"path": [
-												"tests",
-												"deleteTests"
-											]
+											"raw": "{{baseUrl}}/tests/deleteTests",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "deleteTests"]
 										}
 									},
 									"status": "OK",
@@ -1465,13 +1590,8 @@
 								},
 								"url": {
 									"raw": "{{backendUrl}}/tests/deleteTests",
-									"host": [
-										"{{backendUrl}}"
-									],
-									"path": [
-										"tests",
-										"deleteTests"
-									]
+									"host": ["{{backendUrl}}"],
+									"path": ["tests", "deleteTests"]
 								}
 							},
 							"response": [
@@ -1500,14 +1620,9 @@
 											}
 										},
 										"url": {
-											"raw": "{{backendUrl}}/tests/deleteTests",
-											"host": [
-												"{{backendUrl}}"
-											],
-											"path": [
-												"tests",
-												"deleteTests"
-											]
+											"raw": "{{baseUrl}}/tests/deleteTests",
+											"host": ["{{baseUrl}}"],
+											"path": ["tests", "deleteTests"]
 										}
 									},
 									"status": "OK",
