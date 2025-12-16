@@ -10,7 +10,11 @@ const devUrl = browser
 	? PUBLIC_BACKEND_URL
 	: PUBLIC_BACKEND_URL.replace("localhost", "host.docker.internal");
 
+console.log("devUrl", devUrl);
+
 const backendUrl = isLocalUrl ? devUrl : PUBLIC_BACKEND_URL;
+
+console.log("backendUrl", backendUrl);
 
 function getJwtFromCookie(): string | null {
 	if (!browser) return null;
