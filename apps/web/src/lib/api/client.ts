@@ -17,7 +17,8 @@ function getBackendUrl(): string {
 	}
 
 	if (isStagingUrl) {
-		return "http://backend:80";
+		// return "http://backend:80";
+		return PUBLIC_BACKEND_URL
 	}
 
 	return "http://backend:5070";
