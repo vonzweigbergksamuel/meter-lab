@@ -31,7 +31,10 @@ function getWebSocketUrl(): string {
 		backendUrl = "http://backend:5070";
 	}
 
-	let wsUrl = backendUrl.replace(/^http/, "ws");
+	let wsUrl = backendUrl.replace(/^http(s?)/, (_, s) =>
+		s ? "wss" : "ws",
+	);
+
 	
 	const jwt = getJwtFromCookie();
 	if (jwt) {
