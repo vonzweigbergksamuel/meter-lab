@@ -85,7 +85,7 @@ services:
       POSTGRES_DB: ${BACKEND_DB_NAME:-meter-lab}
     restart: unless-stopped
     volumes:
-      - backend-db-data:/var/lib/postgresql
+      - backend-db-data-stage:/var/lib/postgresql
     healthcheck:
       test:
         [
@@ -205,5 +205,5 @@ networks:
     driver: bridge
 
 volumes:
-  backend-db-data:
+  backend-db-data-stage:
   auth-db-data:
