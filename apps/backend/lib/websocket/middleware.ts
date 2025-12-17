@@ -12,37 +12,37 @@ export const publicProcedure = os.$context<BaseContext>();
 
 const websocketProcedure = publicProcedure.middleware(
 	async ({ context, next }) => {
-		if (!context.request?.headers) {
-			throw new ORPCError("UNAUTHORIZED", {
-				message: "Request headers not found",
-			});
+		let token: string | null = null;
+
+		const cookies = context.request.headers.cookie?.split(";");
+		const cookie = cookies?.filter((cookie) =>
+			cookie.trim().startsWith("jwt="),
+		);
+
+		if (cookie && cookie.length > 0) {
+			token = cookie[0].split("=")[1];
 		}
 
-		const cookieHeader = context.request.headers.cookie;
-		if (!cookieHeader) {
-			throw new ORPCError("UNAUTHORIZED", {
-				message: "No cookie header found",
-			});
+		if (!token && context.request.url) {
+			const urlString = context.request.url.startsWith("http")
+				? context.request.url
+				: `http://localhost${context.request.url}`;
+			try {
+				const url = new URL(urlString);
+				token = url.searchParams.get("token");
+			} catch {
+				const match = context.request.url.match(/[?&]token=([^&]+)/);
+				if (match) {
+					token = decodeURIComponent(match[1]);
+				}
+			}
 		}
 
-		const cookies = cookieHeader.split(";");
-
-		const cookie = cookies.filter((cookie) => cookie.trim().startsWith("jwt="));
-
-		if (!cookie || cookie.length === 0) {
+		if (!token) {
 			throw new ORPCError("UNAUTHORIZED", {
 				message: "No JWT cookie found",
 			});
 		}
-
-		const jwtCookie = cookie[0].trim();
-		if (!jwtCookie.includes("=")) {
-			throw new ORPCError("UNAUTHORIZED", {
-				message: "Invalid JWT cookie format",
-			});
-		}
-
-		const token = jwtCookie.split("=")[1];
 
 		try {
 			const user = await verifyJWT(`Bearer ${token}`);
