@@ -111,7 +111,7 @@ steps:
         sed -i "s|port: 5080|port: 80|g" infra/gke/generated/komposed.yaml
         sed -i "s|port: 5070|port: 80|g" infra/gke/generated/komposed.yaml
 
-        sed -i 's|value: @host.docker.internal:5672|value: @rabbit:5672|g' infra/gke/generated/komposed.yaml
+        sed -i 's|value: @host.docker.internal:5672|value: @rabbit:5672|g' infra/gke/generated/komposed-test-runner.yaml 
 
         sed -i '/name: ENVIROMENT/,/value:/ s|value: development|value: stage|g' infra/gke/generated/komposed.yaml
         sed -i '/name: NODE_ENV/,/value:/ s|value: development|value: test|g' infra/gke/generated/komposed.yaml
