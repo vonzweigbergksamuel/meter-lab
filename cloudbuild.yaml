@@ -121,6 +121,7 @@ steps:
         sed -i 's/imagePullPolicy: Never/imagePullPolicy: Always/g' infra/gke/generated/komposed.yaml
         sed -i 's|port: 5433|port: 5432|g' infra/gke/generated/komposed.yaml
         sed -i 's|name: "5433"|name: "5432"|g' infra/gke/generated/komposed.yaml
+        sed -i 's|host.docker.internal:5672|rabbit:5672|g' infra/gke/generated/komposed-test-runner.yaml
         awk '/port:/ && !/name:/ {gsub(/^[[:space:]]*- port:/, "  - name: port\n    port:"); print; next} {print}' infra/gke/generated/komposed.yaml > infra/gke/generated/komposed.tmp && mv infra/gke/generated/komposed.tmp infra/gke/generated/komposed.yaml
         awk '/port:/ && !/name:/ {gsub(/^[[:space:]]*- port:/, "  - name: port\n    port:"); print; next} {print}' infra/gke/generated/komposed-test-runner.yaml > infra/gke/generated/komposed-test-runner.tmp && mv infra/gke/generated/komposed-test-runner.tmp infra/gke/generated/komposed-test-runner.yaml
 
