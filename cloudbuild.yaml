@@ -116,6 +116,7 @@ steps:
         sed -i '/name: ENVIROMENT/,/value:/ s|value: development|value: stage|g' infra/gke/generated/komposed.yaml
         sed -i '/name: NODE_ENV/,/value:/ s|value: development|value: test|g' infra/gke/generated/komposed.yaml
         sed -i '/name: DOMAIN/,/value:/ s|value: localhost|value: nordicode.se|g' infra/gke/generated/komposed.yaml
+        sed -i '/name: ORIGIN/,/value:/ s|value:.*|value: https://nordicode.se|g' infra/gke/generated/komposed.yaml
         sed -i 's|value: http://auth:5090|value: https://auth.nordicode.se|g' infra/gke/generated/komposed.yaml
         sed -i '/hostPort/d' infra/gke/generated/komposed.yaml
         sed -i 's/imagePullPolicy: Never/imagePullPolicy: Always/g' infra/gke/generated/komposed.yaml
