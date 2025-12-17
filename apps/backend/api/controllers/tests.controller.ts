@@ -54,7 +54,14 @@ export class TestsController {
 		};
 
 		// Append the test to the queue
-		this.#queueService.addToQueue(testObj);
+		try {
+			this.#queueService.addToQueue(testObj);
+		} catch (error) {
+			console.error("Failed to add test to queue:", error);
+			throw new ORPCError("INTERNAL_SERVER_ERROR", {
+				message: "Failed to queue test. RabbitMQ may not be connected.",
+			});
+		}
 
 		// Update Websocket
 		await this.#sendToWebsocketTest(testData.id);
@@ -66,9 +73,12 @@ export class TestsController {
 	async #deviceAvailability(devices: string[]) {
 		for (const deviceId of devices) {
 			const device = await this.#keyValueService.get(deviceId);
+			console.log(`Device ${deviceId} status:`, device || "NOT FOUND");
 
 			if (!device || device !== "available") {
-				throw new ORPCError("BAD_REQUEST");
+				throw new ORPCError("BAD_REQUEST", {
+					message: `Device ${deviceId} is not available. Status: ${device || "not found"}`,
+				});
 			}
 		}
 	}

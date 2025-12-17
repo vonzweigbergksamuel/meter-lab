@@ -44,11 +44,13 @@ export class RabbitServive implements IQueue {
 
 	addToQueue(value: unknown): void {
 		if (!this.#channel) {
+			console.error("RabbitMQ channel is null. Connection may have failed.");
 			throw new Error("RabbitMQ is not ready yet");
 		}
 
 		this.#channel.sendToQueue(this.#queue, Buffer.from(JSON.stringify(value)), {
 			persistent: true,
 		});
+		console.log("Successfully added message to RabbitMQ queue");
 	}
 }
