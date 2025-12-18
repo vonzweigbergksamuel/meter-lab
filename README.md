@@ -98,6 +98,14 @@ To run the entire stack with Docker:
 docker compose up -d --build
 ```
 
+To start the mock instance of emqx and test-runner:
+
+```bash
+docker compose -f docker-mock-compose.yaml up -d --build
+```
+
+
+
 This will start:
 
 - Frontend on port 80
@@ -188,8 +196,7 @@ These should be set as **Secrets** in your GitHub environment:
 
 - `BETTER_AUTH_SECRET` - Better Auth secret key
 
-
 ## Useful charts
 
-![Services1](/img/services1.png)
-![Services2](/img/services2.png)
+<!-- ![Services1](/img/services1.png) -->
+![Services2](/img/architecture.png)
