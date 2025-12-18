@@ -237,7 +237,7 @@ jobs:
           EMQX_TOPIC: ${{ vars.EMQX_TOPIC }}
           EMQX_USERNAME: ${{ vars.EMQX_USERNAME }}
           EMQX_PASSWORD: ${{ vars.EMQX_PASSWORD }}
-          NODE_ENV: "production"
+          NODE_ENV: "test" #TODO: Change to production When everything exists
           AUTH_PORT: ${{ vars.AUTH_PORT }}
           BETTER_AUTH_URL: ${{ vars.BETTER_AUTH_URL }}
           AUTH_DB_PUBLIC_PORT: ${{ vars.AUTH_DB_PUBLIC_PORT }}
