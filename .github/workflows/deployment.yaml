@@ -247,7 +247,8 @@ jobs:
           PUBLIC_WEBSOCKET_URL: ${{ vars.PUBLIC_WEBSOCKET_URL }}
           ORIGIN: ${{ vars.ORIGIN }}
 
-          AUTH_SERVICE_URL: ${{ vars.PUBLIC_AUTH_URL }}
+          AUTH_SERVICE_URL: ${{ vars.AUTH_SERVICE_URL }}
+          AUTH_URL: ${{ vars.PUBLIC_AUTH_URL }}
           BACKEND_URL: ${{ vars.BACKEND_URL }}
           RABBIT_URL: ${{ vars.RABBIT_URL }}
           RABBIT_QUEUE: ${{ vars.RABBIT_QUEUE }}

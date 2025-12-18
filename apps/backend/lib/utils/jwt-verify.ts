@@ -31,8 +31,8 @@ export async function verifyJWT(
 
 	try {
 		const { payload } = await jwtVerify(token, JWKS, {
-			issuer: env.AUTH_SERVICE_URL,
-			audience: env.AUTH_SERVICE_URL,
+			issuer: env.AUTH_URL,
+			audience: env.AUTH_URL,
 		});
 
 		return payload as JWTPayload;
