@@ -13,12 +13,16 @@ export class MockIoTBrokerService implements IIoTBrokerService {
 		console.log("Mock IoT Broker connected");
 	}
 
+	#generateMockDevices(count: number): Device[] {
+		return Array.from({ length: count }, (_, i) => ({
+			device_id: String(i + 1).padStart(3, "0"),
+			value: Math.floor(Math.random() * 100),
+			unit: "W",
+		}));
+	}
+
 	listen(): void {
-		const mockDevices: Device[] = [
-			{ device_id: "001", value: 45, unit: "W" },
-			{ device_id: "002", value: 23, unit: "W" },
-			{ device_id: "003", value: 12, unit: "W" },
-		];
+		const mockDevices: Device[] = this.#generateMockDevices(1000);
 
 		this.#interval = setInterval(() => {
 			this.#payloadService.setPayload(mockDevices);
