@@ -58,6 +58,14 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    deploy:
+      resources:
+        requests:
+          cpu: '100m'
+          memory: '128Mi'
+        limits:
+          cpu: '500m'
+          memory: '256Mi'
     networks:
       - meter-lab
 
