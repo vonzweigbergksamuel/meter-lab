@@ -3,11 +3,21 @@ kind: Deployment
 metadata:
   name: backend
   namespace: meter-lab
+  labels:
+    io.kompose.service: backend
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: backend
   template:
+    metadata:
+      labels:
+        io.kompose.service: backend
     spec:
       containers:
       - name: backend
+        image: backend:latest
         resources:
           requests:
             cpu: '100m'
@@ -15,4 +25,8 @@ spec:
           limits:
             cpu: '500m'
             memory: '256Mi'
+        ports:
+        - containerPort: 80
+          protocol: TCP
+      restartPolicy: Always
 
