@@ -13,6 +13,7 @@ export const env = createEnv({
 
 		// AUTH
 		AUTH_SERVICE_URL: z.string(),
+		AUTH_URL: z.string(),
 
 		// DB
 		DATABASE_HOST: z.string(),

@@ -98,11 +98,105 @@ To run the entire stack with Docker:
 docker compose up -d --build
 ```
 
+To start the mock instance of emqx and test-runner:
+
+```bash
+docker compose -f docker-mock-compose.yaml up -d --build
+```
+
+
+
 This will start:
+
 - Frontend on port 80
 - Backend on port 3001
 
+## GitHub Environment Variables
+
+To use the CI/CD pipeline, you need to configure the following environment variables and secrets in your GitHub repository settings under the `meter-lab` environment.
+
+### Variables (Repository Variables)
+
+These should be set as **Variables** in your GitHub environment:
+
+#### Application URLs
+
+- `PUBLIC_BACKEND_URL` - Public URL for the backend API
+- `PUBLIC_AUTH_URL` - Public URL for the auth service
+- `PUBLIC_WEBSOCKET_URL` - Public WebSocket URL
+- `PUBLIC_IS_LOCAL` - Whether the deployment is local (default: `false`)
+- `ORIGIN` - Origin URL for CORS
+- `DOMAIN` - Domain name for the application
+
+#### Service URLs
+
+- `AUTH_SERVICE_URL` - Public URL for the auth service
+- `BACKEND_URL` - Internal backend URL
+- `BETTER_AUTH_URL` - Better Auth service URL
+
+#### Ports
+
+- `WEB_PORT` - Web application port
+- `BACKEND_PORT` - Backend API port (default: `5070`)
+- `AUTH_PORT` - Auth service port (default: `5090`)
+- `AUTH_DB_PUBLIC_PORT` - Public port for auth database (default: `5433`)
+
+#### Message Queue & Broker
+
+- `REDIS_URL` - Redis connection URL
+- `RABBIT_URL` - RabbitMQ connection URL
+- `RABBIT_QUEUE` - RabbitMQ queue name
+- `RABBIT_USER` - RabbitMQ username
+- `RABBIT_PASS` - RabbitMQ password
+- `EMQX_URL` - EMQX MQTT broker URL
+- `EMQX_TOPIC` - EMQX topic name
+- `EMQX_USERNAME` - EMQX username
+- `EMQX_PASSWORD` - EMQX password
+
+#### Testing
+
+- `TEST_RUNNER_USERNAME` - Test runner username
+- `TEST_RUNNER_PASSWORD` - Test runner password
+- `BACKEND_RUN_MIGRATIONS` - Whether to run database migrations (default: `false`)
+
+#### Admin Configuration
+
+- `ADMIN_NAME` - Admin user name
+
+### Secrets (Repository Secrets)
+
+These should be set as **Secrets** in your GitHub environment:
+
+#### GitHub Container Registry
+
+- `GHCR_TOKEN` - GitHub Container Registry authentication token
+
+#### SSH Deployment
+
+- `SSH_PRIVATE_KEY` - SSH private key for deployment server access
+- `SSH_HOST` - SSH host for deployment (e.g., `user@hostname`)
+
+#### Database - Auth
+
+- `AUTH_DB_HOST` - Auth database host
+- `AUTH_DB_PORT` - Auth database port
+- `AUTH_DB_USER` - Auth database username
+- `AUTH_DB_PASSWORD` - Auth database password
+- `AUTH_DB_NAME` - Auth database name
+
+#### Database - Backend
+
+- `BACKEND_DB_HOST` - Backend database host
+- `BACKEND_DB_PORT` - Backend database port
+- `BACKEND_DB_USER` - Backend database username
+- `BACKEND_DB_PASSWORD` - Backend database password
+- `BACKEND_DB_NAME` - Backend database name
+
+#### Authentication
+
+- `BETTER_AUTH_SECRET` - Better Auth secret key
+
 ## Useful charts
 
-![Services1](/img/services1.png)
-![Services2](/img/services2.png)
+<!-- ![Services1](/img/services1.png) -->
+![Services2](/img/architecture.png)

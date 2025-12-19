@@ -11,6 +11,7 @@ substitutions:
   _IMAGE_NAME_WEB: "gcr.io/${PROJECT_ID}/web/gcpdevops-prod:${SHORT_SHA}"
   _IMAGE_NAME_AUTH: "gcr.io/${PROJECT_ID}/auth/gcpdevops-prod:${SHORT_SHA}"
   _IMAGE_NAME_MIGRATE: "gcr.io/${PROJECT_ID}/migrate/gcpdevops-prod:${SHORT_SHA}"
+  _IMAGE_NAME_TEST_RUNNER: "gcr.io/${PROJECT_ID}/test-runner/gcpdevops-prod:${SHORT_SHA}"
   _CLUSTER_NAME: "meter-lab-production-standard-cluster"
   _NAMESPACE: "meter-lab"
   _LOCATION: "europe-north2"
@@ -55,6 +56,9 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'packages/migrate/Dockerfile', '-t', '${_IMAGE_NAME_MIGRATE}', '.']
 
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'apps/test-runner/Dockerfile', '-t', '${_IMAGE_NAME_TEST_RUNNER}', '.']
+
   # Step 2: Push Docker image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '${_IMAGE_NAME_BACKEND}']
@@ -67,6 +71,9 @@ steps:
 
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '${_IMAGE_NAME_MIGRATE}']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_IMAGE_NAME_TEST_RUNNER}']
 
   # 2) Install Kompose
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -85,6 +92,7 @@ steps:
       - |
         mkdir -p infra/gke/generated
         /workspace/kompose convert -f compose.yaml --stdout > infra/gke/generated/komposed.yaml
+        /workspace/kompose convert -f docker-mock-compose-test-runner.yaml --stdout > infra/gke/generated/komposed-test-runner.yaml
 
     # Step 3: Replace placeholder `image-name:latest` in `komposed.yaml` with actual image name 
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -97,20 +105,23 @@ steps:
         sed -i "s|web:latest|${_IMAGE_NAME_WEB}|g" infra/gke/generated/komposed.yaml
         sed -i "s|auth:latest|${_IMAGE_NAME_AUTH}|g" infra/gke/generated/komposed.yaml
         sed -i "s|migrate:latest|${_IMAGE_NAME_MIGRATE}|g" infra/gke/generated/komposed.yaml
+        sed -i "s|test-runner:latest|${_IMAGE_NAME_TEST_RUNNER}|g" infra/gke/generated/komposed-test-runner.yaml
 
         sed -i "s|port: 5090|port: 80|g" infra/gke/generated/komposed.yaml
         sed -i "s|port: 5080|port: 80|g" infra/gke/generated/komposed.yaml
         sed -i "s|port: 5070|port: 80|g" infra/gke/generated/komposed.yaml
 
         sed -i '/name: ENVIROMENT/,/value:/ s|value: development|value: stage|g' infra/gke/generated/komposed.yaml
-        sed -i '/name: NODE_ENV/,/value:/ s|value: development|value: testing|g' infra/gke/generated/komposed.yaml
+        sed -i '/name: NODE_ENV/,/value:/ s|value: development|value: test|g' infra/gke/generated/komposed.yaml
         sed -i '/name: DOMAIN/,/value:/ s|value: localhost|value: nordicode.se|g' infra/gke/generated/komposed.yaml
         sed -i 's|value: http://auth:5090|value: https://auth.nordicode.se|g' infra/gke/generated/komposed.yaml
         sed -i '/hostPort/d' infra/gke/generated/komposed.yaml
         sed -i 's/imagePullPolicy: Never/imagePullPolicy: Always/g' infra/gke/generated/komposed.yaml
         sed -i 's|port: 5433|port: 5432|g' infra/gke/generated/komposed.yaml
         sed -i 's|name: "5433"|name: "5432"|g' infra/gke/generated/komposed.yaml
+        sed -i 's|host.docker.internal:5672|rabbit:5672|g' infra/gke/generated/komposed-test-runner.yaml
         awk '/port:/ && !/name:/ {gsub(/^[[:space:]]*- port:/, "  - name: port\n    port:"); print; next} {print}' infra/gke/generated/komposed.yaml > infra/gke/generated/komposed.tmp && mv infra/gke/generated/komposed.tmp infra/gke/generated/komposed.yaml
+        awk '/port:/ && !/name:/ {gsub(/^[[:space:]]*- port:/, "  - name: port\n    port:"); print; next} {print}' infra/gke/generated/komposed-test-runner.yaml > infra/gke/generated/komposed-test-runner.tmp && mv infra/gke/generated/komposed-test-runner.tmp infra/gke/generated/komposed-test-runner.yaml
 
   # Cleanup previous gke-deploy outputs to avoid conflicts
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -137,4 +148,5 @@ steps:
       - |
         gcloud container clusters get-credentials ${_CLUSTER_NAME} --region ${_LOCATION}
         kubectl apply -f infra/gke/generated/ --namespace=${_NAMESPACE}
+        kubectl apply -f infra/gke/generated/komposed-test-runner.yaml --namespace=${_NAMESPACE}
         sleep 10

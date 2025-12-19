@@ -32,7 +32,7 @@
 	</Container>
 </div>
 
-<div class="relative block h-full w-full md:hidden">
+<div class="relative block h-full w-full md:hidden bg-background">
 	<Container>
 		<div class="flex flex-row items-center justify-between">
 			<a href="/" class="text-3xl font-bold">Meter Lab</a>
